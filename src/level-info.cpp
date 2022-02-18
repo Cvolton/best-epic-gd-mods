@@ -52,7 +52,7 @@ void __fastcall InfoLayer_onLevelInfo(InfoLayer* self, void* a, CCObject* sender
     std::stringstream contentStream;
     contentStream << "Uploaded: " << level->uploadDate 
         << " ago\nUpdated: " << level->updateDate 
-        << " ago\nStars Requested: " << level->starsRequested;
+    if(level->starsRequested != 0) contentStream << " ago\nStars Requested: " << level->starsRequested;
     if(level->originalLevel != 0) contentStream << "\nOriginal: " << level->originalLevel;
     contentStream << "\nGame Version: " << getGameVersionName(level->gameVersion);
     if(level->originalLevel != 0) contentStream << "\nFeature Score: " << level->featured;
