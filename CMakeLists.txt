@@ -38,6 +38,9 @@ endmacro()
 setup_mod(more-button src/more-button.cpp
   minhook cocos gd.h nomerge)
 
+setup_mod(level-info src/level-info.cpp
+  minhook cocos gd.h nomerge)
+
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
   # ensure 32 bit on clang
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -target i386-pc-windows-msvc")
