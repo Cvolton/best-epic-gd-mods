@@ -57,9 +57,8 @@ void __fastcall InfoLayer_onLevelInfo(InfoLayer* self, void* a, CCObject* sender
     contentStream << "\nGame Version: " << getGameVersionName(level->gameVersion);
     if(level->originalLevel != 0) contentStream << "\nFeature Score: " << level->featured;
     if(levelPassword > 1) contentStream << "\nPassword: " << (levelPassword - 1000000);
-    contentStream << "\nWorking time: " << level->workingTime
-        << "\nWorking time 2: " << level->workingTime2;
-    //contentStream << "\nWorking time subst: " << (level->workingTime2 - level->workingTime);
+    if(level->workingTime > 0) contentStream << "\nWorking time: " << level->workingTime
+    if(level->workingTime2 > 0) contentStream << "\nWorking time 2: " << level->workingTime2;
     if (level->objectCount > 0) contentStream << "\nObjects: " << (level->objectCount == 65535 ? "65535+" : std::to_string(level->objectCount));
         //<< "\nYour personal bests: " << level->personalBests;
         //<< "\n isCompletionLegitimate: " << level->isCompletionLegitimate;
