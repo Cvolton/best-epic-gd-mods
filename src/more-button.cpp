@@ -219,13 +219,15 @@ void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJCommen
         for(unsigned int i = 0; i < layer->getChildrenCount(); i++){
             auto menu = dynamic_cast<CCMenu*>(layer->getChildren()->objectAtIndex(i));
             if(menu != nullptr){
+                bool smallCommentsMode = gd::GameManager::sharedState()->getGameVariable("0088");
+
                 auto buttonButton = gd::CCMenuItemSpriteExtra::create(
                     playerName,
                     self,
                     menu_selector(GamingButton::onMoreComment)
                 );
                 buttonButton->setSizeMult(1.2f);
-                buttonButton->setPosition(-254,-141.5f);
+                buttonButton->setPosition(-254, smallCommentsMode ? -141.5f : -109.5f);
                 buttonButton->setAnchorPoint(CCPoint(0,0));
                 buttonButton->setEnabled(true);
                 menu->addChild(buttonButton);
