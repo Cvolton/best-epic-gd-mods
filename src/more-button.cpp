@@ -131,7 +131,7 @@ bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, v
     gd::CCMenuItemSpriteExtra* playerName = cast<gd::CCMenuItemSpriteExtra*>(menu->getChildren()->objectAtIndex(0));
     playerName->setEnabled(true);
 
-    if(!gd::GameManager::sharedState()->getGameVariable("0089"))
+    if(!gd::GameManager::sharedState()->getGameVariable("0089") && level != nullptr)
         createButton(self, menu, "Similar", menu_selector(GamingButton::onSimilar), -138, 97, (int)(90*0.45), 44*0.45f);
 
 
