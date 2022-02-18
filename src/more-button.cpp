@@ -7,6 +7,7 @@
 #include <gd.h>
 #include <typeinfo>
 #include <cstring>
+#include "utils.hpp"
 
 using namespace cocos2d;
 
