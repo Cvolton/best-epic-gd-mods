@@ -43,6 +43,8 @@ setup_mod(level-info src/level-info.cpp
 
 setup_mod(capacity-fix src/capacity-fix.cpp)
 
+setup_mod(page-limit src/page-limit.cpp)
+
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
   # ensure 32 bit on clang
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -target i386-pc-windows-msvc")
