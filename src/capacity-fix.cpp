@@ -18,6 +18,12 @@ DWORD WINAPI func(void* me) {
         unsigned char patch[] = {i};
         WriteProcessMemory(proc, base + address, patch, 1, NULL);
     }
+    //change check that checks whether 2.0 nodes should even be loaded
+    unsigned char patch[] = {0x9};
+    WriteProcessMemory(proc, base + 0x10C35B, patch, 1, NULL);
+    //change check that checks whether 2.1 nodes should even be loaded
+    patch[0] = 0x35;
+    WriteProcessMemory(proc, base + 0x10C558, patch, 1, NULL);
 
     FreeLibraryAndExitThread(reinterpret_cast<HMODULE>(me), 0);
     return 0;
