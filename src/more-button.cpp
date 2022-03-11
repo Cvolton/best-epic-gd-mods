@@ -13,10 +13,36 @@ using namespace cocos2d;
 
 uintptr_t base;
 
-class InfoLayer : CCLayer {
+//members stolen from wylies gd decomp
+class InfoLayer : public gd::FLAlertLayer {
 public:
-    PAD(472 - sizeof(CCLayer));
-    gd::GJGameLevel* level;
+    PAD(472 - sizeof(gd::FLAlertLayer));
+    gd::GJGameLevel* m_pLevel;
+    gd::GJUserScore* m_pScore;
+    std::string m_sCommentKey;
+    gd::LoadingCircle* m_pLoadingCircle;
+    cocos2d::CCLabelBMFont* m_pPageLabel;
+    cocos2d::CCLabelBMFont* m_pCommentsGoldLabel;
+    void* m_pCommentList; //gd::GJCommentListLayer
+    gd::CCMenuItemSpriteExtra* m_pNextPageBtn;
+    gd::CCMenuItemSpriteExtra* m_pPrevPageBtn;
+    gd::CCMenuItemSpriteExtra* m_pLikeIcon;
+    gd::CCMenuItemSpriteExtra* m_pTimeIcon;
+    gd::CCMenuItemSpriteExtra* m_pReportBtn;
+    gd::CCMenuItemSpriteExtra* m_pCommentsBtn;
+    gd::CCMenuItemSpriteExtra* m_pRefreshCommentsBtn;
+    int m_nPageStartIdx;
+    int m_nPageEndIdx;
+    int m_nTotalItems;
+    int m_nPageNumber;
+    bool m_bCanUpdateUserScore;
+    bool m_bCommentHistory;
+
+    static InfoLayer* create(gd::GJGameLevel* level, gd::GJUserScore* score) {
+        return reinterpret_cast<InfoLayer*(__fastcall*)(gd::GJGameLevel*, gd::GJUserScore*)>(
+            gd::base + 0x14F4F0
+        )(level, score);
+    }
 };
 
 class LevelBrowserLayer : public CCLayer {
@@ -73,7 +99,7 @@ public:
         auto layer = cast<InfoLayer*>(this);
 
         std::stringstream contentStream;
-        contentStream << layer->level->levelID;
+        contentStream << layer->m_pLevel->levelID;
 
         auto searchObject = gd::GJSearchObject::create(gd::SearchType::kSearchTypeSimilar, contentStream.str());//, contentStream.str());
         auto browserLayer = LevelBrowserLayer::scene(searchObject);
@@ -95,6 +121,22 @@ public:
         auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
         
         CCDirector::sharedDirector()->replaceScene(transitionFade);
+    }
+
+    void onCommentHistory(CCObject* sender) {
+        auto layer = cast<CommentCell*>(this);
+
+        gd::GJUserScore* tempUserScore = gd::GJUserScore::create();
+        tempUserScore->setUserID(layer->comment->m_nAuthorPlayerID);
+        InfoLayer* infoLayer = InfoLayer::create(nullptr, tempUserScore);
+        infoLayer->show();
+
+        /*auto searchObject = gd::GJSearchObject::create(gd::SearchType::kSearchTypeUsersLevels, contentStream.str());//, contentStream.str());
+        auto browserLayer = LevelBrowserLayer::scene(searchObject);
+
+        auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
+        
+        CCDirector::sharedDirector()->replaceScene(transitionFade);*/
     }
 };
 
@@ -139,8 +181,8 @@ bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, v
 }
 
 bool __fastcall InfoLayer_onMore(InfoLayer* self, void* a, CCObject* b) {
-    if(self->level->accountID == 0) {
-        doSearch(self->level->userID);
+    if(self->m_pLevel->accountID == 0) {
+        doSearch(self->m_pLevel->userID);
         return true;
     }
 
@@ -224,7 +266,8 @@ void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJCommen
                 auto buttonButton = gd::CCMenuItemSpriteExtra::create(
                     playerName,
                     self,
-                    menu_selector(GamingButton::onMoreComment)
+                    //menu_selector(GamingButton::onMoreComment)
+                    menu_selector(GamingButton::onCommentHistory)
                 );
                 buttonButton->setSizeMult(1.2f);
                 buttonButton->setPosition(-254, smallCommentsMode ? -141.5f : -109.5f);
