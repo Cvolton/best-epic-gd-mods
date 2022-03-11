@@ -95,7 +95,7 @@ public:
         auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
         
         CCDirector::sharedDirector()->replaceScene(transitionFade);
-        }
+    }
 };
 
 void createButton(CCLayer* self, CCNode* menu, const char* text, cocos2d::SEL_MenuHandler handler, float x, float y, int width, float height){
