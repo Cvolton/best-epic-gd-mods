@@ -74,8 +74,18 @@ public:
 
     void onClose(cocos2d::CCObject* sender)
     {
+        score->release();
         setKeypadEnabled(false);
         removeFromParentAndCleanup(true);
+    }
+
+    static void displayProfile(int userID, std::string userName){
+        gd::GJUserScore* score = gd::GJUserScore::create();
+        score->setUserID(userID);
+        score->setPlayerName(userName);
+        UnregisteredProfileLayer* profileLayer = UnregisteredProfileLayer::create(score);
+        profileLayer->show();
+        score->retain();
     }
 
     static void doSearch(int userID) {
@@ -92,7 +102,9 @@ public:
     }
 
     void onCommentHistory(CCObject* sender) {
-        InfoLayer* infoLayer = InfoLayer::create(nullptr, score);
+        gd::GJUserScore* clone = gd::GJUserScore::copy(score);
+
+        InfoLayer* infoLayer = InfoLayer::create(nullptr, clone);
         infoLayer->show();
     }
 
@@ -247,6 +259,7 @@ class CommentCell : public CCLayer {
     public:
         PAD(89+16);
         GJComment* comment;
+        bool accountComment;
 };
 
 class StaticStringHelper {
@@ -296,20 +309,6 @@ public:
 
         auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
 
-        CCDirector::sharedDirector()->replaceScene(transitionFade);
-    }
-
-    void onMoreComment(CCObject* sender) {
-        auto layer = cast<CommentCell*>(this);
-        
-        std::stringstream contentStream;
-        contentStream << layer->comment->m_nAuthorPlayerID;
-
-        auto searchObject = gd::GJSearchObject::create(gd::SearchType::kSearchTypeUsersLevels, contentStream.str());//, contentStream.str());
-        auto browserLayer = LevelBrowserLayer::scene(searchObject);
-
-        auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
-        
         CCDirector::sharedDirector()->replaceScene(transitionFade);
     }
 
@@ -367,7 +366,7 @@ bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, v
 
 bool __fastcall InfoLayer_onMore(InfoLayer* self, void* a, CCObject* b) {
     if(self->m_pLevel->accountID == 0) {
-        UnregisteredProfileLayer::doSearch(self->m_pLevel->userID);
+        UnregisteredProfileLayer::displayProfile(self->m_pLevel->userID, self->m_pLevel->userName);
         return true;
     }
 
@@ -388,11 +387,9 @@ bool __fastcall LevelInfoLayer_setupProgressBars(CCLayer* self) {
 }
 
 bool __fastcall LevelInfoLayer_onViewProfile(LevelInfoLayer* self, void* a, CCObject* b) {
-    std::stringstream contentStream;
-    contentStream << "accid " << self->level->accountID << "\nusrid " << self->level->userID;
 
     if(self->level->accountID == 0) {
-        UnregisteredProfileLayer::doSearch(self->level->userID);
+        UnregisteredProfileLayer::displayProfile(self->level->userID, self->level->userName);
         return true;
     }
 
@@ -403,11 +400,8 @@ bool __fastcall LevelInfoLayer_onViewProfile(LevelInfoLayer* self, void* a, CCOb
 
 bool __fastcall LevelCell_onViewProfile(LevelCell* self, void* a, CCObject* b) {
 
-    std::stringstream contentStream;
-    contentStream << "accid " << self->level->accountID << "\nusrid " << self->level->userID;
-
     if(self->level->accountID == 0) {
-        UnregisteredProfileLayer::doSearch(self->level->userID);
+        UnregisteredProfileLayer::displayProfile(self->level->userID, self->level->userName);
         return true;
     }
 
@@ -467,6 +461,8 @@ void* __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd
 void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJComment* b) {
     MHook::getOriginal(CommentCell_loadFromComment)(self, a, b);
 
+    if(b->m_bHasLevelID) return;
+
     auto layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(1));
     auto playerName = cast<CCLabelBMFont*>(layer->getChildren()->objectAtIndex(2));
     if(b->m_nAuthorAccountID == 0){
@@ -485,8 +481,6 @@ void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJCommen
                 auto buttonButton = gd::CCMenuItemSpriteExtra::create(
                     playerName,
                     self,
-                    //menu_selector(GamingButton::onMoreComment)
-                    //menu_selector(GamingButton::onCommentHistory)
                     menu_selector(GamingButton::onProfilePage)
                 );
                 buttonButton->setSizeMult(1.2f);
