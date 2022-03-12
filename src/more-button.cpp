@@ -198,7 +198,7 @@ public:
     PAD(488 - sizeof(gd::FLAlertLayer));
     gd::GJUserScore* score;
 
-    static ProfilePage* create(int accountID, bool a2) {
+    /*static ProfilePage* create(int accountID, bool a2) {
         return reinterpret_cast<ProfilePage*(__fastcall*)(int, bool)>(
             gd::base + 0x20EE50
         )(accountID, a2);
@@ -208,7 +208,7 @@ public:
         return reinterpret_cast<ProfilePage*(__fastcall*)(ProfilePage*, gd::GJUserScore*)>(
             gd::base + 0x210040
         )(this, score);
-    }
+    }*/
 };
 
 class LevelInfoLayer : public CCLayer {
@@ -249,6 +249,40 @@ class CommentCell : public CCLayer {
         GJComment* comment;
 };
 
+class StaticStringHelper {
+public:
+    static std::string getFriendRequestType(int type){
+        switch(type){
+            case 0: return "Enabled";
+            case 1: return "Disabled";
+            default: return "Unknown";
+        }
+    }
+
+    static std::string getMessageType(int type){
+        switch(type){
+            case 0: return "Enabled";
+            case 1: return "Friends Only";
+            case 2: return "Disabled";
+            default: return "Unknown";
+        }
+    }
+
+    static std::string getIconType(int type){
+        switch(type){
+            case 0: return "Cube";
+            case 1: return "Ship";
+            case 2: return "Ball";
+            case 3: return "UFO";
+            case 4: return "Wave";
+            case 5: return "Robot";
+            case 6: return "Spider";
+            case 7: return "Swingcopter";
+            default: return "None";
+        }
+    }
+};
+
 class GamingButton {
 public:
     void onSimilar(CCObject* sender) {
@@ -284,6 +318,22 @@ public:
         layer->comment->m_pUserScore->setUserID(layer->comment->m_nAuthorPlayerID);
         UnregisteredProfileLayer* profileLayer = UnregisteredProfileLayer::create(layer->comment->m_pUserScore);
         profileLayer->show();
+    }
+
+    void onProfilePageInfo(CCObject* sender){
+        auto layer = cast<ProfilePage*>(this);
+
+        auto score = layer->score;
+
+        std::ostringstream contentStream;
+        contentStream << "User ID: " << score->getUserID()
+            << "\nAccount ID: " << score->getAccountID()
+            << "\n"//Leaderboard Icon: " << StaticStringHelper::getIconType(score->getIconType()) (is not sent)
+            << "\nFriend Requests: " << StaticStringHelper::getFriendRequestType(score->getFriendStatus())
+            << "\nPrivate Messages: " << StaticStringHelper::getMessageType(score->getMessageState())
+            << "\nComment History: " << StaticStringHelper::getMessageType(score->getCommentHistoryStatus());
+
+        gd::FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, contentStream.str())->show();
     }
 };
 
@@ -380,12 +430,30 @@ void __fastcall LevelCell_loadCustomLevelCell(CCNode* self) {
     }
 }
 
-/*void* __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd::GJUserScore* a2){
-    gd::GJUserScore* score = gd::GJUserScore::create();
-    score->setPlayerName("amongus");
-    score->setPlayerCube(6);
-    return MHook::getOriginal(ProfilePage_loadPageFromUserInfo)(self, a, score);
-}*/
+void* __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd::GJUserScore* a2){
+    void* returnValue = MHook::getOriginal(ProfilePage_loadPageFromUserInfo)(self, a, a2);
+
+    auto layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(0));
+
+    for(unsigned int i = 0; i < layer->getChildrenCount(); i++){
+        auto menu = dynamic_cast<CCMenu*>(layer->getChildren()->objectAtIndex(i));
+        if(menu != nullptr){
+            auto infoSprite = CCSprite::createWithSpriteFrameName("GJ_infoBtn_001.png");
+            infoSprite->setScale(0.7f);
+            auto infoButton = gd::CCMenuItemSpriteExtra::create(
+                infoSprite,
+                self,
+                menu_selector(GamingButton::onProfilePageInfo)
+            );
+            menu->addChild(infoButton);
+            infoButton->setPosition({16, -135});
+            //infoButton->setScale(0.8f);
+            infoButton->setSizeMult(1.2f);
+        }
+    }
+
+    return returnValue;
+}
 
 /*void* __fastcall ProfilePage_getUserInfoFailed(ProfilePage* self, void* a, gd::GJUserScore* a2){
     void* returnValue = MHook::getOriginal(ProfilePage_getUserInfoFailed)(self, a, a2);
@@ -444,7 +512,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x5C790, LevelCell_onViewProfile);
     MHook::registerHook(base + 0x5A020, LevelCell_loadCustomLevelCell);
     MHook::registerHook(base + 0x5F3D0, CommentCell_loadFromComment);
-    //MHook::registerHook(base + 0x210040, ProfilePage_loadPageFromUserInfo);
+    MHook::registerHook(base + 0x210040, ProfilePage_loadPageFromUserInfo);
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
 
     MH_EnableHook(MH_ALL_HOOKS);
