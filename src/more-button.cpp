@@ -55,6 +55,162 @@ public:
     }
 };
 
+class UnregisteredProfileLayer : public gd::FLAlertLayer {
+    gd::GJUserScore* score;
+public:
+    static UnregisteredProfileLayer* create(gd::GJUserScore* score){
+        auto ret = new UnregisteredProfileLayer();
+        ret->score = score;
+        if (ret && ret->init()) {
+            //robert 1 :D
+            ret->autorelease();
+        } else {
+            //robert -1
+            delete ret;
+            ret = nullptr;
+        }
+        return ret;
+    }
+
+    void onClose(cocos2d::CCObject* sender)
+    {
+        setKeypadEnabled(false);
+        removeFromParentAndCleanup(true);
+    }
+
+    static void doSearch(int userID) {
+        auto searchObject = gd::GJSearchObject::create(gd::SearchType::kSearchTypeUsersLevels, std::to_string(userID));//, contentStream.str());
+        auto browserLayer = LevelBrowserLayer::scene(searchObject);
+
+        auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
+        
+        CCDirector::sharedDirector()->replaceScene(transitionFade);
+    }
+
+    void onMyLevels(CCObject* sender) {
+        doSearch(score->getUserID());
+    }
+
+    void onCommentHistory(CCObject* sender) {
+        InfoLayer* infoLayer = InfoLayer::create(nullptr, score);
+        infoLayer->show();
+    }
+
+    bool init(){
+        bool init = cocos2d::CCLayerColor::initWithColor({0x00, 0x00, 0x00, 0x4B});
+        if(!init) return false;
+
+        cocos2d::CCDirector* director = cocos2d::CCDirector::sharedDirector();
+        director->getTouchDispatcher()->incrementForcePrio(2);
+
+        setTouchEnabled(true);
+        setKeypadEnabled(true);
+
+        cocos2d::CCSize winSize = director->getWinSize();
+        m_pLayer = cocos2d::CCLayer::create();
+
+        this->addChild(m_pLayer);
+
+        cocos2d::extension::CCScale9Sprite* bg = cocos2d::extension::CCScale9Sprite::create("GJ_square01.png", { 0.0f, 0.0f, 80.0f, 80.0f });
+        bg->setContentSize({ 360.0f, 180.0f });
+        m_pLayer->addChild(bg, -1);
+        bg->setPosition({ winSize.width / 2, winSize.height / 2 });
+
+        auto closeButton = gd::CCMenuItemSpriteExtra::create(
+            CCSprite::createWithSpriteFrameName("GJ_closeBtn_001.png"),
+            this,
+            menu_selector(UnregisteredProfileLayer::onClose)
+        );
+
+        m_pButtonMenu = CCMenu::create();
+        m_pLayer->addChild(m_pButtonMenu, 10);
+        m_pButtonMenu->addChild(closeButton);
+        closeButton->setPosition({-170.5f, 79});
+        closeButton->setSizeMult(1.2f);
+
+        auto userName = CCLabelBMFont::create(score->getPlayerName().c_str(), "bigFont.fnt");
+        userName->setPosition({285,227});
+
+        m_pLayer->addChild(userName);
+
+        auto GM = gd::GameManager::sharedState();
+
+        gd::SimplePlayer* icon = gd::SimplePlayer::create(score->getIconID());
+        icon->updatePlayerFrame(score->getIconID(), score->getIconType());
+        icon->setColor(GM->colorForIdx(score->getPlayerColor1()));
+        icon->setSecondColor(GM->colorForIdx(score->getPlayerColor2()));
+        icon->updateColors();
+
+        icon->setPosition({440,224});
+        m_pLayer->addChild(icon);
+
+        auto separator = CCSprite::createWithSpriteFrameName("floorLine_001.png");
+        separator->setPosition({285,202});
+        separator->setScaleX(0.75f);
+        separator->setOpacity(100);
+        m_pLayer->addChild(separator);
+
+        auto levelsSprite = CCSprite::createWithSpriteFrameName("accountBtn_myLevels_001.png");
+        levelsSprite->setScale(0.8f);
+        auto levelsButton = gd::CCMenuItemSpriteExtra::create(
+            levelsSprite,
+            this,
+            menu_selector(UnregisteredProfileLayer::onMyLevels)
+        );
+        m_pButtonMenu->addChild(levelsButton);
+        levelsButton->setPosition({154, -62});
+        //levelsButton->setScale(0.8f);
+        levelsButton->setSizeMult(1.2f);
+
+        auto levelsText = CCSprite::createWithSpriteFrameName("GJ_myLevelsTxt_001.png");
+        levelsText->setScale(0.8f);
+        levelsText->setPosition({104, -62});
+        m_pButtonMenu->addChild(levelsText);
+
+        auto commentsSprite = CCSprite::createWithSpriteFrameName("GJ_chatBtn_001.png");
+        commentsSprite->setScale(0.8f);
+        auto commentsButton = gd::CCMenuItemSpriteExtra::create(
+            commentsSprite,
+            this,
+            menu_selector(UnregisteredProfileLayer::onCommentHistory)
+        );
+        m_pButtonMenu->addChild(commentsButton);
+        commentsButton->setPosition({154, 0});
+        //commentsButton->setScale(0.8f);
+        commentsButton->setSizeMult(1.2f);
+
+        std::ostringstream userIDText;
+        userIDText << "User ID: " << score->getUserID() << "\nAccount ID: None";
+
+        auto userIDTextNode = CCLabelBMFont::create(userIDText.str().c_str(), "bigFont.fnt");
+        userIDTextNode->setPosition({-168, -75.5f});
+        userIDTextNode->setAnchorPoint({0,0});
+        userIDTextNode->setScale(0.45f);
+        m_pButtonMenu->addChild(userIDTextNode);
+
+        return true;
+    }
+};
+
+class ProfilePage : public gd::FLAlertLayer {
+public:
+    //PAD(472 - sizeof(gd::FLAlertLayer));
+    PAD(488 - sizeof(gd::FLAlertLayer));
+    gd::GJUserScore* score;
+
+    static ProfilePage* create(int accountID, bool a2) {
+        return reinterpret_cast<ProfilePage*(__fastcall*)(int, bool)>(
+            gd::base + 0x20EE50
+        )(accountID, a2);
+    }
+
+    ProfilePage* loadPageFromUserInfo(gd::GJUserScore* score) {
+        return reinterpret_cast<ProfilePage*(__fastcall*)(ProfilePage*, gd::GJUserScore*)>(
+            gd::base + 0x210040
+        )(this, score);
+    }
+};
+
 class LevelInfoLayer : public CCLayer {
     public:
         PAD(324 - sizeof(CCLayer));
@@ -123,20 +279,11 @@ public:
         CCDirector::sharedDirector()->replaceScene(transitionFade);
     }
 
-    void onCommentHistory(CCObject* sender) {
+    void onProfilePage(CCObject* sender){
         auto layer = cast<CommentCell*>(this);
-
-        gd::GJUserScore* tempUserScore = gd::GJUserScore::create();
-        tempUserScore->setUserID(layer->comment->m_nAuthorPlayerID);
-        InfoLayer* infoLayer = InfoLayer::create(nullptr, tempUserScore);
-        infoLayer->show();
-
-        /*auto searchObject = gd::GJSearchObject::create(gd::SearchType::kSearchTypeUsersLevels, contentStream.str());//, contentStream.str());
-        auto browserLayer = LevelBrowserLayer::scene(searchObject);
-
-        auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
-        
-        CCDirector::sharedDirector()->replaceScene(transitionFade);*/
+        layer->comment->m_pUserScore->setUserID(layer->comment->m_nAuthorPlayerID);
+        UnregisteredProfileLayer* profileLayer = UnregisteredProfileLayer::create(layer->comment->m_pUserScore);
+        profileLayer->show();
     }
 };
 
@@ -150,18 +297,6 @@ void createButton(CCLayer* self, CCNode* menu, const char* text, cocos2d::SEL_Me
     buttonButton->setSizeMult(1.2f);
     buttonButton->setPosition({x,y});
     menu->addChild(buttonButton);
-}
-
-void doSearch(int userID) {
-    std::stringstream contentStream;
-    contentStream << userID;
-
-    auto searchObject = gd::GJSearchObject::create(gd::SearchType::kSearchTypeUsersLevels, contentStream.str());//, contentStream.str());
-    auto browserLayer = LevelBrowserLayer::scene(searchObject);
-
-    auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
-    
-    CCDirector::sharedDirector()->replaceScene(transitionFade);
 }
 
 bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, void* c) {
@@ -182,7 +317,7 @@ bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, v
 
 bool __fastcall InfoLayer_onMore(InfoLayer* self, void* a, CCObject* b) {
     if(self->m_pLevel->accountID == 0) {
-        doSearch(self->m_pLevel->userID);
+        UnregisteredProfileLayer::doSearch(self->m_pLevel->userID);
         return true;
     }
 
@@ -207,7 +342,7 @@ bool __fastcall LevelInfoLayer_onViewProfile(LevelInfoLayer* self, void* a, CCOb
     contentStream << "accid " << self->level->accountID << "\nusrid " << self->level->userID;
 
     if(self->level->accountID == 0) {
-        doSearch(self->level->userID);
+        UnregisteredProfileLayer::doSearch(self->level->userID);
         return true;
     }
 
@@ -222,7 +357,7 @@ bool __fastcall LevelCell_onViewProfile(LevelCell* self, void* a, CCObject* b) {
     contentStream << "accid " << self->level->accountID << "\nusrid " << self->level->userID;
 
     if(self->level->accountID == 0) {
-        doSearch(self->level->userID);
+        UnregisteredProfileLayer::doSearch(self->level->userID);
         return true;
     }
 
@@ -244,6 +379,22 @@ void __fastcall LevelCell_loadCustomLevelCell(CCNode* self) {
         }
     }
 }
+
+/*void* __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd::GJUserScore* a2){
+    gd::GJUserScore* score = gd::GJUserScore::create();
+    score->setPlayerName("amongus");
+    score->setPlayerCube(6);
+    return MHook::getOriginal(ProfilePage_loadPageFromUserInfo)(self, a, score);
+}*/
+
+/*void* __fastcall ProfilePage_getUserInfoFailed(ProfilePage* self, void* a, gd::GJUserScore* a2){
+    void* returnValue = MHook::getOriginal(ProfilePage_getUserInfoFailed)(self, a, a2);
+    gd::GJUserScore* score = gd::GJUserScore::create();
+    score->setPlayerName("amongus");
+    score->setPlayerCube(6);
+    //self->loadPageFromUserInfo(score);
+    return returnValue;
+}*/
 
 void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJComment* b) {
     MHook::getOriginal(CommentCell_loadFromComment)(self, a, b);
@@ -267,7 +418,8 @@ void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJCommen
                     playerName,
                     self,
                     //menu_selector(GamingButton::onMoreComment)
-                    menu_selector(GamingButton::onCommentHistory)
+                    //menu_selector(GamingButton::onCommentHistory)
+                    menu_selector(GamingButton::onProfilePage)
                 );
                 buttonButton->setSizeMult(1.2f);
                 buttonButton->setPosition(-254, smallCommentsMode ? -141.5f : -109.5f);
@@ -292,6 +444,8 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x5C790, LevelCell_onViewProfile);
     MHook::registerHook(base + 0x5A020, LevelCell_loadCustomLevelCell);
     MHook::registerHook(base + 0x5F3D0, CommentCell_loadFromComment);
+    //MHook::registerHook(base + 0x210040, ProfilePage_loadPageFromUserInfo);
+    //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
 
     MH_EnableHook(MH_ALL_HOOKS);
     return 0;
