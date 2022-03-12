@@ -330,6 +330,8 @@ public:
             << "\nPrivate Messages: " << StaticStringHelper::getMessageType(score->getMessageState())
             << "\nComment History: " << StaticStringHelper::getMessageType(score->getCommentHistoryStatus());
 
+        if(score->getUserID() == 6330800) contentStream << "\n\nThis user is epic!";
+
         gd::FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, contentStream.str())->show();
     }
 };
