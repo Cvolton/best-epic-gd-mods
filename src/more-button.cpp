@@ -60,6 +60,7 @@ class UnregisteredProfileLayer : public gd::FLAlertLayer {
 public:
     static UnregisteredProfileLayer* create(gd::GJUserScore* score){
         auto ret = new UnregisteredProfileLayer();
+        score->retain();
         ret->score = score;
         if (ret && ret->init()) {
             //robert 1 :D
@@ -85,7 +86,6 @@ public:
         score->setPlayerName(userName);
         UnregisteredProfileLayer* profileLayer = UnregisteredProfileLayer::create(score);
         profileLayer->show();
-        score->retain();
     }
 
     static void doSearch(int userID) {
@@ -102,9 +102,7 @@ public:
     }
 
     void onCommentHistory(CCObject* sender) {
-        gd::GJUserScore* clone = gd::GJUserScore::copy(score);
-
-        InfoLayer* infoLayer = InfoLayer::create(nullptr, clone);
+        InfoLayer* infoLayer = InfoLayer::create(nullptr, score);
         infoLayer->show();
     }
 
