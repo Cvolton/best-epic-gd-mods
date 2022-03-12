@@ -50,20 +50,23 @@ void __fastcall InfoLayer_onLevelInfo(InfoLayer* self, void* a, CCObject* sender
     int levelPassword = level->password_rand - level->password_seed;
 
     std::stringstream contentStream;
-    contentStream << "Uploaded: " << level->uploadDate 
-        << " ago\nUpdated: " << level->updateDate 
-    if(level->starsRequested != 0) contentStream << " ago\nStars Requested: " << level->starsRequested;
+    contentStream << "Description: " << level->getUnpackedLevelDescription() << "\n";
+
+    contentStream << "\nUploaded: " << level->uploadDate 
+        << " ago\nUpdated: " << level->updateDate << " ago";
+    if(level->starsRequested != 0) contentStream << "\nStars Requested: " << level->starsRequested;
     if(level->originalLevel != 0) contentStream << "\nOriginal: " << level->originalLevel;
     contentStream << "\nGame Version: " << getGameVersionName(level->gameVersion);
     if(level->originalLevel != 0) contentStream << "\nFeature Score: " << level->featured;
     if(levelPassword > 1) contentStream << "\nPassword: " << (levelPassword - 1000000);
-    if(level->workingTime > 0) contentStream << "\nWorking time: " << level->workingTime
+    if(level->workingTime > 0) contentStream << "\nWorking time: " << level->workingTime;
     if(level->workingTime2 > 0) contentStream << "\nWorking time 2: " << level->workingTime2;
     if (level->objectCount > 0) contentStream << "\nObjects: " << (level->objectCount == 65535 ? "65535+" : std::to_string(level->objectCount));
+    contentStream << "\nUser ID: " << level->userID;
         //<< "\nYour personal bests: " << level->personalBests;
         //<< "\n isCompletionLegitimate: " << level->isCompletionLegitimate;
 
-    gd::FLAlertLayer::create(nullptr, "Level Info", "OK", nullptr, contentStream.str())->show();
+    gd::FLAlertLayer::create(nullptr, "Level Info", "OK", nullptr, 500, contentStream.str())->show();
 }
 
 DWORD WINAPI my_thread(void* hModule) {
