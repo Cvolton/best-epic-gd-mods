@@ -3,6 +3,7 @@
 #include "Windows.h"
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <cocos2d.h>
 #include <gd.h>
 #include <typeinfo>
@@ -202,11 +203,222 @@ public:
     }
 };
 
+class ExtendedLevelInfo : public gd::FLAlertLayer {
+    gd::GJGameLevel* level;
+public:
+    static ExtendedLevelInfo* create(gd::GJGameLevel* level){
+        auto ret = new ExtendedLevelInfo();
+        level->retain();
+        ret->level = level;
+        if (ret && ret->init()) {
+            //robert 1 :D
+            ret->autorelease();
+        } else {
+            //robert -1
+            delete ret;
+            ret = nullptr;
+        }
+        return ret;
+    }
+
+    void onClose(cocos2d::CCObject* sender)
+    {
+        level->release();
+        setKeypadEnabled(false);
+        removeFromParentAndCleanup(true);
+    }
+
+    static std::string getGameVersionName(int version){
+        if(version > 99) return std::string("Hacked");
+
+        switch(version){
+            case 6:
+                return std::string("1.6 or earlier");
+            case 10:
+                return std::string("1.7");
+            case 11:
+                return std::string("1.7 or 1.8");
+        }
+
+        std::stringstream contentStream;
+
+        if(version > 17){
+            double newVersion = (double)version / 10.0;
+            contentStream << std::fixed << std::setprecision(1) << newVersion;
+        }else{
+            contentStream << "1." << (version-1);
+        }
+        return contentStream.str();
+    }
+
+    static std::string stringDate(std::string date){
+        if(date == "") return "NA";
+        std::ostringstream stream;
+        stream << date << " ago";
+        return stream.str();
+    }
+
+    static const char* getDifficultyIcon(int stars){
+        switch(stars){
+            case 1: 
+                return "difficulty_auto_btn_001.png";
+            case 2:
+                return "difficulty_01_btn_001.png";
+            case 3:
+                return "difficulty_02_btn_001.png";
+            case 4:
+            case 5:
+                return "difficulty_03_btn_001.png";
+            case 6:
+            case 7:
+                return "difficulty_04_btn_001.png";
+            case 8:
+            case 9:
+                return "difficulty_05_btn_001.png";
+            case 10:
+                return "difficulty_06_btn_001.png";
+            default:
+                return "difficulty_00_btn_001.png";
+        }
+    }
+
+    static std::string passwordString(int password){
+        if(password == 0) return "NA";
+        if(password == 1) return "Free Copy";
+        return std::to_string(password - 1000000);
+    }
+
+    static std::string zeroIfNA(int value){
+        if(value == 0) return "NA";
+        return std::to_string(value);
+    }
+
+    bool init(){
+        bool init = cocos2d::CCLayerColor::initWithColor({0x00, 0x00, 0x00, 0x4B});
+        if(!init) return false;
+
+        cocos2d::CCDirector* director = cocos2d::CCDirector::sharedDirector();
+        director->getTouchDispatcher()->incrementForcePrio(2);
+
+        setTouchEnabled(true);
+        setKeypadEnabled(true);
+
+        cocos2d::CCSize winSize = director->getWinSize();
+        m_pLayer = cocos2d::CCLayer::create();
+
+        this->addChild(m_pLayer);
+
+        cocos2d::extension::CCScale9Sprite* bg = cocos2d::extension::CCScale9Sprite::create("GJ_square01.png", { 0.0f, 0.0f, 80.0f, 80.0f });
+        bg->setContentSize({ 440.0f, 290.0f });
+        m_pLayer->addChild(bg, -1);
+        bg->setPosition({ winSize.width / 2, winSize.height / 2 });
+
+        auto closeButton = gd::CCMenuItemSpriteExtra::create(
+            CCSprite::createWithSpriteFrameName("GJ_closeBtn_001.png"),
+            this,
+            menu_selector(UnregisteredProfileLayer::onClose)
+        );
+
+        m_pButtonMenu = CCMenu::create();
+        m_pLayer->addChild(m_pButtonMenu, 10);
+        m_pButtonMenu->addChild(closeButton);
+        closeButton->setPosition({-210, 136});
+        closeButton->setSizeMult(1.2f);
+
+        auto levelName = CCLabelBMFont::create(level->levelName.c_str(), "bigFont.fnt");
+        levelName->setPosition({0,125});
+        m_pButtonMenu->addChild(levelName);
+
+        std::ostringstream userNameText;
+        userNameText << "By " << level->userName;
+        auto userName = CCLabelBMFont::create(userNameText.str().c_str(), "goldFont.fnt");
+        userName->setPosition({0,99});
+        userName->setScale(0.8f);
+        m_pButtonMenu->addChild(userName);
+
+        cocos2d::extension::CCScale9Sprite* descBg = cocos2d::extension::CCScale9Sprite::create("square02b_001.png", { 0.0f, 0.0f, 80.0f, 80.0f });
+        descBg->setContentSize({340,55});
+        descBg->setColor({130,64,33});
+        m_pButtonMenu->addChild(descBg, -1);
+        descBg->setPosition({0,52});
+
+        auto descText = level->getUnpackedLevelDescription();
+        size_t descLength = descText.length();
+        float descDelimiter = 1;
+        if(descLength > 140) descLength = 140;
+        if(descLength > 70) descDelimiter = ((((140 - descLength) / 140) * 0.3f) + 0.7f);
+        auto description = gd::TextArea::create("chatFont.fnt", false, descText, 1, 295 / descDelimiter, 20, {0.5f,0.5f});
+        description->setScale(descDelimiter);
+        description->setPosition({0,52});
+        m_pButtonMenu->addChild(description);
+
+        cocos2d::extension::CCScale9Sprite* infoBg = cocos2d::extension::CCScale9Sprite::create("square02b_001.png", { 0.0f, 0.0f, 80.0f, 80.0f });
+        infoBg->setContentSize({180,148});
+        //infoBg->setColor({130,64,33});
+        //infoBg->setColor({191,114,62});
+        infoBg->setColor({123,60,31});
+        m_pButtonMenu->addChild(infoBg, -1);
+        infoBg->setPosition({-80,-57});
+
+        int levelPassword = level->password_rand - level->password_seed;
+        std::ostringstream infoText;
+        infoText << "\n<cj>Uploaded</c>: " << stringDate(level->uploadDate)
+            << "\n<cj>Updated</c>: " << stringDate(level->updateDate)
+            //<< "\n<cy>Stars Requested</c>: " << level->starsRequested
+            << "\n<cg>Original</c>: " << zeroIfNA(level->originalLevel)
+            << "\n<cy>Game Version</c>: " << getGameVersionName(level->gameVersion)
+            //<< "\nFeature Score</c>: " << level->featured
+            << "\n<co>Password</c>: " << passwordString(levelPassword)
+            << "\n<cr>Working time</c>: " << zeroIfNA(level->workingTime)
+            << "\n<cr>Working time 2</c>: " << zeroIfNA(level->workingTime2);
+
+        auto info = gd::TextArea::create("chatFont.fnt", false, infoText.str(), 1, 295, 20, {0,1});
+        info->setPosition({403,-39});
+        info->setScale(0.95f);
+        m_pButtonMenu->addChild(info);
+
+        /*std::ostringstream uploadedText;
+        uploadedText << "Uploaded: " << level->uploadDate << " ago";
+        createTextLabel(uploadedText.str(), {0,0}, 0.5f, m_pButtonMenu);*/
+
+        createTextLabel("Requested Stars:", {93, 10}, 0.49f, m_pButtonMenu);
+
+        auto diffSprite = CCSprite::createWithSpriteFrameName(getDifficultyIcon(level->starsRequested));
+        diffSprite->setPosition({93,-32});
+        m_pButtonMenu->addChild(diffSprite, 1);
+
+        if(level->starsRequested > 0){
+            auto featureSprite = CCSprite::createWithSpriteFrameName("GJ_featuredCoin_001.png");
+            featureSprite->setPosition({93,-32});
+            m_pButtonMenu->addChild(featureSprite);
+            //infoSprite->setScale(0.7f);
+
+            createTextLabel(std::to_string(level->starsRequested), {86, -62}, 0.4f, m_pButtonMenu);
+
+            auto diffSprite = CCSprite::createWithSpriteFrameName("star_small01_001.png");
+            diffSprite->setPosition({99,-62});
+            m_pButtonMenu->addChild(diffSprite);
+        }
+
+        return true;
+    }
+
+    static CCLabelBMFont* createTextLabel(const std::string text, const CCPoint& position, const float scale, CCNode* menu, const char* font = "bigFont.fnt"){
+        CCLabelBMFont* bmFont = CCLabelBMFont::create(text.c_str(), font);
+        bmFont->setPosition(position);
+        bmFont->setScale(scale);
+        menu->addChild(bmFont);
+        return bmFont;
+    }
+};
+
 class ProfilePage : public gd::FLAlertLayer {
 public:
     //PAD(472 - sizeof(gd::FLAlertLayer));
     PAD(488 - sizeof(gd::FLAlertLayer));
-    gd::GJUserScore* score;
+    gd::GJUserScore* score; //488-492
+    int something;
+    //564
 
     /*static ProfilePage* create(int accountID, bool a2) {
         return reinterpret_cast<ProfilePage*(__fastcall*)(int, bool)>(
@@ -333,6 +545,9 @@ public:
         if(score->getUserID() == 6330800) contentStream << "\n\nThis user is epic!";
 
         gd::FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, contentStream.str())->show();
+
+        //auto GLM = gd::GameLevelManager::sharedState();
+        //GLM->getGJUserInfo(something);
     }
 };
 
@@ -446,6 +661,8 @@ void* __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd
         }
     }
 
+    //self->reloadButton->setVisible(true);
+
     return returnValue;
 }
 
@@ -493,6 +710,51 @@ void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJCommen
     }
 }
 
+std::string printableProgress(std::string personalBests){
+    std::ostringstream contentStream;
+    int percentage = 0;
+
+    std::stringstream bestsStream(personalBests);
+    std::string currentBest;
+    while(getline(bestsStream, currentBest, ',')){
+        try {
+            percentage += std::stoi(currentBest);
+            contentStream << percentage << "% ";
+        }catch(...){}
+    }
+
+    return contentStream.str();
+}
+
+void __fastcall LevelInfoLayer_onLevelInfo(LevelInfoLayer* self, void* a, CCObject* sender) {
+    auto level = self->level;
+    std::ostringstream contentStream;
+    contentStream << "<cg>Total Attempts</c>: " << level->attempts
+        << "\n<cl>Total Jumps</c>: " << level->jumps
+        //<< "\n<co>Total Clicks</c>: " << level->clicks // the contents of this variable make no sense to me
+        << "\n<cp>Normal</c>: " << level->normalPercent
+        << "%\n<co>Practice</c>: " << level->practicePercent << "%";
+
+    if(level->orbCompletion != level->newNormalPercent2) contentStream << "\n<cj>2.1 Normal</c>: " << level->orbCompletion << "%";
+    if(level->newNormalPercent2 != level->normalPercent) contentStream << "\n<cr>2.11 Normal</c>: " << level->newNormalPercent2 << "%";
+    if(level->personalBests != "") contentStream << "\n\n<cy>Progresses</c>: " << printableProgress(level->personalBests);
+    //contentStream << "\n\nProgresses: " << level->personalBests;
+
+    //if(score->getUserID() == 6330800) contentStream << "\n\nThis user is epic!";
+
+    gd::FLAlertLayer::create(nullptr, "Level Stats", "OK", nullptr, contentStream.str())->show();
+    
+}
+
+void __fastcall InfoLayer_onLevelInfo(InfoLayer* self, void* a, CCObject* sender) {
+    //MHook::getOriginal(CommentCell_loadFromComment)(self, a, b);
+
+    auto level = self->m_pLevel;
+
+    ExtendedLevelInfo* layer = ExtendedLevelInfo::create(level);
+    layer->show();
+}
+
 DWORD WINAPI my_thread(void* hModule) {
     MH_Initialize();
 
@@ -500,9 +762,11 @@ DWORD WINAPI my_thread(void* hModule) {
     
     MHook::registerHook(base + 0x14F5A0, InfoLayer_init);
     MHook::registerHook(base + 0x151500, InfoLayer_onMore);
+    MHook::registerHook(base + 0x151850, InfoLayer_onLevelInfo);
     //setupProgressBars = very bad workaround for interoperability with gdshare lol (help how do i hook something thats already hooked)
     MHook::registerHook(base + 0x177FC0, LevelInfoLayer_setupProgressBars);
     MHook::registerHook(base + 0x17AC90, LevelInfoLayer_onViewProfile);
+    MHook::registerHook(base + 0x17ACF0, LevelInfoLayer_onLevelInfo);
     MHook::registerHook(base + 0x5C790, LevelCell_onViewProfile);
     MHook::registerHook(base + 0x5A020, LevelCell_loadCustomLevelCell);
     MHook::registerHook(base + 0x5F3D0, CommentCell_loadFromComment);
