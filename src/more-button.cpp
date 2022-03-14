@@ -12,6 +12,8 @@
 
 using namespace cocos2d;
 
+const int cvoltonID = 6330800;
+
 uintptr_t base;
 
 //members stolen from wylies gd decomp
@@ -95,7 +97,7 @@ public:
 
         auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
         
-        CCDirector::sharedDirector()->replaceScene(transitionFade);
+        CCDirector::sharedDirector()->pushScene(transitionFade);
     }
 
     void onMyLevels(CCObject* sender) {
@@ -293,6 +295,27 @@ public:
         return std::to_string(value);
     }
 
+    static std::string workingTime(int value){
+        if(value <= 0) return "NA";
+
+        int hours = value / 3600;
+        int minutes = (value % 3600) / 60;
+        int seconds = value % 60;
+
+        std::ostringstream stream;
+        if(hours > 0) stream << hours << " h ";
+        if(minutes > 0) stream << minutes << " min ";
+        stream << seconds << " s";
+
+        return stream.str();
+    }
+
+    /*static void onGDHistory(){
+        std::ostringstream url;
+        url << "https://e/level/" << level->levelID;
+        ShellExecute(NULL, "open", url, NULL, NULL, SW_SHOWNORMAL);
+    }*/
+
     bool init(){
         bool init = cocos2d::CCLayerColor::initWithColor({0x00, 0x00, 0x00, 0x4B});
         if(!init) return false;
@@ -353,12 +376,12 @@ public:
         m_pButtonMenu->addChild(description);
 
         cocos2d::extension::CCScale9Sprite* infoBg = cocos2d::extension::CCScale9Sprite::create("square02b_001.png", { 0.0f, 0.0f, 80.0f, 80.0f });
-        infoBg->setContentSize({180,148});
+        infoBg->setContentSize({340,148});
         //infoBg->setColor({130,64,33});
         //infoBg->setColor({191,114,62});
         infoBg->setColor({123,60,31});
         m_pButtonMenu->addChild(infoBg, -1);
-        infoBg->setPosition({-80,-57});
+        infoBg->setPosition({0,-57});
 
         int levelPassword = level->password_rand - level->password_seed;
         std::ostringstream infoText;
@@ -369,36 +392,49 @@ public:
             << "\n<cy>Game Version</c>: " << getGameVersionName(level->gameVersion)
             //<< "\nFeature Score</c>: " << level->featured
             << "\n<co>Password</c>: " << passwordString(levelPassword)
-            << "\n<cr>Working time</c>: " << zeroIfNA(level->workingTime)
-            << "\n<cr>Working time 2</c>: " << zeroIfNA(level->workingTime2);
+            << "\n<cr>In Editor</c>: " << workingTime(level->workingTime)
+            << "\n<cr>Editor (C)</c>: " << workingTime(level->workingTime2);
 
-        auto info = gd::TextArea::create("chatFont.fnt", false, infoText.str(), 1, 295, 20, {0,1});
-        info->setPosition({403,-39});
-        info->setScale(0.95f);
+        auto info = gd::TextArea::create("chatFont.fnt", false, infoText.str(), 1, 170, 20, {0,1});
+        info->setPosition({154,-39});
+        info->setScale(0.925f);
         m_pButtonMenu->addChild(info);
 
         /*std::ostringstream uploadedText;
         uploadedText << "Uploaded: " << level->uploadDate << " ago";
         createTextLabel(uploadedText.str(), {0,0}, 0.5f, m_pButtonMenu);*/
 
-        createTextLabel("Requested Stars:", {93, 10}, 0.49f, m_pButtonMenu);
+        createTextLabel("Requested Rate:", {88,-1}, 0.5f, m_pButtonMenu);
 
         auto diffSprite = CCSprite::createWithSpriteFrameName(getDifficultyIcon(level->starsRequested));
-        diffSprite->setPosition({93,-32});
+        diffSprite->setPosition({88,-57});
         m_pButtonMenu->addChild(diffSprite, 1);
 
         if(level->starsRequested > 0){
             auto featureSprite = CCSprite::createWithSpriteFrameName("GJ_featuredCoin_001.png");
-            featureSprite->setPosition({93,-32});
+            featureSprite->setPosition({88,-57});
             m_pButtonMenu->addChild(featureSprite);
             //infoSprite->setScale(0.7f);
 
-            createTextLabel(std::to_string(level->starsRequested), {86, -62}, 0.4f, m_pButtonMenu);
+            auto starsLabel = createTextLabel(std::to_string(level->starsRequested), {88, -87}, 0.4f, m_pButtonMenu);
+            starsLabel->setAnchorPoint({1,0.5});
 
             auto diffSprite = CCSprite::createWithSpriteFrameName("star_small01_001.png");
-            diffSprite->setPosition({99,-62});
+            diffSprite->setPosition({95,-87});
             m_pButtonMenu->addChild(diffSprite);
         }
+
+        /*
+            thanks to Alphalaneous for quick UI improvement concept lol
+        */
+
+        auto separator = CCSprite::createWithSpriteFrameName("floorLine_001.png");
+        separator->setPosition({6,-57});
+        separator->setScaleX(0.3f);
+        separator->setScaleY(1);
+        separator->setOpacity(100);
+        separator->setRotation(90);
+        m_pButtonMenu->addChild(separator);
 
         return true;
     }
@@ -519,7 +555,7 @@ public:
 
         auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
 
-        CCDirector::sharedDirector()->replaceScene(transitionFade);
+        CCDirector::sharedDirector()->pushScene(transitionFade);
     }
 
     void onProfilePage(CCObject* sender){
@@ -542,7 +578,7 @@ public:
             << "\nPrivate Messages: " << StaticStringHelper::getMessageType(score->getMessageState())
             << "\nComment History: " << StaticStringHelper::getMessageType(score->getCommentHistoryStatus());
 
-        if(score->getUserID() == 6330800) contentStream << "\n\nThis user is epic!";
+        //if(score->getUserID() == cvoltonID) contentStream << "\n\nThis user is epic!";
 
         gd::FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, contentStream.str())->show();
 
