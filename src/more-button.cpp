@@ -448,6 +448,104 @@ public:
     }
 };
 
+class CustomLevelSearchLayer : public gd::FLAlertLayer {
+    gd::GJGameLevel* level;
+public:
+    static CustomLevelSearchLayer* create(gd::GJGameLevel* level){
+        auto ret = new CustomLevelSearchLayer();
+        level->retain();
+        ret->level = level;
+        if (ret && ret->init()) {
+            //robert 1 :D
+            ret->autorelease();
+        } else {
+            //robert -1
+            delete ret;
+            ret = nullptr;
+        }
+        return ret;
+    }
+
+    void onClose(cocos2d::CCObject* sender)
+    {
+        level->release();
+        setKeypadEnabled(false);
+        removeFromParentAndCleanup(true);
+    }
+
+    void onNeighbors(CCObject* sender) {
+        std::ostringstream query;
+        bool addSeparator = false;
+        for(int i = (level->levelID) - 50; i < ((level->levelID) + 50); i++){
+            if(addSeparator) query << ",";
+            query << i;
+            addSeparator = true;
+        }
+
+        auto searchObject = gd::GJSearchObject::create(gd::SearchType::kSearchType19, query.str());
+        auto browserLayer = LevelBrowserLayer::scene(searchObject);
+        auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
+        CCDirector::sharedDirector()->pushScene(transitionFade);
+    }
+
+    bool init(){
+        bool init = cocos2d::CCLayerColor::initWithColor({0x00, 0x00, 0x00, 0x4B});
+        if(!init) return false;
+
+        cocos2d::CCDirector* director = cocos2d::CCDirector::sharedDirector();
+        director->getTouchDispatcher()->incrementForcePrio(2);
+
+        setTouchEnabled(true);
+        setKeypadEnabled(true);
+
+        cocos2d::CCSize winSize = director->getWinSize();
+        m_pLayer = cocos2d::CCLayer::create();
+
+        this->addChild(m_pLayer);
+
+        cocos2d::extension::CCScale9Sprite* bg = cocos2d::extension::CCScale9Sprite::create("GJ_square01.png", { 0.0f, 0.0f, 80.0f, 80.0f });
+        bg->setContentSize({ 360.0f, 180.0f });
+        m_pLayer->addChild(bg, -1);
+        bg->setPosition({ winSize.width / 2, winSize.height / 2 });
+
+        auto closeButton = gd::CCMenuItemSpriteExtra::create(
+            CCSprite::createWithSpriteFrameName("GJ_closeBtn_001.png"),
+            this,
+            menu_selector(UnregisteredProfileLayer::onClose)
+        );
+
+        m_pButtonMenu = CCMenu::create();
+        m_pLayer->addChild(m_pButtonMenu, 10);
+        m_pButtonMenu->addChild(closeButton);
+        closeButton->setPosition({-170.5f, 79});
+        closeButton->setSizeMult(1.2f);
+
+        auto searchTitle = CCLabelBMFont::create("Search", "bigFont.fnt");
+        searchTitle->setPosition({0,66});
+
+        m_pButtonMenu->addChild(searchTitle);
+
+        auto separator = CCSprite::createWithSpriteFrameName("floorLine_001.png");
+        separator->setPosition({285,202});
+        separator->setScaleX(0.75f);
+        separator->setOpacity(100);
+        m_pLayer->addChild(separator);
+
+        auto buttonSprite = gd::ButtonSprite::create("Neighbors", (int)(120*0.6), true, "bigFont.fnt", "GJ_button_01.png", 44*0.6f, 0.6f);
+        auto buttonButton = gd::CCMenuItemSpriteExtra::create(
+            buttonSprite,
+            this,
+            menu_selector(CustomLevelSearchLayer::onNeighbors)
+        );
+        buttonButton->setSizeMult(1.2f);
+        buttonButton->setPosition({0,0});
+        m_pButtonMenu->addChild(buttonButton);
+
+        return true;
+    }
+
+};
+
 class ProfilePage : public gd::FLAlertLayer {
 public:
     //PAD(472 - sizeof(gd::FLAlertLayer));
@@ -591,19 +689,29 @@ public:
         //auto GLM = gd::GameLevelManager::sharedState();
         //GLM->getGJUserInfo(something);
     }
+
+    void onCustomSearch(CCObject* sender){
+        auto self = cast<InfoLayer*>(this);
+
+        auto level = self->m_pLevel;
+
+        CustomLevelSearchLayer* layer = CustomLevelSearchLayer::create(level);
+        layer->show();
+    }
+
 };
 
 void createButton(CCLayer* self, CCNode* menu, const char* text, cocos2d::SEL_MenuHandler handler, float x, float y, int width, float height){
-    auto buttonSprite = gd::ButtonSprite::create(text, width, true, "bigFont.fnt", "GJ_button_01.png", height, 0.45f);
-    auto buttonButton = gd::CCMenuItemSpriteExtra::create(
-        buttonSprite,
-        self,
-        handler
-    );
-    buttonButton->setSizeMult(1.2f);
-    buttonButton->setPosition({x,y});
-    menu->addChild(buttonButton);
-}
+        auto buttonSprite = gd::ButtonSprite::create(text, width, true, "bigFont.fnt", "GJ_button_01.png", height, 0.45f);
+        auto buttonButton = gd::CCMenuItemSpriteExtra::create(
+            buttonSprite,
+            self,
+            handler
+        );
+        buttonButton->setSizeMult(1.2f);
+        buttonButton->setPosition({x,y});
+        menu->addChild(buttonButton);
+    }
 
 bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, void* c) {
     if (!MHook::getOriginal(InfoLayer_init)(self, a, level, c)) return false;
@@ -614,8 +722,20 @@ bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, v
     gd::CCMenuItemSpriteExtra* playerName = cast<gd::CCMenuItemSpriteExtra*>(menu->getChildren()->objectAtIndex(0));
     playerName->setEnabled(true);
 
-    if(!gd::GameManager::sharedState()->getGameVariable("0089") && level != nullptr)
-        createButton(self, menu, "Similar", menu_selector(GamingButton::onSimilar), -138, 97, (int)(90*0.45), 44*0.45f);
+    if(!gd::GameManager::sharedState()->getGameVariable("0089") && level != nullptr){
+        createButton(self, menu, "Similar", menu_selector(GamingButton::onSimilar), -118, 97, (int)(90*0.45), 44*0.45f);
+
+        auto searchSprite = CCSprite::createWithSpriteFrameName("gj_findBtn_001.png");
+        searchSprite->setScale(0.65f);
+        auto searchButton = gd::CCMenuItemSpriteExtra::create(
+            searchSprite,
+            self,
+            menu_selector(GamingButton::onCustomSearch)
+        );
+        menu->addChild(searchButton);
+        searchButton->setPosition({-160, 97});
+        searchButton->setSizeMult(1.2f);
+    }
 
 
     return true;
