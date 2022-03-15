@@ -582,6 +582,12 @@ public:
 
         gd::FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, contentStream.str())->show();
 
+        auto GLM = gd::GameLevelManager::sharedState();
+        /*GLM->m_userIDtoAccountIDDict->setObject(CCString::create("0"), 248868);
+        GLM->m_knownUsers->setObject(CCString::create("roadbose"), 248868);*/
+
+        //GLM->storeUserNames("248868:roadbose:0|16:Robert:71");
+
         //auto GLM = gd::GameLevelManager::sharedState();
         //GLM->getGJUserInfo(something);
     }
@@ -791,6 +797,34 @@ void __fastcall InfoLayer_onLevelInfo(InfoLayer* self, void* a, CCObject* sender
     layer->show();
 }
 
+void __fastcall GameLevelManager_userNameForUserID(void* a, void* b, std::string* userName, int userID) {
+    MHook::getOriginal(GameLevelManager_userNameForUserID)(a, b, userName, userID);
+
+    switch(userID){
+        case 248868:
+            *userName = "roadbose";
+            break;
+        case 35:
+            *userName = "lich";
+            break;
+        case 32:
+            *userName = "chad";
+            break;
+        case 65:
+            *userName = "Carbonelite";
+            break;
+        case 90:
+            *userName = "angrybirds94";
+            break;
+        case 1732:
+            *userName = "darnoc2";
+            break;
+        case 46587:
+            *userName = "diamond";
+            break;
+    }
+}
+
 DWORD WINAPI my_thread(void* hModule) {
     MH_Initialize();
 
@@ -807,6 +841,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x5A020, LevelCell_loadCustomLevelCell);
     MHook::registerHook(base + 0x5F3D0, CommentCell_loadFromComment);
     MHook::registerHook(base + 0x210040, ProfilePage_loadPageFromUserInfo);
+    MHook::registerHook(base + 0xA1C20, GameLevelManager_userNameForUserID);
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
 
     MH_EnableHook(MH_ALL_HOOKS);
