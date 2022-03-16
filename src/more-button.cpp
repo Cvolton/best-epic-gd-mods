@@ -473,6 +473,29 @@ public:
         removeFromParentAndCleanup(true);
     }
 
+    void onSimilar(CCObject* sender) {
+        auto searchObject = gd::GJSearchObject::create(gd::SearchType::kSearchTypeSimilar, std::to_string(level->levelID));
+        auto browserLayer = LevelBrowserLayer::scene(searchObject);
+
+        auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
+
+        CCDirector::sharedDirector()->pushScene(transitionFade);
+    }
+
+    void onSong(CCObject* sender) {
+        bool customSong = level->songID > 0;
+        int songID = customSong ? level->songID : level->audioTrack;
+
+        auto searchObject = gd::GJSearchObject::create(gd::SearchType::kSearchTypeMostLiked);
+        searchObject->setSongInfo(customSong, songID);
+
+        auto browserLayer = LevelBrowserLayer::scene(searchObject);
+
+        auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
+
+        CCDirector::sharedDirector()->pushScene(transitionFade);
+    }
+
     void onNeighbors(CCObject* sender) {
         std::ostringstream query;
         bool addSeparator = false;
@@ -531,7 +554,7 @@ public:
         separator->setOpacity(100);
         m_pLayer->addChild(separator);
 
-        auto buttonSprite = gd::ButtonSprite::create("Neighbors", (int)(120*0.6), true, "bigFont.fnt", "GJ_button_01.png", 44*0.6f, 0.6f);
+        /*auto buttonSprite = gd::ButtonSprite::create("Neighbors", (int)(120*0.6), true, "bigFont.fnt", "GJ_button_01.png", 44*0.6f, 0.6f);
         auto buttonButton = gd::CCMenuItemSpriteExtra::create(
             buttonSprite,
             this,
@@ -539,9 +562,30 @@ public:
         );
         buttonButton->setSizeMult(1.2f);
         buttonButton->setPosition({0,0});
-        m_pButtonMenu->addChild(buttonButton);
+        m_pButtonMenu->addChild(buttonButton);*/
+
+        /*auto neighborButton = createButton(m_pButtonMenu, "Neighbors", menu_selector(CustomLevelSearchLayer::onNeighbors), 0, 4, (int)(120*0.6), 44*0.6f, 0.6f);
+        auto similarButton = createButton(m_pButtonMenu, "Similar", menu_selector(CustomLevelSearchLayer::onSimilar), 0, -48, (int)(120*0.6), 44*0.6f, 0.6f);*/
+
+        auto similarButton = createButton(m_pButtonMenu, "Similar", menu_selector(CustomLevelSearchLayer::onSimilar), -75, 8, (int)(120*0.6), 44*0.6f, 0.6f);
+        auto neighborButton = createButton(m_pButtonMenu, "Neighbors", menu_selector(CustomLevelSearchLayer::onNeighbors), 75, 8, (int)(120*0.6), 44*0.6f, 0.6f);
+        auto songButton = createButton(m_pButtonMenu, "Same song", menu_selector(CustomLevelSearchLayer::onSong), 0, -48, (int)(120*0.6), 44*0.6f, 0.6f);
 
         return true;
+    }
+
+    gd::CCMenuItemSpriteExtra* createButton(CCNode* menu, const char* text, cocos2d::SEL_MenuHandler handler, float x, float y, int width, float height, float scale){
+        auto buttonSprite = gd::ButtonSprite::create(text, width, true, "bigFont.fnt", "GJ_button_01.png", height, scale);
+        auto buttonButton = gd::CCMenuItemSpriteExtra::create(
+            buttonSprite,
+            this,
+            handler
+        );
+        buttonButton->setSizeMult(1.2f);
+        buttonButton->setPosition({x,y});
+        menu->addChild(buttonButton);
+
+        return buttonButton;
     }
 
 };
@@ -642,20 +686,6 @@ public:
 
 class GamingButton {
 public:
-    void onSimilar(CCObject* sender) {
-        auto layer = cast<InfoLayer*>(this);
-
-        std::stringstream contentStream;
-        contentStream << layer->m_pLevel->levelID;
-
-        auto searchObject = gd::GJSearchObject::create(gd::SearchType::kSearchTypeSimilar, contentStream.str());//, contentStream.str());
-        auto browserLayer = LevelBrowserLayer::scene(searchObject);
-
-        auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
-
-        CCDirector::sharedDirector()->pushScene(transitionFade);
-    }
-
     void onProfilePage(CCObject* sender){
         auto layer = cast<CommentCell*>(this);
         layer->comment->m_pUserScore->setUserID(layer->comment->m_nAuthorPlayerID);
@@ -701,18 +731,6 @@ public:
 
 };
 
-void createButton(CCLayer* self, CCNode* menu, const char* text, cocos2d::SEL_MenuHandler handler, float x, float y, int width, float height){
-        auto buttonSprite = gd::ButtonSprite::create(text, width, true, "bigFont.fnt", "GJ_button_01.png", height, 0.45f);
-        auto buttonButton = gd::CCMenuItemSpriteExtra::create(
-            buttonSprite,
-            self,
-            handler
-        );
-        buttonButton->setSizeMult(1.2f);
-        buttonButton->setPosition({x,y});
-        menu->addChild(buttonButton);
-    }
-
 bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, void* c) {
     if (!MHook::getOriginal(InfoLayer_init)(self, a, level, c)) return false;
 
@@ -722,9 +740,21 @@ bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, v
     gd::CCMenuItemSpriteExtra* playerName = cast<gd::CCMenuItemSpriteExtra*>(menu->getChildren()->objectAtIndex(0));
     playerName->setEnabled(true);
 
-    if(!gd::GameManager::sharedState()->getGameVariable("0089") && level != nullptr){
-        createButton(self, menu, "Similar", menu_selector(GamingButton::onSimilar), -118, 97, (int)(90*0.45), 44*0.45f);
+    if(level == nullptr) return true;
 
+    auto searchSprite = CCSprite::createWithSpriteFrameName("gj_findBtn_001.png");
+    searchSprite->setScale(0.8f);
+    auto searchButton = gd::CCMenuItemSpriteExtra::create(
+        searchSprite,
+        self,
+        menu_selector(GamingButton::onCustomSearch)
+    );
+    menu->addChild(searchButton);
+    searchButton->setPosition({195, 68});
+    searchButton->setSizeMult(1.2f);
+
+    /*if(gd::GameManager::sharedState()->getGameVariable("0089")){
+        //createButton(self, menu, "Similar", menu_selector(GamingButton::onSimilar), -118, 97, (int)(90*0.45), 44*0.45f);
         auto searchSprite = CCSprite::createWithSpriteFrameName("gj_findBtn_001.png");
         searchSprite->setScale(0.65f);
         auto searchButton = gd::CCMenuItemSpriteExtra::create(
@@ -733,9 +763,13 @@ bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, v
             menu_selector(GamingButton::onCustomSearch)
         );
         menu->addChild(searchButton);
-        searchButton->setPosition({-160, 97});
+        searchButton->setPosition({-162, 128});
         searchButton->setSizeMult(1.2f);
-    }
+    }else{
+        //createButton(self, menu, "Search", menu_selector(GamingButton::onCustomSearch), -143, 97, (int)(90*0.45), 44*0.45f);
+
+        
+    }*/
 
 
     return true;
