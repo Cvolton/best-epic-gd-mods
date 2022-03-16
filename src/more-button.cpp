@@ -821,7 +821,7 @@ bool __fastcall LevelCell_onViewProfile(LevelCell* self, void* a, CCObject* b) {
     return true;
 }
 
-void __fastcall LevelCell_loadCustomLevelCell(CCNode* self) {
+void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
     MHook::getOriginal(LevelCell_loadCustomLevelCell)(self);
     
     auto layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(1));
@@ -830,6 +830,17 @@ void __fastcall LevelCell_loadCustomLevelCell(CCNode* self) {
         if(menu != nullptr){
             auto playerName = cast<gd::CCMenuItemSpriteExtra*>(menu->getChildren()->objectAtIndex(1));
             playerName->setEnabled(true);
+
+            std::ostringstream idText;
+            idText << "#" << self->level->levelID;
+            auto idTextNode = CCLabelBMFont::create(idText.str().c_str(), "chatFont.fnt");
+            idTextNode->setPosition({33,33});
+            idTextNode->setAnchorPoint({1,0});
+            idTextNode->setScale(0.6f);
+            idTextNode->setColor({51,51,51});
+            idTextNode->setOpacity(152);
+            menu->addChild(idTextNode);
+
             break;
         }
     }
