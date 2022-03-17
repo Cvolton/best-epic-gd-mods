@@ -38,10 +38,9 @@ endmacro()
 setup_mod(more-button src/more-button.cpp
   minhook cocos gd.h nomerge)
 
-setup_mod(level-info src/level-info.cpp
-  minhook cocos gd.h nomerge)
+setup_mod(capacity-fix src_other/capacity-fix.cpp)
 
-setup_mod(capacity-fix src/capacity-fix.cpp)
+setup_mod(geometricka-pomlcka src_other/geometricka-pomlcka.cpp)
 
 setup_mod(page-limit src/page-limit.cpp)
 

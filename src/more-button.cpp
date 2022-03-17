@@ -729,6 +729,20 @@ public:
         layer->show();
     }
 
+    void onLevelInfoNoLoad(CCObject* sender){
+        auto layer = cast<CommentCell*>(this);
+
+        auto level = gd::GJGameLevel::create();
+        level->levelID_rand = layer->comment->m_nLevelID;
+        level->levelID_seed = 0;
+        level->levelID = layer->comment->m_nLevelID;
+
+        InfoLayer* infoLayer = InfoLayer::create(level, nullptr);
+        infoLayer->show();
+
+        //gd::FLAlertLayer::create(nullptr, "Level Stats", "OK", nullptr, std::to_string(layer->comment->m_nLevelID))->show();
+    }
+
 };
 
 bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, void* c) {
@@ -885,11 +899,25 @@ void* __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd
 void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJComment* b) {
     MHook::getOriginal(CommentCell_loadFromComment)(self, a, b);
 
-    if(b->m_bHasLevelID) return;
+    //if(b->m_bHasLevelID) return;
 
     auto layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(1));
-    auto playerName = cast<CCLabelBMFont*>(layer->getChildren()->objectAtIndex(2));
-    if(b->m_nAuthorAccountID == 0){
+
+    CCMenu* menu = nullptr;
+
+    for(unsigned int i = 0; i < layer->getChildrenCount(); i++){
+        menu = dynamic_cast<CCMenu*>(layer->getChildren()->objectAtIndex(i));
+        if(menu != nullptr) break;
+    }
+
+    if(menu == nullptr) return;
+
+    if(!(b->m_bHasLevelID)){
+
+        if(b->m_nAuthorAccountID != 0) return;
+
+        auto playerName = cast<CCLabelBMFont*>(layer->getChildren()->objectAtIndex(2));
+        
         if(strlen(playerName->getString()) == 0){
             std::stringstream contentStream;
             contentStream << "- (ID: " << b->m_nAuthorPlayerID << ")";
@@ -897,24 +925,35 @@ void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJCommen
         }
         layer->removeChild(playerName);
 
-        for(unsigned int i = 0; i < layer->getChildrenCount(); i++){
-            auto menu = dynamic_cast<CCMenu*>(layer->getChildren()->objectAtIndex(i));
-            if(menu != nullptr){
-                bool smallCommentsMode = gd::GameManager::sharedState()->getGameVariable("0088");
+        bool smallCommentsMode = gd::GameManager::sharedState()->getGameVariable("0088");
 
-                auto buttonButton = gd::CCMenuItemSpriteExtra::create(
-                    playerName,
-                    self,
-                    menu_selector(GamingButton::onProfilePage)
-                );
-                buttonButton->setSizeMult(1.2f);
-                buttonButton->setPosition(-254, smallCommentsMode ? -141.5f : -109.5f);
-                buttonButton->setAnchorPoint(CCPoint(0,0));
-                buttonButton->setEnabled(true);
-                menu->addChild(buttonButton);
-            }
-        }
+        auto buttonButton = gd::CCMenuItemSpriteExtra::create(
+            playerName,
+            self,
+            menu_selector(GamingButton::onProfilePage)
+        );
+        buttonButton->setSizeMult(1.2f);
+        buttonButton->setPosition(-254, smallCommentsMode ? -141.5f : -109.5f);
+        buttonButton->setAnchorPoint(CCPoint(0,0));
+        buttonButton->setEnabled(true);
+        menu->addChild(buttonButton);
+
+    }else{
+
+        auto commentsSprite = CCSprite::createWithSpriteFrameName("GJ_chatBtn_001.png");
+        commentsSprite->setScale(0.35f);
+        auto commentsButton = gd::CCMenuItemSpriteExtra::create(
+            commentsSprite,
+            self,
+            menu_selector(GamingButton::onLevelInfoNoLoad)
+        );
+        menu->addChild(commentsButton);
+        commentsButton->setPosition({-79,-136});
+        //commentsButton->setScale(0.8f);
+        commentsButton->setSizeMult(1.2f);
+
     }
+
 }
 
 std::string printableProgress(std::string personalBests){
