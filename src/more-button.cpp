@@ -15,48 +15,6 @@ using namespace gd;
 
 const int cvoltonID = 6330800;
 
-//members stolen from wylies gd decomp
-class InfoLayer : public gd::FLAlertLayer {
-public:
-    PAD(472 - sizeof(gd::FLAlertLayer));
-    gd::GJGameLevel* m_pLevel;
-    gd::GJUserScore* m_pScore;
-    std::string m_sCommentKey;
-    gd::LoadingCircle* m_pLoadingCircle;
-    cocos2d::CCLabelBMFont* m_pPageLabel;
-    cocos2d::CCLabelBMFont* m_pCommentsGoldLabel;
-    void* m_pCommentList; //gd::GJCommentListLayer
-    gd::CCMenuItemSpriteExtra* m_pNextPageBtn;
-    gd::CCMenuItemSpriteExtra* m_pPrevPageBtn;
-    gd::CCMenuItemSpriteExtra* m_pLikeIcon;
-    gd::CCMenuItemSpriteExtra* m_pTimeIcon;
-    gd::CCMenuItemSpriteExtra* m_pReportBtn;
-    gd::CCMenuItemSpriteExtra* m_pCommentsBtn;
-    gd::CCMenuItemSpriteExtra* m_pRefreshCommentsBtn;
-    int m_nPageStartIdx;
-    int m_nPageEndIdx;
-    int m_nTotalItems;
-    int m_nPageNumber;
-    bool m_bCanUpdateUserScore;
-    bool m_bCommentHistory;
-
-    static InfoLayer* create(gd::GJGameLevel* level, gd::GJUserScore* score) {
-        return reinterpret_cast<InfoLayer*(__fastcall*)(gd::GJGameLevel*, gd::GJUserScore*)>(
-            gd::base + 0x14F4F0
-        )(level, score);
-    }
-};
-
-class LevelBrowserLayer : public CCLayer {
-public:
-
-    static CCScene* scene(gd::GJSearchObject* searchObject) {
-        return reinterpret_cast<CCScene*(__fastcall*)(gd::GJSearchObject*)>(
-            gd::base + 0x159F60
-        )(searchObject);
-    }
-};
-
 class UnregisteredProfileLayer : public gd::FLAlertLayer {
     gd::GJUserScore* score;
 public:
@@ -587,66 +545,6 @@ public:
         return buttonButton;
     }
 
-};
-
-class ProfilePage : public gd::FLAlertLayer {
-public:
-    //PAD(472 - sizeof(gd::FLAlertLayer));
-    PAD(488 - sizeof(gd::FLAlertLayer));
-    gd::GJUserScore* score; //488-492
-    int something;
-    //564
-
-    /*static ProfilePage* create(int accountID, bool a2) {
-        return reinterpret_cast<ProfilePage*(__fastcall*)(int, bool)>(
-            gd::base + 0x20EE50
-        )(accountID, a2);
-    }
-
-    ProfilePage* loadPageFromUserInfo(gd::GJUserScore* score) {
-        return reinterpret_cast<ProfilePage*(__fastcall*)(ProfilePage*, gd::GJUserScore*)>(
-            gd::base + 0x210040
-        )(this, score);
-    }*/
-};
-
-class LevelInfoLayer : public CCLayer {
-    public:
-        PAD(324 - sizeof(CCLayer));
-        gd::GJGameLevel* level;
-};
-
-class LevelCell : public CCLayer {
-    public:
-        PAD(89+4);
-        gd::GJGameLevel* level;
-};
-
-//i stole gjcomment from wylies gd decompiled
-class GJComment : public CCNode {
-    public:
-        std::string m_sComment;
-        std::string m_sUsername;
-        int m_nCommentID;
-        int m_nAuthorPlayerID;
-        int m_nLikes;
-        int m_nLevelID;
-        bool m_bIsSpam;
-        int m_nAuthorAccountID;
-        std::string m_sCommentAge;
-        bool m_bCommentDeleted;
-        int m_nPercentage;
-        int m_nModBadge;
-        cocos2d::ccColor3B m_cColor;
-        bool m_bHasLevelID;
-        gd::GJUserScore* m_pUserScore;
-};
-
-class CommentCell : public CCLayer {
-    public:
-        PAD(89+16);
-        GJComment* comment;
-        bool accountComment;
 };
 
 class StaticStringHelper {
