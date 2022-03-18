@@ -11,10 +11,9 @@
 #include "utils.hpp"
 
 using namespace cocos2d;
+using namespace gd;
 
 const int cvoltonID = 6330800;
-
-uintptr_t base;
 
 //members stolen from wylies gd decomp
 class InfoLayer : public gd::FLAlertLayer {
@@ -1032,7 +1031,7 @@ void __fastcall GameLevelManager_userNameForUserID(void* a, void* b, std::string
 DWORD WINAPI my_thread(void* hModule) {
     MH_Initialize();
 
-    base = reinterpret_cast<uintptr_t>(GetModuleHandle(0));
+    //base = reinterpret_cast<uintptr_t>(GetModuleHandle(0));
     
     MHook::registerHook(base + 0x14F5A0, InfoLayer_init);
     MHook::registerHook(base + 0x151500, InfoLayer_onMore);
