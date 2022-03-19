@@ -35,14 +35,23 @@ macro(setup_mod project_name file_name)
   set_target_properties(${project_name} PROPERTIES PREFIX "")
 endmacro()
 
-setup_mod(more-button src/more-button.cpp
-  minhook cocos gd.h nomerge)
-
 setup_mod(capacity-fix src_other/capacity-fix.cpp)
 
 setup_mod(geometricka-pomlcka src_other/geometricka-pomlcka.cpp)
 
-setup_mod(page-limit src/page-limit.cpp)
+#TODO: separate mini mods and more-button completely
+#more-button setup
+file(
+  GLOB_RECURSE SOURCE_FILES
+  src/*.cpp
+)
+
+add_library(more-button SHARED ${SOURCE_FILES})
+
+target_include_directories(more-button PRIVATE libraries/minhook/include libraries/gd.h libraries/gd.h/include)
+target_link_libraries(more-button minhook cocos2d)
+target_link_options(more-button PRIVATE "/OPT:REF,NOICF")
+#end more-button
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
   # ensure 32 bit on clang
