@@ -545,6 +545,12 @@ void __fastcall InfoLayer_setupCommentsBrowser(InfoLayer* self, void* a, CCArray
     if(self->m_nTotalItems >= 999) self->m_pNextPageBtn->setVisible(true);
 }
 
+void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, void* a) {
+    MHook::getOriginal(LevelBrowserLayer_updateLevelsLabel)(self, a);
+
+    if(self->total == 9999) self->nextBtn->setVisible(true);
+}
+
 void setupPageLimitBypass(){
     auto proc = GetCurrentProcess();
     auto winapiBase = reinterpret_cast<char*>(base);
@@ -566,6 +572,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x151850, InfoLayer_onLevelInfo);
     MHook::registerHook(base + 0x152270, InfoLayer_setupCommentsBrowser);
     //setupProgressBars = very bad workaround for interoperability with gdshare lol (help how do i hook something thats already hooked)
+    MHook::registerHook(base + 0x15C350, LevelBrowserLayer_updateLevelsLabel);
     MHook::registerHook(base + 0x177FC0, LevelInfoLayer_setupProgressBars);
     MHook::registerHook(base + 0x17AC90, LevelInfoLayer_onViewProfile);
     MHook::registerHook(base + 0x17ACF0, LevelInfoLayer_onLevelInfo);
