@@ -30,11 +30,9 @@ void ExtendedLevelInfo::onClose(cocos2d::CCObject* sender)
 }
 
 std::string ExtendedLevelInfo::getGameVersionName(int version){
-    if(version > 99) return std::string("Hacked");
+    if(version < 1 || version > 99) return std::string("NA");
 
     switch(version){
-        case 6:
-            return std::string("1.6 or earlier");
         case 10:
             return std::string("1.7");
         case 11:
