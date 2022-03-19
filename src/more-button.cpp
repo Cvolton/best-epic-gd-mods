@@ -929,10 +929,19 @@ void __fastcall GameLevelManager_userNameForUserID(void* a, void* b, std::string
 void __fastcall InfoLayer_setupCommentsBrowser(InfoLayer* self, void* a, CCArray* a3) {
     MHook::getOriginal(InfoLayer_setupCommentsBrowser)(self, a, a3);
 
-    if(self->m_nTotalItems >= 999 && !(self->m_pLoadingCircle->isVisible())) self->m_pNextPageBtn->setVisible(true);
+    if(self->m_nTotalItems >= 999) self->m_pNextPageBtn->setVisible(true);
 }
 
-//void setupPageLimitBypass
+void setupPageLimitBypass(){
+    auto proc = GetCurrentProcess();
+    auto winapiBase = reinterpret_cast<char*>(base);
+    //This patches the maximum number for SetIDPopup to INT_MAX
+    unsigned char patch[] = {0x68, 0xFF, 0xFF, 0xFF, 0x7F};
+    WriteProcessMemory(proc, winapiBase + 0x1431F6, patch, 5, NULL);
+    //This patches the amount of characters allowed in the text input in SetIDPopup to 6 characters
+    unsigned char patch2[] = {0x06};
+    WriteProcessMemory(proc, winapiBase + 0x14371C, patch2, 1, NULL);
+}
 
 DWORD WINAPI my_thread(void* hModule) {
     MH_Initialize();
@@ -953,6 +962,8 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x210040, ProfilePage_loadPageFromUserInfo);
     MHook::registerHook(base + 0xA1C20, GameLevelManager_userNameForUserID);
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
+
+    setupPageLimitBypass();
 
     MH_EnableHook(MH_ALL_HOOKS);
     return 0;
