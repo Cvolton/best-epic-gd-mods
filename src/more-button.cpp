@@ -926,6 +926,14 @@ void __fastcall GameLevelManager_userNameForUserID(void* a, void* b, std::string
     }
 }
 
+void __fastcall InfoLayer_setupCommentsBrowser(InfoLayer* self, void* a, CCArray* a3) {
+    MHook::getOriginal(InfoLayer_setupCommentsBrowser)(self, a, a3);
+
+    if(self->m_nTotalItems >= 999 && !(self->m_pLoadingCircle->isVisible())) self->m_pNextPageBtn->setVisible(true);
+}
+
+//void setupPageLimitBypass
+
 DWORD WINAPI my_thread(void* hModule) {
     MH_Initialize();
 
@@ -934,6 +942,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x14F5A0, InfoLayer_init);
     MHook::registerHook(base + 0x151500, InfoLayer_onMore);
     MHook::registerHook(base + 0x151850, InfoLayer_onLevelInfo);
+    MHook::registerHook(base + 0x152270, InfoLayer_setupCommentsBrowser);
     //setupProgressBars = very bad workaround for interoperability with gdshare lol (help how do i hook something thats already hooked)
     MHook::registerHook(base + 0x177FC0, LevelInfoLayer_setupProgressBars);
     MHook::registerHook(base + 0x17AC90, LevelInfoLayer_onViewProfile);
