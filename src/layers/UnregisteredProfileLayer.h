@@ -1,7 +1,9 @@
 #pragma once
 #include <gd.h>
+#include "CvoltonAlertLayerStub.h"
 
-class UnregisteredProfileLayer : public gd::FLAlertLayer {
+
+class UnregisteredProfileLayer : public CvoltonAlertLayerStub {
     gd::GJUserScore* score;
 public:
     static UnregisteredProfileLayer* create(gd::GJUserScore* score);

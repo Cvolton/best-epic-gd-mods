@@ -55,41 +55,11 @@ void UnregisteredProfileLayer::onCommentHistory(CCObject* sender) {
 }
 
 bool UnregisteredProfileLayer::init(){
-    bool init = cocos2d::CCLayerColor::initWithColor({0x00, 0x00, 0x00, 0x4B});
+    bool init = createBasics({360,180}, menu_selector(UnregisteredProfileLayer::onClose));
     if(!init) return false;
 
-    cocos2d::CCDirector* director = cocos2d::CCDirector::sharedDirector();
-    director->getTouchDispatcher()->incrementForcePrio(2);
-
-    setTouchEnabled(true);
-    setKeypadEnabled(true);
-
-    cocos2d::CCSize winSize = director->getWinSize();
-    m_pLayer = cocos2d::CCLayer::create();
-
-    this->addChild(m_pLayer);
-
-    cocos2d::extension::CCScale9Sprite* bg = cocos2d::extension::CCScale9Sprite::create("GJ_square01.png", { 0.0f, 0.0f, 80.0f, 80.0f });
-    bg->setContentSize({ 360.0f, 180.0f });
-    m_pLayer->addChild(bg, -1);
-    bg->setPosition({ winSize.width / 2, winSize.height / 2 });
-
-    auto closeButton = gd::CCMenuItemSpriteExtra::create(
-        CCSprite::createWithSpriteFrameName("GJ_closeBtn_001.png"),
-        this,
-        menu_selector(UnregisteredProfileLayer::onClose)
-    );
-
-    m_pButtonMenu = CCMenu::create();
-    m_pLayer->addChild(m_pButtonMenu, 10);
-    m_pButtonMenu->addChild(closeButton);
-    closeButton->setPosition({-170.5f, 79});
-    closeButton->setSizeMult(1.2f);
-
-    auto userName = CCLabelBMFont::create(score->getPlayerName().c_str(), "bigFont.fnt");
-    userName->setPosition({285,227});
-
-    m_pLayer->addChild(userName);
+    //create title
+    createTitle(score->getPlayerName());
 
     auto GM = gd::GameManager::sharedState();
 
@@ -99,43 +69,28 @@ bool UnregisteredProfileLayer::init(){
     icon->setSecondColor(GM->colorForIdx(score->getPlayerColor2()));
     icon->updateColors();
 
-    icon->setPosition({440,224});
-    m_pLayer->addChild(icon);
+    //icon->setPosition({440,224});
+    icon->setPosition({155, (alertSize.y/2) - 24});
+    m_pButtonMenu->addChild(icon);
 
-    auto separator = CCSprite::createWithSpriteFrameName("floorLine_001.png");
-    separator->setPosition({285,202});
-    separator->setScaleX(0.75f);
-    separator->setOpacity(100);
-    m_pLayer->addChild(separator);
-
-    auto levelsSprite = CCSprite::createWithSpriteFrameName("accountBtn_myLevels_001.png");
-    levelsSprite->setScale(0.8f);
-    auto levelsButton = gd::CCMenuItemSpriteExtra::create(
-        levelsSprite,
-        this,
-        menu_selector(UnregisteredProfileLayer::onMyLevels)
+    createButton(
+        "accountBtn_myLevels_001.png",
+        {154, -62},
+        menu_selector(UnregisteredProfileLayer::onMyLevels),
+        0.8f
     );
-    m_pButtonMenu->addChild(levelsButton);
-    levelsButton->setPosition({154, -62});
-    //levelsButton->setScale(0.8f);
-    levelsButton->setSizeMult(1.2f);
 
     auto levelsText = CCSprite::createWithSpriteFrameName("GJ_myLevelsTxt_001.png");
     levelsText->setScale(0.8f);
     levelsText->setPosition({104, -62});
     m_pButtonMenu->addChild(levelsText);
 
-    auto commentsSprite = CCSprite::createWithSpriteFrameName("GJ_chatBtn_001.png");
-    commentsSprite->setScale(0.8f);
-    auto commentsButton = gd::CCMenuItemSpriteExtra::create(
-        commentsSprite,
-        this,
-        menu_selector(UnregisteredProfileLayer::onCommentHistory)
+    createButton(
+        "GJ_chatBtn_001.png",
+        {154, 0},
+        menu_selector(UnregisteredProfileLayer::onCommentHistory),
+        0.8f
     );
-    m_pButtonMenu->addChild(commentsButton);
-    commentsButton->setPosition({154, 0});
-    //commentsButton->setScale(0.8f);
-    commentsButton->setSizeMult(1.2f);
 
     std::ostringstream userIDText;
     userIDText << "User ID: " << score->getUserID() << "\nAccount ID: None";
