@@ -130,7 +130,7 @@ bool ExtendedLevelInfo::init(){
     auto closeButton = gd::CCMenuItemSpriteExtra::create(
         CCSprite::createWithSpriteFrameName("GJ_closeBtn_001.png"),
         this,
-        menu_selector(UnregisteredProfileLayer::onClose)
+        menu_selector(ExtendedLevelInfo::onClose)
     );
 
     m_pButtonMenu = CCMenu::create();
