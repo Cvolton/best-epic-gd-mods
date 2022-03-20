@@ -108,36 +108,8 @@ std::string ExtendedLevelInfo::workingTime(int value){
 }
 
 bool ExtendedLevelInfo::init(){
-    bool init = cocos2d::CCLayerColor::initWithColor({0x00, 0x00, 0x00, 0x4B});
+    bool init = createBasics({440.0f, 290.0f}, menu_selector(ExtendedLevelInfo::onClose));
     if(!init) return false;
-
-    cocos2d::CCDirector* director = cocos2d::CCDirector::sharedDirector();
-    director->getTouchDispatcher()->incrementForcePrio(2);
-
-    setTouchEnabled(true);
-    setKeypadEnabled(true);
-
-    cocos2d::CCSize winSize = director->getWinSize();
-    m_pLayer = cocos2d::CCLayer::create();
-
-    this->addChild(m_pLayer);
-
-    cocos2d::extension::CCScale9Sprite* bg = cocos2d::extension::CCScale9Sprite::create("GJ_square01.png", { 0.0f, 0.0f, 80.0f, 80.0f });
-    bg->setContentSize({ 440.0f, 290.0f });
-    m_pLayer->addChild(bg, -1);
-    bg->setPosition({ winSize.width / 2, winSize.height / 2 });
-
-    auto closeButton = gd::CCMenuItemSpriteExtra::create(
-        CCSprite::createWithSpriteFrameName("GJ_closeBtn_001.png"),
-        this,
-        menu_selector(ExtendedLevelInfo::onClose)
-    );
-
-    m_pButtonMenu = CCMenu::create();
-    m_pLayer->addChild(m_pButtonMenu, 10);
-    m_pButtonMenu->addChild(closeButton);
-    closeButton->setPosition({-210, 136});
-    closeButton->setSizeMult(1.2f);
 
     auto levelName = CCLabelBMFont::create(level->levelName.c_str(), "bigFont.fnt");
     levelName->setPosition({0,125});

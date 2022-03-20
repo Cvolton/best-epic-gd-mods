@@ -1,8 +1,8 @@
 #pragma once
-#include <cocos2d.h>
 #include <gd.h>
+#include "CvoltonAlertLayerStub.h"
 
-class ExtendedLevelInfo : public gd::FLAlertLayer {
+class ExtendedLevelInfo : public CvoltonAlertLayerStub {
     gd::GJGameLevel* level;
 public:
     static ExtendedLevelInfo* create(gd::GJGameLevel* level);
