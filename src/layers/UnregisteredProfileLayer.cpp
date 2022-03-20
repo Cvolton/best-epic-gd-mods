@@ -58,7 +58,6 @@ bool UnregisteredProfileLayer::init(){
     bool init = createBasics({360,180}, menu_selector(UnregisteredProfileLayer::onClose));
     if(!init) return false;
 
-    //create title
     createTitle(score->getPlayerName());
 
     auto GM = gd::GameManager::sharedState();
