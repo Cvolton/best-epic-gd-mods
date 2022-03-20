@@ -12,6 +12,7 @@
 
 #include "layers/UnregisteredProfileLayer.h"
 #include "layers/ExtendedLevelInfo.h"
+#include "managers/CvoltonManager.h"
 
 using namespace cocos2d;
 using namespace gd;
@@ -499,7 +500,6 @@ void __fastcall LevelInfoLayer_onLevelInfo(LevelInfoLayer* self, void* a, CCObje
     //if(score->getUserID() == 6330800) contentStream << "\n\nThis user is epic!";
 
     gd::FLAlertLayer::create(nullptr, "Level Stats", "OK", nullptr, contentStream.str())->show();
-    
 }
 
 void __fastcall InfoLayer_onLevelInfo(InfoLayer* self, void* a, CCObject* sender) {
@@ -549,6 +549,9 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
     MHook::getOriginal(LevelBrowserLayer_updateLevelsLabel)(self, a);
 
     if(self->total == 9999) self->nextBtn->setVisible(true);
+
+    auto CM = CvoltonManager::sharedState();
+    CM->doUpdateCheck();
 }
 
 void setupPageLimitBypass(){
@@ -586,6 +589,7 @@ DWORD WINAPI my_thread(void* hModule) {
     setupPageLimitBypass();
 
     MH_EnableHook(MH_ALL_HOOKS);
+
     return 0;
 }
 
