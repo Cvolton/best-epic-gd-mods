@@ -12,6 +12,7 @@
 
 #include "layers/UnregisteredProfileLayer.h"
 #include "layers/ExtendedLevelInfo.h"
+#include "layers/CustomCreatorLayer.h"
 #include "managers/CvoltonManager.h"
 
 using namespace cocos2d;
@@ -252,6 +253,12 @@ public:
         infoLayer->show();
 
         //gd::FLAlertLayer::create(nullptr, "Level Stats", "OK", nullptr, std::to_string(layer->comment->m_nLevelID))->show();
+    }
+
+    void onCustomCreatorLayer(CCObject* sender){
+        auto browserLayer = CustomCreatorLayer::scene();
+        auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
+        CCDirector::sharedDirector()->pushScene(transitionFade);
     }
 
 };
@@ -549,9 +556,29 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
     MHook::getOriginal(LevelBrowserLayer_updateLevelsLabel)(self, a);
 
     if(self->total == 9999) self->nextBtn->setVisible(true);
+}
+
+bool __fastcall CreatorLayer_init(CCLayer* self) {
+    if(!MHook::getOriginal(CreatorLayer_init)(self)) return false;
 
     auto CM = CvoltonManager::sharedState();
     CM->doUpdateCheck();
+
+    auto menu = cast<CCMenu*>(self->getChildren()->objectAtIndex(1));
+
+    auto door = cast<CCMenuItemSpriteExtra*>(menu->getChildren()->objectAtIndex(12));
+
+    auto buttonSprite = gd::ButtonSprite::create("epic\ngmd\nmod", (int)(100*0.45), true, "bigFont.fnt", "GJ_button_01.png", 120*0.45f, 0.45f);
+    auto buttonButton = gd::CCMenuItemSpriteExtra::create(
+        buttonSprite,
+        self,
+        menu_selector(GamingButton::onCustomCreatorLayer)
+    );
+    buttonButton->setSizeMult(1.2f);
+    buttonButton->setPosition({door->getPositionX(),0});
+    menu->addChild(buttonButton);
+
+    return true;
 }
 
 void setupPageLimitBypass(){
@@ -584,6 +611,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x5F3D0, CommentCell_loadFromComment);
     MHook::registerHook(base + 0x210040, ProfilePage_loadPageFromUserInfo);
     MHook::registerHook(base + 0xA1C20, GameLevelManager_userNameForUserID);
+    MHook::registerHook(base + 0x4DE40, CreatorLayer_init);
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
 
     setupPageLimitBypass();
