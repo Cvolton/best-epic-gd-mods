@@ -372,6 +372,23 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
             idTextNode->setColor({51,51,51});
             idTextNode->setOpacity(152);
             menu->addChild(idTextNode);
+            if(self->level->dailyID > 0){
+                idTextNode->setColor({255,255,255});
+                idTextNode->setOpacity(200);
+
+                const int maxDaily = 100000;
+
+                std::ostringstream dailyText;
+                dailyText << ((self->level->dailyID >= maxDaily) ? "Weekly" : "Daily") << " #" << (self->level->dailyID % maxDaily);
+                auto dailyTextNode = CCLabelBMFont::create(dailyText.str().c_str(), "chatFont.fnt");
+                dailyTextNode->setPosition({33,43});
+                dailyTextNode->setAnchorPoint({1,0});
+                dailyTextNode->setScale(0.6f);
+                dailyTextNode->setColor({255,255,255});
+                dailyTextNode->setOpacity(200);
+                menu->addChild(dailyTextNode);
+
+            }
 
             break;
         }
@@ -581,6 +598,27 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
     return true;
 }
 
+void __fastcall DailyLevelPage_updateTimers(DailyLevelPage* self, void* a, float something) {
+    MHook::getOriginal(DailyLevelPage_updateTimers)(self, a, something);
+
+    CCLayer* layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(0));
+
+    if(layer->getChildrenCount() > 11) return;
+
+    auto GM = GameLevelManager::sharedState();
+    auto winSize = CCDirector::sharedDirector()->getWinSize();
+
+    std::ostringstream currentDaily;
+    currentDaily << "Current: #" << ((self->isWeekly) ? GM->m_weeklyID_ : GM->m_dailyID_);
+    auto currentDailyNode = CCLabelBMFont::create(currentDaily.str().c_str(), "chatFont.fnt");
+    currentDailyNode->setPosition({(winSize.width / 2) + 183, (winSize.height / 2) + 51});
+    currentDailyNode->setAnchorPoint({1,0});
+    currentDailyNode->setScale(0.6f);
+    currentDailyNode->setColor({255,255,255});
+    currentDailyNode->setOpacity(200);
+    layer->addChild(currentDailyNode);
+}
+
 void setupPageLimitBypass(){
     auto proc = GetCurrentProcess();
     auto winapiBase = reinterpret_cast<char*>(base);
@@ -612,6 +650,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x210040, ProfilePage_loadPageFromUserInfo);
     MHook::registerHook(base + 0xA1C20, GameLevelManager_userNameForUserID);
     MHook::registerHook(base + 0x4DE40, CreatorLayer_init);
+    MHook::registerHook(base + 0x6BEF0, DailyLevelPage_updateTimers);
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
 
     setupPageLimitBypass();
