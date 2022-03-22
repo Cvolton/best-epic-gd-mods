@@ -11,6 +11,11 @@ bool CvoltonManager::init(){
     bool init = CCNode::init();
     if(!init) return false;
 
+    nameDict = CCDictionary::createWithContentsOfFile("CV_destroyedUsers.plist");
+    nameDict->retain();
+
+    std::cout << "initing" << std::endl;
+
     return true;
 }
 
@@ -38,13 +43,7 @@ void CvoltonManager::onHttpResponse(CCHttpClient* client, CCHttpResponse* respon
     //FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, 300, stream.str().c_str())->show();
 }
 
-CvoltonManager* CvoltonManager::sharedState(){
-    if(manager == nullptr){
-        manager = new CvoltonManager;
-        manager->init();
-    }
-    return manager;
-}
+//CvoltonManager* CvoltonManager::sharedState()
 
 CvoltonManager::CvoltonManager(){}
 
@@ -53,4 +52,10 @@ void CvoltonManager::doUpdateCheck(){
 
     processHttpRequest();
     hasDoneUpdateCheck = true;
+}
+
+const char* CvoltonManager::getUserName(int id){
+    auto obj = dynamic_cast<CCString*>(nameDict->objectForKey(std::to_string(id)));
+    if(obj == nullptr) return "";
+    return obj->getCString();
 }

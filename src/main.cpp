@@ -533,12 +533,26 @@ void __fastcall InfoLayer_onLevelInfo(InfoLayer* self, void* a, CCObject* sender
 
     ExtendedLevelInfo* layer = ExtendedLevelInfo::create(level);
     layer->show();
+
 }
 
 void __fastcall GameLevelManager_userNameForUserID(void* a, void* b, std::string* userName, int userID) {
     MHook::getOriginal(GameLevelManager_userNameForUserID)(a, b, userName, userID);
 
-    switch(userID){
+    if(userName == nullptr) return;
+
+    //gd::FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, *userName)->show();
+    if(*userName == "" || *userName == "-"){
+        auto CM = CvoltonManager::sharedState();
+        //*userName = 
+        //CM->getUserName(userID);
+        CM->doUpdateCheck();
+    }
+
+    //std::cout << "b" << *userName << std::endl;
+    //*userName = "among";
+
+    /*switch(userID){
         case 248868:
             *userName = "roadbose";
             break;
@@ -560,7 +574,7 @@ void __fastcall GameLevelManager_userNameForUserID(void* a, void* b, std::string
         case 46587:
             *userName = "diamond";
             break;
-    }
+    }*/
 }
 
 void __fastcall InfoLayer_setupCommentsBrowser(InfoLayer* self, void* a, CCArray* a3) {
@@ -631,6 +645,14 @@ void setupPageLimitBypass(){
 }
 
 DWORD WINAPI my_thread(void* hModule) {
+
+    AllocConsole();
+    std::ofstream conout("CONOUT$", std::ios::out);
+    std::ifstream conin("CONIN$", std::ios::in);
+    std::cout.rdbuf(conout.rdbuf());
+    std::cin.rdbuf(conin.rdbuf());
+
+
     MH_Initialize();
 
     //base = reinterpret_cast<uintptr_t>(GetModuleHandle(0));
@@ -656,6 +678,15 @@ DWORD WINAPI my_thread(void* hModule) {
     setupPageLimitBypass();
 
     MH_EnableHook(MH_ALL_HOOKS);
+
+
+    std::getline(std::cin, std::string());
+
+    MH_Uninitialize();
+    conout.close();
+    conin.close();
+    FreeConsole();
+    FreeLibraryAndExitThread(cast<HMODULE>(hModule), 0);
 
     return 0;
 }
