@@ -7,8 +7,9 @@ class CvoltonManager : cocos2d::CCNode {
 
 
 public:
+	inline static const char* version = "v2.0.0-beta\n";
+	inline static const char* modName = "Cvolton's Tweaks";
 	std::string latestVer;
-	const char* version = "v2.0.0-beta\n";
 	cocos2d::CCDictionary* nameDict;
 	cocos2d::CCDictionary* settingsDict;
 	bool hasDoneUpdateCheck = false;

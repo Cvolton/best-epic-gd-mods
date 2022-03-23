@@ -1,5 +1,6 @@
 #include "CustomCreatorLayer.h"
 #include "CvoltonUpdateLayer.h"
+#include "../managers/CvoltonManager.h"
 
 using namespace gd;
 using namespace cocos2d;
@@ -59,7 +60,7 @@ bool CustomCreatorLayer::init() {
     auto menu = CCMenu::create();
     //menu->setPosition({winSize.width / 2, winSize.height / 2});
     addChild(menu);
-    auto label = CCLabelBMFont::create("Epic GMD Mod :D", "bigFont.fnt");
+    auto label = CCLabelBMFont::create(CvoltonManager::modName, "bigFont.fnt");
 
     label->setPosition({winSize.width / 2, winSize.height - 25});
 
@@ -94,6 +95,15 @@ bool CustomCreatorLayer::init() {
     updateBtn->setPosition({ 0, - ( (winSize.height / 2) - 25 ) });
     updateBtn->setSizeMult(1.2f);
 
+    auto infoBtn = gd::CCMenuItemSpriteExtra::create(
+        CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png"),
+        this,
+        menu_selector(CustomCreatorLayer::onInfo)
+    );
+    menu->addChild(infoBtn);
+    infoBtn->setPosition({ (winSize.width / 2) - 25 , (winSize.height / 2) - 25 });
+    infoBtn->setSizeMult(1.2f);
+
     auto cornerBL = CCSprite::createWithSpriteFrameName("GJ_sideArt_001.png");
     cornerBL->setPosition({0,0});
     cornerBL->setAnchorPoint({0,0});
@@ -127,6 +137,17 @@ void CustomCreatorLayer::keyBackClicked() {
 
 void CustomCreatorLayer::onBack(CCObject* object) {
     keyBackClicked();
+}
+
+void CustomCreatorLayer::onInfo(CCObject* object) {
+    gd::FLAlertLayer::create(
+        nullptr, 
+        CvoltonManager::modName, 
+        "OK", 
+        nullptr,
+        400,
+        "<cy>Featured:</c> Levels featured in Geometry Dash World\n<cg>Most liked:</c> \"Most Liked\" in Geometry Dash World,\nreal purpose unknown.\n\n<cl>Settings:</c> Opens the mod settings\n<cr>Update:</c> Opens the mod update menu"
+    )->show();
 }
 
 void CustomCreatorLayer::onFeatured(CCObject* object) {
