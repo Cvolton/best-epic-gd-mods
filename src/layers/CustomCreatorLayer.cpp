@@ -1,4 +1,5 @@
 #include "CustomCreatorLayer.h"
+#include "CvoltonUpdateLayer.h"
 
 using namespace gd;
 using namespace cocos2d;
@@ -84,6 +85,15 @@ bool CustomCreatorLayer::init() {
     mostLikedBtn->setPosition({60,-2.5f}); //i have no idea why the texture is misaligned theyre the same res
     mostLikedBtn->setSizeMult(1.2f);
 
+    auto updateBtn = gd::CCMenuItemSpriteExtra::create(
+        CCSprite::createWithSpriteFrameName("GJ_getSongInfoBtn_001.png"),
+        this,
+        menu_selector(CustomCreatorLayer::onUpdate)
+    );
+    menu->addChild(updateBtn);
+    updateBtn->setPosition({ 0, - ( (winSize.height / 2) - 25 ) });
+    updateBtn->setSizeMult(1.2f);
+
     auto cornerBL = CCSprite::createWithSpriteFrameName("GJ_sideArt_001.png");
     cornerBL->setPosition({0,0});
     cornerBL->setAnchorPoint({0,0});
@@ -135,6 +145,11 @@ void CustomCreatorLayer::onMostLiked(CCObject* object) {
     auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
 
     CCDirector::sharedDirector()->pushScene(transitionFade);
+}
+
+void CustomCreatorLayer::onUpdate(CCObject* object) {
+    auto layer = CvoltonUpdateLayer::create();
+    layer->show();
 }
 
 CCScene* CustomCreatorLayer::scene() {

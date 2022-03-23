@@ -5,8 +5,6 @@ using namespace cocos2d;
 using namespace cocos2d::extension;
 using namespace gd;
 
-const char* version = "v2.0.0-beta\n";
-
 bool CvoltonManager::init(){
     bool init = CCNode::init();
     if(!init) return false;
@@ -39,11 +37,13 @@ void CvoltonManager::onHttpResponse(CCHttpClient* client, CCHttpResponse* respon
 
     std::vector<char>* responseData = response->getResponseData();
     std::string responseString(responseData->begin(), responseData->end());
+    latestVer = responseString;
 
     if(responseString == version) return;
 
     std::ostringstream stream;
     stream << "Cvolton's Epic Mod " << responseString;
+
 
     AchievementNotifier::sharedState()->notifyAchievement("Update available", stream.str().c_str(), "", false);
     //FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, 300, stream.str().c_str())->show();

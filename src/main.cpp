@@ -665,7 +665,7 @@ void __fastcall DailyLevelPage_updateTimers(DailyLevelPage* self, void* a, float
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
     std::ostringstream currentDaily;
-    currentDaily << "Current: #" << ((self->isWeekly) ? GM->m_weeklyID_ : GM->m_dailyID_);
+    currentDaily << "Current: #" << ((self->isWeekly) ? GM->m_weeklyID_ % 100000 : GM->m_dailyID_);
     auto currentDailyNode = CCLabelBMFont::create(currentDaily.str().c_str(), "chatFont.fnt");
     currentDailyNode->setPosition({(winSize.width / 2) + 183, (winSize.height / 2) + 51});
     currentDailyNode->setAnchorPoint({1,0});

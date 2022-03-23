@@ -9,6 +9,7 @@ protected:
     void onBack(cocos2d::CCObject*);
     void onFeatured(cocos2d::CCObject*);
     void onMostLiked(cocos2d::CCObject*);
+    void onUpdate(cocos2d::CCObject*);
 public:
     static CustomCreatorLayer* create();
     static cocos2d::CCScene* scene();

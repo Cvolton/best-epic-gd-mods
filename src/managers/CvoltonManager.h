@@ -7,6 +7,8 @@ class CvoltonManager : cocos2d::CCNode {
 
 
 public:
+	std::string latestVer;
+	const char* version = "v2.0.0-beta\n";
 	cocos2d::CCDictionary* nameDict;
 	cocos2d::CCDictionary* settingsDict;
 	bool hasDoneUpdateCheck = false;
