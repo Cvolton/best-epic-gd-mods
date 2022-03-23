@@ -459,6 +459,9 @@ void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJCommen
 
     CCMenu* menu = nullptr;
 
+    auto winSize = CCDirector::sharedDirector()->getWinSize();
+    bool smallCommentsMode = gd::GameManager::sharedState()->getGameVariable("0088");
+
     for(unsigned int i = 0; i < layer->getChildrenCount(); i++){
         menu = dynamic_cast<CCMenu*>(layer->getChildren()->objectAtIndex(i));
         if(menu != nullptr) break;
@@ -470,39 +473,44 @@ void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJCommen
 
         if(b->m_nAuthorAccountID != 0) return;
 
-        auto playerName = cast<CCLabelBMFont*>(layer->getChildren()->objectAtIndex(2));
+        auto originalNameNode = cast<CCLabelBMFont*>(layer->getChildren()->objectAtIndex(2));
+        //std::string userName = originalNameNode->getString();
         
-        if(strlen(playerName->getString()) == 0){
+        if(strlen(originalNameNode->getString()) == 0){
             std::stringstream contentStream;
             contentStream << "- (ID: " << b->m_nAuthorPlayerID << ")";
-            playerName->setString(contentStream.str().c_str());
+            originalNameNode->setString(contentStream.str().c_str());
         }
-        layer->removeChild(playerName);
+        layer->removeChild(originalNameNode);
+        //originalNameNode->setAnchorPoint({0,0});
 
-        bool smallCommentsMode = gd::GameManager::sharedState()->getGameVariable("0088");
+        //auto newPlayerName = CCLabelBMFont::create(userName.c_str(), "goldFont.fnt");
 
         auto buttonButton = gd::CCMenuItemSpriteExtra::create(
-            playerName,
+            originalNameNode,
             self,
             menu_selector(GamingButton::onProfilePage)
         );
         buttonButton->setSizeMult(1.2f);
-        buttonButton->setPosition(-254, smallCommentsMode ? -141.5f : -109.5f);
-        buttonButton->setAnchorPoint(CCPoint(0,0));
+        buttonButton->setPosition(37 - (winSize.width / 2), smallCommentsMode ? 18.5f - (winSize.height / 2) : 50.5f - (winSize.height / 2) );
+        buttonButton->setAnchorPoint({0.1f,0});
         buttonButton->setEnabled(true);
         menu->addChild(buttonButton);
 
     }else{
 
         auto commentsSprite = CCSprite::createWithSpriteFrameName("GJ_chatBtn_001.png");
-        commentsSprite->setScale(0.35f);
+        commentsSprite->setScale(smallCommentsMode ? 0.35f : 0.5f);
         auto commentsButton = gd::CCMenuItemSpriteExtra::create(
             commentsSprite,
             self,
             menu_selector(GamingButton::onLevelInfoNoLoad)
         );
         menu->addChild(commentsButton);
-        commentsButton->setPosition({-79,-136});
+        //commentsButton->setPosition({-79,-136});
+        CCPoint smallPosition({206 - (winSize.width / 2), 24.5f - (winSize.height / 2) });
+        CCPoint largePosition({154 - (winSize.width / 2), 60 - (winSize.height / 2) });
+        commentsButton->setPosition(smallCommentsMode ? smallPosition : largePosition);
         //commentsButton->setScale(0.8f);
         commentsButton->setSizeMult(1.2f);
 
