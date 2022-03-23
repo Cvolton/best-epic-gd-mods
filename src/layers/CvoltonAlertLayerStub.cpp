@@ -3,7 +3,7 @@
 using namespace cocos2d;
 using namespace gd;
 
-bool CvoltonAlertLayerStub::createBasics(CCPoint contentSize, cocos2d::SEL_MenuHandler onClose){
+bool CvoltonAlertLayerStub::createBasics(CCPoint contentSize, cocos2d::SEL_MenuHandler onClose, float closeBtnScale){
 	bool init = cocos2d::CCLayerColor::initWithColor({0x00, 0x00, 0x00, 0x4B});
     if(!init) return false;
 
@@ -28,7 +28,7 @@ bool CvoltonAlertLayerStub::createBasics(CCPoint contentSize, cocos2d::SEL_MenuH
     m_pButtonMenu = CCMenu::create();
     m_pLayer->addChild(m_pButtonMenu, 10);
 
-    createButton("GJ_closeBtn_001.png", {-((alertSize.x)/2) + 9.5f, (alertSize.y / 2) - 10}, onClose);
+    closeBtn = createButton("GJ_closeBtn_001.png", {-((alertSize.x)/2) + 9.5f, (alertSize.y / 2) - 10}, onClose, closeBtnScale);
 
     return true;
 }
@@ -45,7 +45,7 @@ void CvoltonAlertLayerStub::createTitle(std::string text){
     m_pButtonMenu->addChild(separator);
 }
 
-void CvoltonAlertLayerStub::createButton(const char* texture, CCPoint position, cocos2d::SEL_MenuHandler callback, float textureScale, float sizeMult){
+CCMenuItemSpriteExtra* CvoltonAlertLayerStub::createButton(const char* texture, CCPoint position, cocos2d::SEL_MenuHandler callback, float textureScale, float sizeMult){
 	auto buttonSprite = CCSprite::createWithSpriteFrameName(texture);
     buttonSprite->setScale(textureScale);
 	auto button = gd::CCMenuItemSpriteExtra::create(
@@ -56,4 +56,5 @@ void CvoltonAlertLayerStub::createButton(const char* texture, CCPoint position, 
     m_pButtonMenu->addChild(button);
     button->setPosition(position);
     button->setSizeMult(sizeMult);
+    return button;
 }

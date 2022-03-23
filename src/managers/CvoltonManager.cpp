@@ -14,6 +14,12 @@ bool CvoltonManager::init(){
     nameDict = CCDictionary::createWithContentsOfFile("CV_destroyedUsers.plist");
     nameDict->retain();
 
+    std::ostringstream settingsPath;
+    settingsPath << CCFileUtils::sharedFileUtils()->getWritablePath() << "/CCCvoltonManager.dat";
+    //settingsDict = 
+    //CCDictionary::createWithContentsOfFile(settingsPath.str().c_str());
+    //settingsDict->retain();
+
     std::cout << "initing" << std::endl;
 
     return true;

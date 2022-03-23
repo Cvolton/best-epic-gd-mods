@@ -11,6 +11,7 @@
 #include "utils.hpp"
 
 #include "layers/UnregisteredProfileLayer.h"
+#include "layers/JumpToPageLayer.h"
 #include "layers/ExtendedLevelInfo.h"
 #include "layers/CustomCreatorLayer.h"
 #include "managers/CvoltonManager.h"
@@ -19,6 +20,7 @@ using namespace cocos2d;
 using namespace gd;
 
 const int cvoltonID = 6330800;
+const int commentPageBtnTag = 863390891;
 
 class CustomLevelSearchLayer : public gd::FLAlertLayer {
     gd::GJGameLevel* level;
@@ -261,6 +263,12 @@ public:
         CCDirector::sharedDirector()->pushScene(transitionFade);
     }
 
+    void onJumpToPageLayer(CCObject* sender){
+        auto layer = cast<InfoLayer*>(this);
+        JumpToPageLayer* jumpLayer = JumpToPageLayer::create(layer);
+        jumpLayer->show();
+    }
+
 };
 
 bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, void* c) {
@@ -271,6 +279,17 @@ bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, v
 
     gd::CCMenuItemSpriteExtra* playerName = cast<gd::CCMenuItemSpriteExtra*>(menu->getChildren()->objectAtIndex(0));
     playerName->setEnabled(true);
+
+    auto buttonSprite = gd::ButtonSprite::create("1", 12, true, "bigFont.fnt", "GJ_button_02.png", 25, 0.4f);
+    auto buttonButton = gd::CCMenuItemSpriteExtra::create(
+        buttonSprite,
+        self,
+        menu_selector(GamingButton::onJumpToPageLayer)
+    );
+    buttonButton->setSizeMult(1.2f);
+    buttonButton->setPosition({195,34});
+    buttonButton->setTag(commentPageBtnTag);
+    menu->addChild(buttonButton);
 
     if(level == nullptr) return true;
 
@@ -581,6 +600,31 @@ void __fastcall InfoLayer_setupCommentsBrowser(InfoLayer* self, void* a, CCArray
     if(self->m_nTotalItems >= 999) self->m_pNextPageBtn->setVisible(true);
 }
 
+void __fastcall InfoLayer_loadPage(InfoLayer* self, void* a, int page, bool reload) {
+    MHook::getOriginal(InfoLayer_loadPage)(self, a, page, reload);
+
+    CCMenu* menu = cast<CCMenu*>(self->m_pCommentsBtn->getParent());
+
+    std::cout << menu->getChildrenCount() << std::endl;
+
+    for(unsigned int i = 0; i < menu->getChildrenCount(); i++){
+        auto commentBtn = cast<CCMenuItemSpriteExtra*>(menu->getChildren()->objectAtIndex(i));
+        std::cout << i << std::endl;
+        if(commentBtn == nullptr) continue;
+
+        std::cout << commentBtn->getTag() << std::endl;
+
+
+        if(commentBtn->getTag() == commentPageBtnTag){
+
+            auto commentBtnSprite = cast<ButtonSprite*>(commentBtn->getChildren()->objectAtIndex(0));
+            if(commentBtnSprite == nullptr) continue;
+
+            commentBtnSprite->setString(std::to_string(page+1).c_str());
+        }
+    }
+}
+
 void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, void* a) {
     MHook::getOriginal(LevelBrowserLayer_updateLevelsLabel)(self, a);
 
@@ -644,11 +688,11 @@ void setupPageLimitBypass(){
 
 DWORD WINAPI my_thread(void* hModule) {
 
-    /*AllocConsole();
+    AllocConsole();
     std::ofstream conout("CONOUT$", std::ios::out);
     std::ifstream conin("CONIN$", std::ios::in);
     std::cout.rdbuf(conout.rdbuf());
-    std::cin.rdbuf(conin.rdbuf());*/
+    std::cin.rdbuf(conin.rdbuf());
 
 
     MH_Initialize();
@@ -659,6 +703,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x151500, InfoLayer_onMore);
     MHook::registerHook(base + 0x151850, InfoLayer_onLevelInfo);
     MHook::registerHook(base + 0x152270, InfoLayer_setupCommentsBrowser);
+    MHook::registerHook(base + 0x151E70, InfoLayer_loadPage);
     //setupProgressBars = very bad workaround for interoperability with gdshare lol (help how do i hook something thats already hooked)
     MHook::registerHook(base + 0x15C350, LevelBrowserLayer_updateLevelsLabel);
     MHook::registerHook(base + 0x177FC0, LevelInfoLayer_setupProgressBars);
@@ -678,13 +723,13 @@ DWORD WINAPI my_thread(void* hModule) {
     MH_EnableHook(MH_ALL_HOOKS);
 
 
-    /*std::getline(std::cin, std::string());
+    std::getline(std::cin, std::string());
 
     MH_Uninitialize();
     conout.close();
     conin.close();
     FreeConsole();
-    FreeLibraryAndExitThread(cast<HMODULE>(hModule), 0);*/
+    FreeLibraryAndExitThread(cast<HMODULE>(hModule), 0);
 
     return 0;
 }

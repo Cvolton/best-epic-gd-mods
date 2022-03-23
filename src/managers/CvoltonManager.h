@@ -7,8 +7,9 @@ class CvoltonManager : cocos2d::CCNode {
 
 
 public:
-	bool hasDoneUpdateCheck = false;
 	cocos2d::CCDictionary* nameDict;
+	cocos2d::CCDictionary* settingsDict;
+	bool hasDoneUpdateCheck = false;
 
 	bool init();
 	static CvoltonManager* sharedState(){
