@@ -67,13 +67,13 @@ bool CvoltonUpdateLayer::init(){
     //infoBg->setColor({191,114,62});
     infoBg->setColor({123,60,31});
     m_pButtonMenu->addChild(infoBg, -1);
-    infoBg->setPosition({0,-57});
+    infoBg->setPosition({0,-62});
 
     std::ostringstream infoText;
     infoText << "\n<cj>Changelog</c>: \n" << "- Added amongus\n- Added sus\n- Added susamogus\n- Removed vents\n- Removed vents\n- Removed Herobrine";
 
     auto info = gd::TextArea::create("chatFont.fnt", false, infoText.str(), 1, 170, 20, {0,1});
-    info->setPosition({-163,28});
+    info->setPosition({-163,24});
     info->setScale(0.8f);
     info->setAnchorPoint({0,1});
     m_pButtonMenu->addChild(info);
@@ -121,7 +121,7 @@ bool CvoltonUpdateLayer::init(){
         menu_selector(CvoltonUpdateLayer::onVisit)
     );
     webBtn->setSizeMult(1.2f);
-    webBtn->setPosition({-88,33});
+    webBtn->setPosition({-88,30});
     m_pButtonMenu->addChild(webBtn);
 
     auto updateBtnSprite = gd::ButtonSprite::create("Download Update", 150, true, "bigFont.fnt", "GJ_button_01.png", 25, 0.5f);
@@ -131,7 +131,7 @@ bool CvoltonUpdateLayer::init(){
         menu_selector(CvoltonUpdateLayer::onUpdate)
     );
     updateBtn->setSizeMult(1.2f);
-    updateBtn->setPosition({88,33});
+    updateBtn->setPosition({88,30});
     m_pButtonMenu->addChild(updateBtn);
 
     return true;
