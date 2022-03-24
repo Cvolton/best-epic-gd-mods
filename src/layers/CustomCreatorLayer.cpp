@@ -25,7 +25,8 @@ bool CustomCreatorLayer::init() {
     std::ostringstream bgStream;
     bgStream << "game_bg_" << backgrounds[bgNumber] << "_001.png";*/
 
-    auto backgroundSprite = CCSprite::create("game_bg_14_001.png");
+    auto backgroundSprite = CCSprite::create("game_bg_14_001.png"); //stones bg
+    //auto backgroundSprite = CCSprite::create("GJ_gradientBG.png"); //rob bg
     //auto backgroundSprite = CCSprite::create(bgStream.str().c_str());
     //auto backgroundSprite = CCSprite::createWithSpriteFrameName("GJ_GameSheet04-uhd.png");
     
@@ -33,12 +34,15 @@ bool CustomCreatorLayer::init() {
     auto size = backgroundSprite->getContentSize();
     
     backgroundSprite->setScale(winSize.width / size.width);
+    //backgroundSprite->setScaleX(winSize.width / size.width);
     //backgroundSprite->setScaleY(winSize.height / size.height);
     
     backgroundSprite->setAnchorPoint({0, 0});
     backgroundSprite->setPosition({0,-75});
+    //backgroundSprite->setPosition({0,0});
     
-    backgroundSprite->setColor({164, 0, 255});
+    backgroundSprite->setColor({164, 0, 255}); //purple
+    //backgroundSprite->setColor({0, 102, 255}); //rob blue
     
     backgroundSprite->setZOrder(-2);
     addChild(backgroundSprite);
@@ -60,40 +64,60 @@ bool CustomCreatorLayer::init() {
     auto menu = CCMenu::create();
     //menu->setPosition({winSize.width / 2, winSize.height / 2});
     addChild(menu);
-    auto label = CCLabelBMFont::create(CvoltonManager::modName, "bigFont.fnt");
+    auto label = CCLabelBMFont::create(CvoltonManager::modName, "goldFont.fnt");
 
     label->setPosition({winSize.width / 2, winSize.height - 25});
 
     addChild(label);
 
     auto featuredBtn = gd::CCMenuItemSpriteExtra::create(
-        CCSprite::createWithSpriteFrameName("GJ_featuredBtn_001.png"),
+        CCSprite::create("CV_featuredBtn_001.png"),
         this,
         menu_selector(CustomCreatorLayer::onFeatured)
     );
     menu->addChild(featuredBtn);
-    featuredBtn->setPosition({-60,0});
+    featuredBtn->setPosition({-120,0});
     featuredBtn->setSizeMult(1.2f);
 
     //CCTextureCache::sharedTextureCache()->addImage("mostliked.png", 0);
 
     auto mostLikedBtn = gd::CCMenuItemSpriteExtra::create(
-        CCSprite::create("mostliked.png"),
+        CCSprite::create("CV_mostLikedBtn_001.png"),
         this,
         menu_selector(CustomCreatorLayer::onMostLiked)
     );
     menu->addChild(mostLikedBtn);
-    mostLikedBtn->setPosition({60,-2.5f}); //i have no idea why the texture is misaligned theyre the same res
+    mostLikedBtn->setPosition({0,0}); //i have no idea why the texture is misaligned theyre the same res
     mostLikedBtn->setSizeMult(1.2f);
 
+    auto searchBtn = gd::CCMenuItemSpriteExtra::create(
+        CCSprite::createWithSpriteFrameName("GJ_searchBtn_001.png"),
+        this,
+        menu_selector(CustomCreatorLayer::onMostLiked)
+    );
+    menu->addChild(searchBtn);
+    searchBtn->setPosition({120,2.5f}); //i have no idea why the texture is misaligned theyre the same res
+    searchBtn->setSizeMult(1.2f);
+
     auto updateBtn = gd::CCMenuItemSpriteExtra::create(
-        CCSprite::createWithSpriteFrameName("GJ_getSongInfoBtn_001.png"),
+        CCSprite::createWithSpriteFrameName("GJ_downloadBtn_001.png"),
         this,
         menu_selector(CustomCreatorLayer::onUpdate)
     );
     menu->addChild(updateBtn);
-    updateBtn->setPosition({ 0, - ( (winSize.height / 2) - 25 ) });
+    updateBtn->setPosition({ 22, - ( (winSize.height / 2) - 25 ) });
     updateBtn->setSizeMult(1.2f);
+
+    auto settingsSprite = CCSprite::createWithSpriteFrameName("GJ_optionsBtn_001.png");
+    settingsSprite->setScale(0.775f);
+    auto settingsBtn = gd::CCMenuItemSpriteExtra::create(
+        settingsSprite,
+        this,
+        menu_selector(CustomCreatorLayer::onUpdate)
+    );
+    menu->addChild(settingsBtn);
+    settingsBtn->setPosition({ -22, - ( (winSize.height / 2) - 25 ) });
+    settingsBtn->setSizeMult(1.2f);
 
     auto infoBtn = gd::CCMenuItemSpriteExtra::create(
         CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png"),
@@ -146,7 +170,7 @@ void CustomCreatorLayer::onInfo(CCObject* object) {
         "OK", 
         nullptr,
         400,
-        "<cy>Featured:</c> Levels featured in Geometry Dash World\n<cg>Most liked:</c> \"Most Liked\" in Geometry Dash World,\nreal purpose unknown.\n\n<cl>Settings:</c> Opens the mod settings\n<cr>Update:</c> Opens the mod update menu"
+        "This is the main menu for all features related to the mod.\n\n<cy>Featured:</c> Levels featured in Geometry Dash World\n<cg>Most liked:</c> \"Most Liked\" in Geometry Dash World,\nreal purpose unknown.\n\n<cl>Settings:</c> Opens the mod settings\n<cr>Update:</c> Opens the mod update menu"
     )->show();
 }
 

@@ -32,7 +32,7 @@ bool CvoltonUpdateLayer::init(){
     if(!init) return false;
 
     auto title = CCLabelBMFont::create("Update available!", "bigFont.fnt");
-    title->setPosition({0,125});
+    title->setPosition({0,120});
     m_pButtonMenu->addChild(title);
 
     /*auto userName = CCLabelBMFont::create("Epic GMD Mod", "goldFont.fnt");
@@ -44,7 +44,7 @@ bool CvoltonUpdateLayer::init(){
     descBg->setContentSize({340,55});
     descBg->setColor({130,64,33});
     m_pButtonMenu->addChild(descBg, -1);
-    descBg->setPosition({0,76});
+    descBg->setPosition({0,68});
 
     /*auto descText = level->getUnpackedLevelDescription();
     size_t descLength = descText.length();
@@ -58,22 +58,23 @@ bool CvoltonUpdateLayer::init(){
 
     auto description = gd::TextArea::create("chatFont.fnt", false, verStream.str().c_str(), 1, 295, 20, {0,0});
     //description->setScale(descDelimiter);
-    description->setPosition({429, 69});
+    description->setPosition({429, 61});
     m_pButtonMenu->addChild(description);
 
     cocos2d::extension::CCScale9Sprite* infoBg = cocos2d::extension::CCScale9Sprite::create("square02b_001.png", { 0.0f, 0.0f, 80.0f, 80.0f });
-    infoBg->setContentSize({340,148});
+    infoBg->setContentSize({340,125});
+    infoBg->setAnchorPoint({0.5f,1});
     //infoBg->setColor({130,64,33});
     //infoBg->setColor({191,114,62});
     infoBg->setColor({123,60,31});
     m_pButtonMenu->addChild(infoBg, -1);
-    infoBg->setPosition({0,-62});
+    infoBg->setPosition({0,4});
 
     std::ostringstream infoText;
     infoText << "\n<cj>Changelog</c>: \n" << "- Added amongus\n- Added sus\n- Added susamogus\n- Removed vents\n- Removed vents\n- Removed Herobrine";
 
     auto info = gd::TextArea::create("chatFont.fnt", false, infoText.str(), 1, 170, 20, {0,1});
-    info->setPosition({-163,24});
+    info->setPosition({-162,13.5f});
     info->setScale(0.8f);
     info->setAnchorPoint({0,1});
     m_pButtonMenu->addChild(info);
@@ -121,7 +122,7 @@ bool CvoltonUpdateLayer::init(){
         menu_selector(CvoltonUpdateLayer::onVisit)
     );
     webBtn->setSizeMult(1.2f);
-    webBtn->setPosition({-88,30});
+    webBtn->setPosition({-88,22});
     m_pButtonMenu->addChild(webBtn);
 
     auto updateBtnSprite = gd::ButtonSprite::create("Download Update", 150, true, "bigFont.fnt", "GJ_button_01.png", 25, 0.5f);
@@ -131,7 +132,7 @@ bool CvoltonUpdateLayer::init(){
         menu_selector(CvoltonUpdateLayer::onUpdate)
     );
     updateBtn->setSizeMult(1.2f);
-    updateBtn->setPosition({88,30});
+    updateBtn->setPosition({88,22});
     m_pButtonMenu->addChild(updateBtn);
 
     return true;
