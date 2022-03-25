@@ -2,7 +2,7 @@
 #include <gd.h>
 #include "../layers/CvoltonUpdateLayer.h"
 
-class CvoltonManager : cocos2d::CCNode {
+class CvoltonManager : gd::GManager {
 	inline static CvoltonManager* cvoltonManager = nullptr;
 	CvoltonManager();
 
@@ -17,6 +17,9 @@ public:
 	bool hasDoneUpdateCheck = false;
 
 	bool init();
+	void encodeDataTo(DS_Dictionary* data) override;
+    void dataLoaded(DS_Dictionary* data) override;
+    void firstLoad() override;
 	static CvoltonManager* sharedState(){
 	    if(cvoltonManager == nullptr){
 	        cvoltonManager = new CvoltonManager;

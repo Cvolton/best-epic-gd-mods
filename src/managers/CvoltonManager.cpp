@@ -9,14 +9,15 @@ bool CvoltonManager::init(){
     bool init = CCNode::init();
     if(!init) return false;
 
+    this->m_sFileName = "CCCvoltonManager.dat";
+
     nameDict = CCDictionary::createWithContentsOfFile("CV_destroyedUsers.plist");
     nameDict->retain();
 
-    std::ostringstream settingsPath;
-    settingsPath << CCFileUtils::sharedFileUtils()->getWritablePath() << "/CCCvoltonManager.dat";
-    //settingsDict = 
-    //CCDictionary::createWithContentsOfFile(settingsPath.str().c_str());
-    //settingsDict->retain();
+    settingsDict = CCDictionary::create();
+    settingsDict->retain();
+
+    this->setup();
 
     std::cout << "initing" << std::endl;
 
@@ -100,4 +101,25 @@ void CvoltonManager::downloadChangelog(CvoltonUpdateLayer* updateLayer){
 bool CvoltonManager::isUpToDate(){
     if(latestVer == "") return true;
     return version == latestVer;
+}
+
+void CvoltonManager::encodeDataTo(DS_Dictionary* data) {
+    data->setDictForKey("settings", settingsDict);
+    data->setStringForKey("versionString", version);
+
+    std::cout << "encodeDataTo";
+}
+void CvoltonManager::dataLoaded(DS_Dictionary* data) {
+    settingsDict = static_cast<CCDictionary*>(data->getObjectForKey("settings"));
+
+    std::cout << "dataLoaded - " << settingsDict->valueForKey("cv_test")->getCString();
+
+    this->save();
+}
+void CvoltonManager::firstLoad() {
+    settingsDict->setObject(CCString::createWithFormat("%i", true), "cv_test");
+
+    std::cout << "firstLoad";
+
+    this->save();
 }
