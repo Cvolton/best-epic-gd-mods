@@ -649,7 +649,7 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
 
     auto door = cast<CCMenuItemSpriteExtra*>(menu->getChildren()->objectAtIndex(12));
 
-    auto buttonSprite = gd::ButtonSprite::create("epic\ngmd\nmod", (int)(100*0.45), true, "bigFont.fnt", "GJ_button_01.png", 120*0.45f, 0.45f);
+    auto buttonSprite = gd::ButtonSprite::create("Mod\nStuff", (int)(100*0.45), true, "bigFont.fnt", "GJ_button_01.png", 120*0.45f, 0.45f);
     auto buttonButton = gd::CCMenuItemSpriteExtra::create(
         buttonSprite,
         self,
