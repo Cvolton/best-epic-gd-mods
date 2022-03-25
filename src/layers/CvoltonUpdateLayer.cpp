@@ -31,8 +31,9 @@ bool CvoltonUpdateLayer::init(){
     bool init = createBasics({440.0f, 290.0f}, menu_selector(CvoltonUpdateLayer::onClose));
     if(!init) return false;
 
-    auto title = CCLabelBMFont::create("Update available!", "bigFont.fnt");
+    title = CCLabelBMFont::create("Checking for updates!", "bigFont.fnt");
     title->setPosition({0,120});
+    title->limitLabelWidth(340, 1, 0);
     m_pButtonMenu->addChild(title);
 
     /*auto userName = CCLabelBMFont::create("Epic GMD Mod", "goldFont.fnt");
@@ -51,12 +52,8 @@ bool CvoltonUpdateLayer::init(){
     float descDelimiter = 1;
     if(descLength > 140) descLength = 140;
     if(descLength > 70) descDelimiter = ((((140 - descLength) / 140) * 0.3f) + 0.7f);*/
-    auto CM = CvoltonManager::sharedState();
 
-    std::ostringstream verStream;
-    verStream << "<cy>Installed: </c>" << CM->version << "<cg>Latest: </c>" << CM->latestVer;
-
-    auto description = gd::TextArea::create("chatFont.fnt", false, verStream.str().c_str(), 1, 295, 20, {0,0});
+    description = gd::TextArea::create("chatFont.fnt", false, "<cy>Installed: </c>Placeholder\n<cg>Latest: </c> Placeholder\n", 1, 295, 20, {0,0});
     //description->setScale(descDelimiter);
     description->setPosition({429, 61});
     m_pButtonMenu->addChild(description);
@@ -70,50 +67,22 @@ bool CvoltonUpdateLayer::init(){
     m_pButtonMenu->addChild(infoBg, -1);
     infoBg->setPosition({0,4});
 
-    std::ostringstream infoText;
-    infoText << "\n<cj>Changelog</c>: \n" << "- Added amongus\n- Added sus\n- Added susamogus\n- Removed vents\n- Removed vents\n- Removed Herobrine";
+    changelog = gd::TextArea::create("chatFont.fnt", false, "Changelog Placeholder Text", 1, 340, 20, {0,1});
+    changelog->setPosition({-162,0.f});
+    changelog->setScale(0.8f);
+    changelog->setAnchorPoint({0,1});
+    m_pButtonMenu->addChild(changelog);
+    changelog->setVisible(false);
 
-    auto info = gd::TextArea::create("chatFont.fnt", false, infoText.str(), 1, 170, 20, {0,1});
-    info->setPosition({-162,13.5f});
-    info->setScale(0.8f);
-    info->setAnchorPoint({0,1});
-    m_pButtonMenu->addChild(info);
+    changelogFailText = CCLabelBMFont::create("Load failed", "goldFont.fnt");
+    changelogFailText->setPosition({0,-50});
+    m_pButtonMenu->addChild(changelogFailText);
+    changelogFailText->setVisible(false);
 
-    /*std::ostringstream uploadedText;
-    uploadedText << "Uploaded: " << level->uploadDate << " ago";
-    createTextLabel(uploadedText.str(), {0,0}, 0.5f, m_pButtonMenu);*/
-
-    /*createTextLabel("Requested Rate:", {88,-1}, 0.5f, m_pButtonMenu);
-
-    auto diffSprite = CCSprite::createWithSpriteFrameName(getDifficultyIcon(level->starsRequested));
-    diffSprite->setPosition({88,-57});
-    m_pButtonMenu->addChild(diffSprite, 1);
-
-    if(level->starsRequested > 0){
-        auto featureSprite = CCSprite::createWithSpriteFrameName("GJ_featuredCoin_001.png");
-        featureSprite->setPosition({88,-57});
-        m_pButtonMenu->addChild(featureSprite);
-        //infoSprite->setScale(0.7f);
-
-        auto starsLabel = createTextLabel(std::to_string(level->starsRequested), {88, -87}, 0.4f, m_pButtonMenu);
-        starsLabel->setAnchorPoint({1,0.5});
-
-        auto diffSprite = CCSprite::createWithSpriteFrameName("star_small01_001.png");
-        diffSprite->setPosition({95,-87});
-        m_pButtonMenu->addChild(diffSprite);
-    }
-
-    /*
-        thanks to Alphalaneous for quick UI improvement concept lol
-    */
-
-    /*auto separator = CCSprite::createWithSpriteFrameName("floorLine_001.png");
-    separator->setPosition({6,-57});
-    separator->setScaleX(0.3f);
-    separator->setScaleY(1);
-    separator->setOpacity(100);
-    separator->setRotation(90);
-    m_pButtonMenu->addChild(separator);*/
+    circle = gd::LoadingCircle::create();
+    m_pButtonMenu->addChild(circle);
+    circle->setPosition({-286,-217});
+    circle->show();
 
     auto websiteSprite = gd::ButtonSprite::create("Visit Website", 150, true, "bigFont.fnt", "GJ_button_01.png", 25, 0.5f);
     auto webBtn = gd::CCMenuItemSpriteExtra::create(
@@ -135,7 +104,31 @@ bool CvoltonUpdateLayer::init(){
     updateBtn->setPosition({88,22});
     m_pButtonMenu->addChild(updateBtn);
 
+    downloadChangelog();
+    showVersion();
+
     return true;
+}
+
+void CvoltonUpdateLayer::downloadChangelog(){
+    auto CM = CvoltonManager::sharedState();
+
+    if(CM->changelog == "" || CM->latestVer == "") CM->downloadChangelog(this);
+    else onLoadFinished();
+}
+
+void CvoltonUpdateLayer::showVersion(){
+    auto CM = CvoltonManager::sharedState();
+
+    std::ostringstream verStream;
+    verStream << "<cy>Installed: </c>" << CM->version << "<cg>Latest: </c>" << CM->latestVer;
+
+    if(CM->isUpToDate()) title->setString("Up to date!");
+    else title->setString("Update available!");
+
+    title->limitLabelWidth(340, 1, 0);
+
+    description->setString(verStream.str());
 }
 
 void CvoltonUpdateLayer::onUpdate(cocos2d::CCObject* sender)
@@ -146,6 +139,29 @@ void CvoltonUpdateLayer::onUpdate(cocos2d::CCObject* sender)
 void CvoltonUpdateLayer::onVisit(cocos2d::CCObject* sender)
 {
     CCApplication::sharedApplication()->openURL("https://geometrydash.eu/mods");
+}
+
+void CvoltonUpdateLayer::onLoadFailed()
+{
+    changelogFailText->setVisible(true);
+    circle->fadeAndRemove();
+}
+
+void CvoltonUpdateLayer::onLoadFinished()
+{
+    auto CM = CvoltonManager::sharedState();
+
+    if(CM->changelog == "" || CM->changelog.length() > 500){
+        onLoadFailed();
+        return;
+    }
+
+    changelog->setString(CM->changelog);
+    changelog->setVisible(true);
+
+    showVersion();
+
+    circle->fadeAndRemove();
 }
 
 CCLabelBMFont* CvoltonUpdateLayer::createTextLabel(const std::string text, const CCPoint& position, const float scale, CCNode* menu, const char* font){

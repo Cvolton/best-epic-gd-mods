@@ -32,6 +32,7 @@ bool CustomCreatorLayer::init() {
     
     auto winSize = CCDirector::sharedDirector()->getWinSize();
     auto size = backgroundSprite->getContentSize();
+    auto CM = CvoltonManager::sharedState();
     
     backgroundSprite->setScale(winSize.width / size.width);
     //backgroundSprite->setScaleX(winSize.width / size.width);
@@ -64,7 +65,7 @@ bool CustomCreatorLayer::init() {
     auto menu = CCMenu::create();
     //menu->setPosition({winSize.width / 2, winSize.height / 2});
     addChild(menu);
-    auto label = CCLabelBMFont::create(CvoltonManager::modName, "goldFont.fnt");
+    auto label = CCLabelBMFont::create(CM->modName, "goldFont.fnt");
 
     label->setPosition({winSize.width / 2, winSize.height - 25});
 
@@ -100,7 +101,7 @@ bool CustomCreatorLayer::init() {
     searchBtn->setSizeMult(1.2f);
 
     auto updateBtn = gd::CCMenuItemSpriteExtra::create(
-        CCSprite::createWithSpriteFrameName("GJ_downloadBtn_001.png"),
+        CCSprite::createWithSpriteFrameName(CM->isUpToDate() ? "GJ_getSongInfoBtn_001.png" : "GJ_downloadBtn_001.png"),
         this,
         menu_selector(CustomCreatorLayer::onUpdate)
     );
