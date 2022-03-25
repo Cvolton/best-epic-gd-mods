@@ -1,5 +1,6 @@
 #include "CustomCreatorLayer.h"
 #include "CvoltonUpdateLayer.h"
+#include "LevelIDLayer.h"
 #include "../managers/CvoltonManager.h"
 
 using namespace gd;
@@ -94,7 +95,7 @@ bool CustomCreatorLayer::init() {
     auto searchBtn = gd::CCMenuItemSpriteExtra::create(
         CCSprite::createWithSpriteFrameName("GJ_searchBtn_001.png"),
         this,
-        menu_selector(CustomCreatorLayer::onMostLiked)
+        menu_selector(CustomCreatorLayer::onSearch)
     );
     menu->addChild(searchBtn);
     searchBtn->setPosition({120,2.5f}); //i have no idea why the texture is misaligned theyre the same res
@@ -173,6 +174,10 @@ void CustomCreatorLayer::onInfo(CCObject* object) {
         400,
         "This is the main menu for all features related to the mod.\n\n<cy>Featured:</c> Levels featured in Geometry Dash World\n<cg>Most liked:</c> \"Most Liked\" in Geometry Dash World,\nreal purpose unknown.\n\n<cl>Settings:</c> Opens the mod settings\n<cr>Update:</c> Opens the mod update menu"
     )->show();
+}
+
+void CustomCreatorLayer::onSearch(CCObject* object) {
+    LevelIDLayer::create()->show();
 }
 
 void CustomCreatorLayer::onFeatured(CCObject* object) {
