@@ -72,6 +72,12 @@ void CvoltonManager::onChangelogHttpResponse(CCHttpClient* client, CCHttpRespons
 CvoltonManager::CvoltonManager(){}
 
 void CvoltonManager::doUpdateCheck(){
+    if(getOption("no_update_check")) return;
+
+    forceUpdateCheck();
+}
+
+void CvoltonManager::forceUpdateCheck(){
     if(hasDoneUpdateCheck) return;
 
     doUpdateHttpRequest();
@@ -86,7 +92,7 @@ const char* CvoltonManager::getUserName(int id){
 
 void CvoltonManager::downloadChangelog(CvoltonUpdateLayer* updateLayer){
     updateLayer->retain();
-    doUpdateCheck();
+    forceUpdateCheck();
 
     CCHttpRequest* request = new CCHttpRequest;
     request->setUrl("https://cvolton.eu/gdmods/api/more-button/changelog/latest/");

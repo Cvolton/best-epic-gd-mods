@@ -32,6 +32,7 @@ public:
 	void onChangelogHttpResponse(cocos2d::extension::CCHttpClient* client, cocos2d::extension::CCHttpResponse* response);
 	void doUpdateHttpRequest();
 	void doUpdateCheck();
+	void forceUpdateCheck();
 	void downloadChangelog(CvoltonUpdateLayer* updateLayer);
 	bool isUpToDate();
 	bool getOption(std::string option);

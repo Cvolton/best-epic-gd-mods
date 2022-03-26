@@ -554,7 +554,11 @@ void __fastcall LevelInfoLayer_onLevelInfo(LevelInfoLayer* self, void* a, CCObje
 }
 
 void __fastcall InfoLayer_onLevelInfo(InfoLayer* self, void* a, CCObject* sender) {
-    //MHook::getOriginal(CommentCell_loadFromComment)(self, a, b);
+    auto CM = CvoltonManager::sharedState();
+    if(CM->getOption("no_level_info")){
+        MHook::getOriginal(InfoLayer_onLevelInfo)(self, a, sender);
+        return;
+    }
 
     auto level = self->m_pLevel;
 
@@ -565,11 +569,12 @@ void __fastcall InfoLayer_onLevelInfo(InfoLayer* self, void* a, CCObject* sender
 
 void __fastcall GameLevelManager_userNameForUserID(void* a, void* b, std::string* userName, int userID) {
     MHook::getOriginal(GameLevelManager_userNameForUserID)(a, b, userName, userID);
-
     //if i don't clone the string then unmodified strings have a slight chance of crashing the game and i have no idea why
     auto newString = std::string(*userName);
 
-    if(newString == "" || newString == "-"){
+    auto CM = CvoltonManager::sharedState();
+
+    if(!CM->getOption("no_green_user") && (newString == "" || newString == "-")){
         auto CM = CvoltonManager::sharedState();
         newString = CM->getUserName(userID);
     }
