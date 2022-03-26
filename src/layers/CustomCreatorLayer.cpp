@@ -1,5 +1,6 @@
 #include "CustomCreatorLayer.h"
 #include "CvoltonUpdateLayer.h"
+#include "CvoltonOptionsLayer.h"
 #include "LevelIDLayer.h"
 #include "../managers/CvoltonManager.h"
 
@@ -115,7 +116,7 @@ bool CustomCreatorLayer::init() {
     auto settingsBtn = gd::CCMenuItemSpriteExtra::create(
         settingsSprite,
         this,
-        menu_selector(CustomCreatorLayer::onUpdate)
+        menu_selector(CustomCreatorLayer::onSettings)
     );
     menu->addChild(settingsBtn);
     settingsBtn->setPosition({ -22, - ( (winSize.height / 2) - 25 ) });
@@ -201,6 +202,10 @@ void CustomCreatorLayer::onMostLiked(CCObject* object) {
 void CustomCreatorLayer::onUpdate(CCObject* object) {
     auto layer = CvoltonUpdateLayer::create();
     layer->show();
+}
+
+void CustomCreatorLayer::onSettings(CCObject* object) {
+    CvoltonOptionsLayer::create()->show();
 }
 
 CCScene* CustomCreatorLayer::scene() {

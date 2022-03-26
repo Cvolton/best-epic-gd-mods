@@ -110,7 +110,9 @@ void CvoltonManager::encodeDataTo(DS_Dictionary* data) {
     std::cout << "encodeDataTo";
 }
 void CvoltonManager::dataLoaded(DS_Dictionary* data) {
+    settingsDict->release();
     settingsDict = static_cast<CCDictionary*>(data->getObjectForKey("settings"));
+    settingsDict->retain();
 
     std::cout << "dataLoaded - " << settingsDict->valueForKey("cv_test")->getCString();
 
@@ -120,6 +122,14 @@ void CvoltonManager::firstLoad() {
     settingsDict->setObject(CCString::createWithFormat("%i", true), "cv_test");
 
     std::cout << "firstLoad";
+
+    this->save();
+}
+bool CvoltonManager::getOption(std::string option){
+    return settingsDict->valueForKey(option)->boolValue();
+}
+void CvoltonManager::toggleOption(std::string option){
+    settingsDict->setObject(CCString::createWithFormat("%i", !getOption(option)), option);
 
     this->save();
 }

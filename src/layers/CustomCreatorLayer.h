@@ -12,6 +12,7 @@ protected:
     void onUpdate(cocos2d::CCObject*);
     void onInfo(cocos2d::CCObject*);
     void onSearch(cocos2d::CCObject*);
+    void onSettings(cocos2d::CCObject*);
 public:
     static CustomCreatorLayer* create();
     static cocos2d::CCScene* scene();

@@ -34,5 +34,7 @@ public:
 	void doUpdateCheck();
 	void downloadChangelog(CvoltonUpdateLayer* updateLayer);
 	bool isUpToDate();
+	bool getOption(std::string option);
+	void toggleOption(std::string option);
 	const char* getUserName(int id);
 };
