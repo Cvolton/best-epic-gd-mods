@@ -172,7 +172,7 @@ void CustomCreatorLayer::onInfo(CCObject* object) {
         CvoltonManager::modName, 
         "OK", 
         nullptr,
-        400,
+        450,
         "This is the main menu for all features related to the mod.\n\n<cy>Featured:</c> Levels featured in Geometry Dash World\n<cg>Most liked:</c> \"Most Liked\" in Geometry Dash World,\nreal purpose unknown.\n<cj>Search:</c> View comments of any level ID.\n\n<cl>Settings:</c> Opens the mod settings\n<cr>Update:</c> Opens the mod update menu"
     )->show();
 }
