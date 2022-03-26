@@ -22,6 +22,7 @@ CvoltonOptionsLayer* CvoltonOptionsLayer::create(){
 
 void CvoltonOptionsLayer::onClose(cocos2d::CCObject* sender)
 {
+    destroyToggles();
     setKeypadEnabled(false);
     removeFromParentAndCleanup(true);
 }
@@ -30,12 +31,11 @@ bool CvoltonOptionsLayer::init(){
     bool init = createBasics({300.0f, 200.0f}, menu_selector(CvoltonOptionsLayer::onClose), 0.8f);
     if(!init) return false;
 
-    createTextLabel("Mod Settings", {0,78}, 0.7f, m_pButtonMenu, "goldFont.fnt");
+    auto winSize = CCDirector::sharedDirector()->getWinSize();
 
-    createToggle("cv_test", "Test toggle :D");
-    createToggle("no_update_check", "Disable Update Check");
-    createToggle("no_green_user", "Disable Green Username Fix");
-    createToggle("no_level_info", "Disable Extended Level Info");
+    createTextLabel("Mod Settings", {(winSize.width / 2),(winSize.height / 2) + 78}, 0.7f, m_pLayer, "goldFont.fnt");
+
+    drawToggles();
 
     return true;
 }
@@ -53,6 +53,9 @@ void CvoltonOptionsLayer::onToggle(cocos2d::CCObject* sender)
     auto button = static_cast<CCMenuItemSpriteExtra*>(sender);
     auto CM = CvoltonManager::sharedState();
     CM->toggleOption(static_cast<CCString*>(button->getUserData())->getCString());
+
+    destroyToggles();
+    drawToggles();
     
 }
 
@@ -76,4 +79,25 @@ void CvoltonOptionsLayer::createToggle(const char* option, const char* name){
 
     auto label = createTextLabel(name, {-107, y}, 0.5f, m_pButtonMenu);
     label->setAnchorPoint({0,0.5f});
+}
+
+void CvoltonOptionsLayer::destroyToggles(){
+    //starting at 1 because 0 is the close button
+    unsigned int totalMembers = m_pButtonMenu->getChildrenCount();
+    for(unsigned int i = 1; i < totalMembers; i++){
+        //static index 1 because we're actively moving the elements
+        auto object = static_cast<CCNode*>(m_pButtonMenu->getChildren()->objectAtIndex(1));
+        auto userData = object->getUserData();
+        if(userData != nullptr) static_cast<CCString*>(userData)->release();
+        //m_pButtonMenu->removeChild(object, false);
+        object->removeFromParent();
+    }
+    toggleCount = 0;
+}
+
+void CvoltonOptionsLayer::drawToggles(){
+    createToggle("cv_test", "Test toggle :D");
+    createToggle("no_update_check", "Disable Update Check");
+    createToggle("no_green_user", "Disable Green Username Fix");
+    createToggle("no_level_info", "Disable Extended Level Info");
 }
