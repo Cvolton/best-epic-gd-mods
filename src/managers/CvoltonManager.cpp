@@ -120,13 +120,9 @@ void CvoltonManager::dataLoaded(DS_Dictionary* data) {
     settingsDict = static_cast<CCDictionary*>(data->getObjectForKey("settings"));
     settingsDict->retain();
 
-    std::cout << "dataLoaded - " << settingsDict->valueForKey("cv_test")->getCString();
-
     this->save();
 }
 void CvoltonManager::firstLoad() {
-    settingsDict->setObject(CCString::createWithFormat("%i", true), "cv_test");
-
     std::cout << "firstLoad";
 
     this->save();

@@ -96,7 +96,6 @@ void CvoltonOptionsLayer::destroyToggles(){
 }
 
 void CvoltonOptionsLayer::drawToggles(){
-    createToggle("cv_test", "Test toggle :D");
     createToggle("no_update_check", "Disable Update Check");
     createToggle("no_green_user", "Disable Green Username Fix");
     createToggle("no_level_info", "Disable Extended Level Info");
