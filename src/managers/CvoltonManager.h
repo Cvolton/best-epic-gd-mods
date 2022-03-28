@@ -9,7 +9,7 @@ class CvoltonManager : gd::GManager {
 
 public:
 	inline static const char* version = "v2.0.0-beta\n";
-	inline static const char* modName = "Cvolton's Tweaks";
+	inline static const char* modName = "BetterInfo";
 	std::string latestVer;
 	std::string changelog;
 	cocos2d::CCDictionary* nameDict;
