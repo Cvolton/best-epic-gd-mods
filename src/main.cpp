@@ -701,11 +701,11 @@ void setupPageLimitBypass(){
 
 DWORD WINAPI my_thread(void* hModule) {
 
-    AllocConsole();
+    /*AllocConsole();
     std::ofstream conout("CONOUT$", std::ios::out);
     std::ifstream conin("CONIN$", std::ios::in);
     std::cout.rdbuf(conout.rdbuf());
-    std::cin.rdbuf(conin.rdbuf());
+    std::cin.rdbuf(conin.rdbuf());*/
 
 
     MH_Initialize();
@@ -736,13 +736,13 @@ DWORD WINAPI my_thread(void* hModule) {
     MH_EnableHook(MH_ALL_HOOKS);
 
 
-    std::getline(std::cin, std::string());
+    /*std::getline(std::cin, std::string());
 
     MH_Uninitialize();
     conout.close();
     conin.close();
     FreeConsole();
-    FreeLibraryAndExitThread(cast<HMODULE>(hModule), 0);
+    FreeLibraryAndExitThread(cast<HMODULE>(hModule), 0);*/
 
     return 0;
 }

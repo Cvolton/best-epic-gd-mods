@@ -27,6 +27,9 @@ bool CustomCreatorLayer::init() {
     std::ostringstream bgStream;
     bgStream << "game_bg_" << backgrounds[bgNumber] << "_001.png";*/
 
+    CCTextureCache::sharedTextureCache()->addImage("BI_GameSheet.png", 0);
+    CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("BI_GameSheet.plist");
+
     auto backgroundSprite = CCSprite::create("game_bg_14_001.png"); //stones bg
     //auto backgroundSprite = CCSprite::create("GJ_gradientBG.png"); //rob bg
     //auto backgroundSprite = CCSprite::create(bgStream.str().c_str());
@@ -74,7 +77,7 @@ bool CustomCreatorLayer::init() {
     addChild(label);
 
     auto featuredBtn = gd::CCMenuItemSpriteExtra::create(
-        CCSprite::create("CV_featuredBtn_001.png"),
+        CCSprite::createWithSpriteFrameName("BI_featuredBtn_001.png"),
         this,
         menu_selector(CustomCreatorLayer::onFeatured)
     );
@@ -85,7 +88,7 @@ bool CustomCreatorLayer::init() {
     //CCTextureCache::sharedTextureCache()->addImage("mostliked.png", 0);
 
     auto mostLikedBtn = gd::CCMenuItemSpriteExtra::create(
-        CCSprite::create("CV_mostLikedBtn_001.png"),
+        CCSprite::createWithSpriteFrameName("BI_mostLikedBtn_001.png"),
         this,
         menu_selector(CustomCreatorLayer::onMostLiked)
     );

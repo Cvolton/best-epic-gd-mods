@@ -11,7 +11,7 @@ bool CvoltonManager::init(){
 
     this->m_sFileName = "CCCvoltonManager.dat";
 
-    nameDict = CCDictionary::createWithContentsOfFile("CV_destroyedUsers.plist");
+    nameDict = CCDictionary::createWithContentsOfFile("BI_destroyedUsers.plist");
     nameDict->retain();
 
     settingsDict = CCDictionary::create();
