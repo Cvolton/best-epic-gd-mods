@@ -9,7 +9,7 @@ bool CvoltonManager::init(){
     bool init = CCNode::init();
     if(!init) return false;
 
-    this->m_sFileName = "CCCvoltonManager.dat";
+    this->m_sFileName = "CCBetterInfo.dat";
 
     nameDict = CCDictionary::createWithContentsOfFile("BI_destroyedUsers.plist");
     nameDict->retain();
@@ -26,7 +26,7 @@ bool CvoltonManager::init(){
 
 void CvoltonManager::doUpdateHttpRequest(){
 	CCHttpRequest* request = new CCHttpRequest;
-    request->setUrl("https://cvolton.eu/gdmods/api/more-button/version/");
+    request->setUrl("https://cvolton.eu/gdmods/api/betterinfo/version/");
     request->setRequestType(CCHttpRequest::HttpRequestType::kHttpPost);
     request->setResponseCallback(this, httpresponse_selector(CvoltonManager::onUpdateHttpResponse));
     CCHttpClient::getInstance()->send(request);
@@ -95,7 +95,7 @@ void CvoltonManager::downloadChangelog(CvoltonUpdateLayer* updateLayer){
     forceUpdateCheck();
 
     CCHttpRequest* request = new CCHttpRequest;
-    request->setUrl("https://cvolton.eu/gdmods/api/more-button/changelog/latest/");
+    request->setUrl("https://cvolton.eu/gdmods/api/betterinfo/changelog/latest/");
     request->setRequestType(CCHttpRequest::HttpRequestType::kHttpPost);
     request->setUserData(updateLayer);
     request->setResponseCallback(this, httpresponse_selector(CvoltonManager::onChangelogHttpResponse));

@@ -134,7 +134,7 @@ void CvoltonUpdateLayer::showVersion(){
 
 void CvoltonUpdateLayer::onUpdate(cocos2d::CCObject* sender)
 {
-    CCApplication::sharedApplication()->openURL("https://www.innersloth.com/games/among-us/");
+    CCApplication::sharedApplication()->openURL("https://cvolton.eu/gdmods/betterinfo/download/");
 }
 
 void CvoltonUpdateLayer::onVisit(cocos2d::CCObject* sender)
