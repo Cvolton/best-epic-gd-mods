@@ -208,6 +208,7 @@ void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJCommen
 
     auto layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(1));
     auto playerName = cast<CCLabelBMFont*>(layer->getChildren()->objectAtIndex(2));
+    auto winSize = CCDirector::sharedDirector()->getWinSize();
     if(b->m_nAuthorAccountID == 0){
         if(strlen(playerName->getString()) == 0){
             std::stringstream contentStream;
@@ -227,8 +228,8 @@ void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJCommen
                     menu_selector(GamingButton::onMoreComment)
                 );
                 buttonButton->setSizeMult(1.2f);
-                buttonButton->setPosition(-254, smallCommentsMode ? -141.5f : -109.5f);
-                buttonButton->setAnchorPoint(CCPoint(0,0));
+                buttonButton->setPosition(37 - (winSize.width / 2), smallCommentsMode ? 18.5f - (winSize.height / 2) : 50.5f - (winSize.height / 2) );
+                buttonButton->setAnchorPoint({0.1f,0});
                 buttonButton->setEnabled(true);
                 menu->addChild(buttonButton);
             }
