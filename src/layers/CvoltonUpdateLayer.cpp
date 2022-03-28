@@ -55,7 +55,8 @@ bool CvoltonUpdateLayer::init(){
 
     description = gd::TextArea::create("chatFont.fnt", false, "<cy>Installed: </c>Placeholder\n<cg>Latest: </c> Placeholder\n", 1, 295, 20, {0,0});
     //description->setScale(descDelimiter);
-    description->setPosition({429, 61});
+    description->setAnchorPoint({0,0});
+    description->setPosition({-161, 50});
     m_pButtonMenu->addChild(description);
 
     cocos2d::extension::CCScale9Sprite* infoBg = cocos2d::extension::CCScale9Sprite::create("square02b_001.png", { 0.0f, 0.0f, 80.0f, 80.0f });
