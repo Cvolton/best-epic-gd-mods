@@ -100,9 +100,9 @@ std::string ExtendedLevelInfo::workingTime(int value){
     int seconds = value % 60;
 
     std::ostringstream stream;
-    if(hours > 0) stream << hours << " h ";
-    if(minutes > 0) stream << minutes << " min ";
-    stream << seconds << " s";
+    if(hours > 0) stream << hours << "h ";
+    if(minutes > 0) stream << minutes << "m ";
+    stream << seconds << "s";
 
     return stream.str();
 }
@@ -152,6 +152,7 @@ bool ExtendedLevelInfo::init(){
         << "\n<cj>Updated</c>: " << stringDate(level->updateDate)
         //<< "\n<cy>Stars Requested</c>: " << level->starsRequested
         << "\n<cg>Original</c>: " << zeroIfNA(level->originalLevel)
+        //<< "\n<cg>Feature score</c>: " << zeroIfNA(level->featured)
         << "\n<cy>Game Version</c>: " << getGameVersionName(level->gameVersion)
         //<< "\nFeature Score</c>: " << level->featured
         << "\n<co>Password</c>: " << passwordString(levelPassword)
@@ -159,7 +160,8 @@ bool ExtendedLevelInfo::init(){
         << "\n<cr>Editor (C)</c>: " << workingTime(level->workingTime2);
 
     auto info = gd::TextArea::create("chatFont.fnt", false, infoText.str(), 1, 170, 20, {0,1});
-    info->setPosition({154,-39});
+    info->setPosition({-160.5,26});
+    info->setAnchorPoint({0,1});
     info->setScale(0.925f);
     m_pButtonMenu->addChild(info);
 
