@@ -51,10 +51,10 @@ void UnregisteredProfileLayer::onMyLevels(CCObject* sender) {
 
 void UnregisteredProfileLayer::onCommentHistory(CCObject* sender) {
     InfoLayer* infoLayer = InfoLayer::create(nullptr, score);
-    infoLayer->setParentFLAlert(this);
-    this->m_pTarget = infoLayer;
+    //infoLayer->setParentFLAlert(this);
+    //this->m_pTarget = infoLayer;
     infoLayer->show();
-    //onClose(sender);
+    onClose(sender);
 }
 
 bool UnregisteredProfileLayer::init(){
