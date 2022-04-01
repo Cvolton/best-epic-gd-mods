@@ -567,20 +567,20 @@ void __fastcall InfoLayer_onLevelInfo(InfoLayer* self, void* a, CCObject* sender
 
 }
 
-void __fastcall GameLevelManager_userNameForUserID(void* a, void* b, std::string* userName, int userID) {
-    MHook::getOriginal(GameLevelManager_userNameForUserID)(a, b, userName, userID);
+std::string* __fastcall GameLevelManager_userNameForUserID(void* a, void* b, std::string* userName, int userID) {
+    auto original = MHook::getOriginal(GameLevelManager_userNameForUserID)(a, b, userName, userID);
     //if i don't clone the string then unmodified strings have a slight chance of crashing the game and i have no idea why
-    auto newString = std::string(*userName);
+    //auto newString = std::string(*userName);
 
     auto CM = CvoltonManager::sharedState();
 
-    if(!CM->getOption("no_green_user") && (newString == "" || newString == "-")){
+    if(!CM->getOption("no_green_user") && (*userName == "" || *userName == "-")){
         auto CM = CvoltonManager::sharedState();
-        newString = CM->getUserName(userID);
+        *userName = CM->getUserName(userID);
     }
     //std::cout << userID << " " << newString << std::endl;
 
-    *userName = newString;
+    //*userName = newString;
 
     /*switch(userID){
         case 248868:
@@ -605,6 +605,8 @@ void __fastcall GameLevelManager_userNameForUserID(void* a, void* b, std::string
             *userName = "diamond";
             break;
     }*/
+
+    return original;
 }
 
 void __fastcall InfoLayer_setupCommentsBrowser(InfoLayer* self, void* a, CCArray* a3) {
