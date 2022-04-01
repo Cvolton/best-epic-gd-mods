@@ -39,19 +39,19 @@ setup_mod(capacity-fix src_other/capacity-fix.cpp)
 
 setup_mod(geometricka-pomlcka src_other/geometricka-pomlcka.cpp)
 
-#TODO: separate mini mods and more-button completely
-#more-button setup
+#TODO: separate mini mods and betterinfo completely
+#betterinfo setup
 file(
   GLOB_RECURSE SOURCE_FILES
   src/*.cpp
 )
 
-add_library(more-button SHARED ${SOURCE_FILES})
+add_library(betterinfo SHARED ${SOURCE_FILES})
 
-target_include_directories(more-button PRIVATE libraries/minhook/include libraries/gd.h libraries/gd.h/include)
-target_link_libraries(more-button minhook cocos2d)
-target_link_options(more-button PRIVATE "/OPT:REF,NOICF")
-#end more-button
+target_include_directories(betterinfo PRIVATE libraries/minhook/include libraries/gd.h libraries/gd.h/include)
+target_link_libraries(betterinfo minhook cocos2d)
+target_link_options(betterinfo PRIVATE "/OPT:REF,NOICF")
+#end betterinfo
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
   # ensure 32 bit on clang
