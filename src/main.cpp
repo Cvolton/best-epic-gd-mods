@@ -539,7 +539,9 @@ void __fastcall LevelInfoLayer_onLevelInfo(LevelInfoLayer* self, void* a, CCObje
     std::ostringstream contentStream;
     contentStream << "<cg>Total Attempts</c>: " << level->attempts
         << "\n<cl>Total Jumps</c>: " << level->jumps
-        //<< "\n<co>Total Clicks</c>: " << level->clicks // the contents of this variable make no sense to me
+        << "\n<co>Clicks (best att.)</c>: " << level->clicks // the contents of this variable make no sense to me
+        << "\n<co>Time (best att.)</c>: " << ExtendedLevelInfo::workingTime(level->attemptTime) // the contents of this variable make no sense to me
+        << "\n<co>Is legit</c>: " << level->isCompletionLegitimate // the contents of this variable make no sense to me
         << "\n<cp>Normal</c>: " << level->normalPercent
         << "%\n<co>Practice</c>: " << level->practicePercent << "%";
 
