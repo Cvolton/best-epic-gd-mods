@@ -8,6 +8,7 @@
 #include <gd.h>
 #include <typeinfo>
 #include <cstring>
+#include <deque>
 #include "utils.hpp"
 
 #include "layers/UnregisteredProfileLayer.h"
@@ -518,20 +519,27 @@ void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJCommen
 
 }
 
-std::string printableProgress(std::string personalBests){
-    std::ostringstream contentStream;
-    int percentage = 0;
+std::string printableProgress(std::string personalBests, int percentage){
 
     std::stringstream bestsStream(personalBests);
     std::string currentBest;
+    std::deque<int> progresses;
     while(getline(bestsStream, currentBest, ',')){
         try {
-            percentage += std::stoi(currentBest);
-            contentStream << percentage << "% ";
+            progresses.push_front(std::stoi(currentBest));
+            //contentStream << percentage << "% ";
         }catch(...){}
     }
+    std::string printable;
+    //std::reverse(std::begin(progresses), std::end(progresses));
+    for(auto i : progresses){
+        //contentStream << percentage << "% ";
+        //printable.insert(0, std::format("{}% ", percentage));
+        printable = std::to_string(percentage) + "% " + printable;
+        percentage -= i;
+    }
 
-    return contentStream.str();
+    return printable;
 }
 
 void __fastcall LevelInfoLayer_onLevelInfo(LevelInfoLayer* self, void* a, CCObject* sender) {
@@ -541,13 +549,13 @@ void __fastcall LevelInfoLayer_onLevelInfo(LevelInfoLayer* self, void* a, CCObje
         << "\n<cl>Total Jumps</c>: " << level->jumps
         << "\n<co>Clicks (best att.)</c>: " << level->clicks // the contents of this variable make no sense to me
         << "\n<co>Time (best att.)</c>: " << ExtendedLevelInfo::workingTime(level->attemptTime) // the contents of this variable make no sense to me
-        << "\n<co>Is legit</c>: " << level->isCompletionLegitimate // the contents of this variable make no sense to me
+        //<< "\n<co>Is legit</c>: " << level->isCompletionLegitimate // the contents of this variable make no sense to me
         << "\n<cp>Normal</c>: " << level->normalPercent
         << "%\n<co>Practice</c>: " << level->practicePercent << "%";
 
     if(level->orbCompletion != level->newNormalPercent2) contentStream << "\n<cj>2.1 Normal</c>: " << level->orbCompletion << "%";
     if(level->newNormalPercent2 != level->normalPercent) contentStream << "\n<cr>2.11 Normal</c>: " << level->newNormalPercent2 << "%";
-    if(level->personalBests != "") contentStream << "\n\n<cy>Progresses</c>: " << printableProgress(level->personalBests);
+    if(level->personalBests != "") contentStream << "\n\n<cy>Progresses</c>: " << printableProgress(level->personalBests, level->newNormalPercent2);
     //contentStream << "\n\nProgresses: " << level->personalBests;
 
     //if(score->getUserID() == 6330800) contentStream << "\n\nThis user is epic!";
