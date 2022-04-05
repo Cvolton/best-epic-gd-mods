@@ -8,7 +8,7 @@ class CvoltonManager : gd::GManager {
 
 
 public:
-	inline static const char* version = "v2.0.1\n";
+	inline static const char* version = "v2.0.1-test\n";
 	inline static const char* modName = "BetterInfo";
 	std::string latestVer;
 	std::string changelog;
