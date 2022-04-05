@@ -3,6 +3,7 @@
 
 #include <cocos2d.h>
 #include <gd.h>
+#include <deque>
 
 using namespace cocos2d;
 using namespace gd;
@@ -107,6 +108,29 @@ std::string ExtendedLevelInfo::workingTime(int value){
     return stream.str();
 }
 
+std::string ExtendedLevelInfo::printableProgress(std::string personalBests, int percentage){
+
+    std::stringstream bestsStream(personalBests);
+    std::string currentBest;
+    std::deque<int> progresses;
+    while(getline(bestsStream, currentBest, ',')){
+        try {
+            progresses.push_front(std::stoi(currentBest));
+            //contentStream << percentage << "% ";
+        }catch(...){}
+    }
+    std::string printable;
+    //std::reverse(std::begin(progresses), std::end(progresses));
+    for(auto i : progresses){
+        //contentStream << percentage << "% ";
+        //printable.insert(0, std::format("{}% ", percentage));
+        printable = std::to_string(percentage) + "% " + printable;
+        percentage -= i;
+    }
+
+    return printable;
+}
+
 bool ExtendedLevelInfo::init(){
     bool init = createBasics({440.0f, 290.0f}, menu_selector(ExtendedLevelInfo::onClose));
     if(!init) return false;
@@ -159,11 +183,30 @@ bool ExtendedLevelInfo::init(){
         << "\n<cr>In Editor</c>: " << workingTime(level->workingTime)
         << "\n<cr>Editor (C)</c>: " << workingTime(level->workingTime2);
 
+    /*infoText << "<cg>Total Attempts</c>: " << level->attempts
+        << "\n<cl>Total Jumps</c>: " << level->jumps
+        << "\n<co>Clicks (best att.)</c>: " << level->clicks // the contents of this variable make no sense to me
+        << "\n<co>Time (best att.)</c>: " << ExtendedLevelInfo::workingTime(level->attemptTime) // the contents of this variable make no sense to me
+        //<< "\n<co>Is legit</c>: " << level->isCompletionLegitimate // the contents of this variable make no sense to me
+        << "\n<cp>Normal</c>: " << level->normalPercent
+        << "%\n<co>Practice</c>: " << level->practicePercent << "%";
+
+    if(level->orbCompletion != level->newNormalPercent2) infoText << "\n<cj>2.1 Normal</c>: " << level->orbCompletion << "%";
+    if(level->newNormalPercent2 != level->normalPercent) infoText << "\n<cr>2.11 Normal</c>: " << level->newNormalPercent2 << "%";*/
+
     auto info = gd::TextArea::create("chatFont.fnt", false, infoText.str(), 1, 170, 20, {0,1});
     info->setPosition({-160.5,26});
+    //info->setPosition({-160.5,10});
     info->setAnchorPoint({0,1});
     info->setScale(0.925f);
     m_pButtonMenu->addChild(info);
+
+    /*std::ostringstream progressText;
+    if(level->personalBests != "") progressText << "\n\n<cy>Progresses</c>:\n" << printableProgress(level->personalBests, level->newNormalPercent2);
+    auto progress = gd::TextArea::create("chatFont.fnt", false, progressText.str(), 0.8f, 130, 20, {0,1});
+    progress->setPosition({12,50});
+    progress->setAnchorPoint({0,1});
+    m_pButtonMenu->addChild(progress);*/
 
     /*std::ostringstream uploadedText;
     uploadedText << "Uploaded: " << level->uploadDate << " ago";
