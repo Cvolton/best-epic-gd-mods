@@ -270,6 +270,32 @@ public:
         jumpLayer->show();
     }
 
+    void onLeaderboardDaily(CCObject* sender){
+        auto self = cast<LevelLeaderboard*>(this);
+        auto level = gd::GJGameLevel::create();
+        level->levelID_rand = self->level->levelID_rand;
+        level->levelID_seed = self->level->levelID_seed;
+        level->levelID = self->level->levelID;
+        level->levelName = self->level->levelName;
+        level->dailyID_rand = !self->level->dailyID;
+        level->dailyID_seed = 0;
+        level->dailyID = !self->level->dailyID;
+        //GameLevelManager::sharedState()->m_pTimerDict->setObject(CCString::create("0"), "upd_11");
+        //GameLevelManager::sharedState()->m_pTimerDict->writeToFile("c:/users/brabe/documents/test.plist");
+        GameLevelManager::sharedState()->m_pTimerDict->removeAllObjects(); //this is equivalent to GLM::resetAllTimers() which I suspect is inlined on windows but i didn't bother checking
+        //auto obj = dynamic_cast<CCString*>(GameLevelManager::sharedState()->m_pTimerDict->objectForKey("upd_ll"));
+        //gd::FLAlertLayer::create(nullptr, "Level Stats", "OK", nullptr, std::to_string(GameLevelManager::sharedState()->m_weeklyTimeLeft))->show();
+        auto newLeaderboard = LevelLeaderboard::create(level, self->leaderboardType);
+        //newLeaderboard->show();
+        newLeaderboard->onUpdate(sender);
+        CCDirector::sharedDirector()->getRunningScene()->addChild(newLeaderboard);
+        self->onClose(sender);
+        /*self->level->release();
+        level->retain();
+        self->level = level;
+        self->onUpdate(sender);*/
+    }
+
 };
 
 bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, void* c) {
@@ -697,7 +723,7 @@ void __fastcall DailyLevelPage_updateTimers(DailyLevelPage* self, void* a, float
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
     std::ostringstream currentDaily;
-    currentDaily << "Current: #" << ((self->isWeekly) ? GM->m_weeklyID_ % 100000 : GM->m_dailyID_);
+    currentDaily << "Current: #" << ((self->isWeekly) ? GM->m_weeklyID % 100000 : GM->m_dailyID);
     auto currentDailyNode = CCLabelBMFont::create(currentDaily.str().c_str(), "chatFont.fnt");
     currentDailyNode->setPosition({(winSize.width / 2) + 183, (winSize.height / 2) + 51});
     currentDailyNode->setAnchorPoint({1,0});
@@ -705,6 +731,27 @@ void __fastcall DailyLevelPage_updateTimers(DailyLevelPage* self, void* a, float
     currentDailyNode->setColor({255,255,255});
     currentDailyNode->setOpacity(200);
     layer->addChild(currentDailyNode);
+}
+
+bool __fastcall LevelLeaderboard_init(LevelLeaderboard* self, void* a, GJGameLevel* level, int type) { //type is usually an enum but i dont have that rn
+    if(!MHook::getOriginal(LevelLeaderboard_init)(self, a, level, type)) return false;
+
+    CCLayer* layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(0));
+
+    //if(layer->getChildrenCount() > 11) return;
+    CCMenu* menu = cast<CCMenu*>(layer->getChildren()->objectAtIndex(5));
+
+    auto buttonSprite = gd::ButtonSprite::create((level->dailyID ? "Daily" : "Normal"), 20, true, "bigFont.fnt", "GJ_button_01.png", 30, 0.5);
+    auto buttonButton = gd::CCMenuItemSpriteExtra::create(
+        buttonSprite,
+        self,
+        menu_selector(GamingButton::onLeaderboardDaily)
+    );
+    buttonButton->setSizeMult(1.2f);
+    buttonButton->setPosition({196,-87});
+    menu->addChild(buttonButton);
+
+    return true;
 }
 
 void setupPageLimitBypass(){
@@ -716,6 +763,14 @@ void setupPageLimitBypass(){
     //This patches the amount of characters allowed in the text input in SetIDPopup to 6 characters
     unsigned char patch2[] = {0x06};
     WriteProcessMemory(proc, winapiBase + 0x14371C, patch2, 1, NULL);
+}
+
+void setupDailyNew(){
+    auto proc = GetCurrentProcess();
+    auto winapiBase = reinterpret_cast<char*>(base);
+    //This moves the position of the New! displayed when there's a new daily from 182 (0x43360000) to 130 (0x43020000)
+    unsigned char patch[] = {0xC7, 0x04, 0x24, 0x00, 0x00, 0x02, 0x43};
+    WriteProcessMemory(proc, winapiBase + 0x6C709, patch, 7, NULL);
 }
 
 DWORD WINAPI my_thread(void* hModule) {
@@ -748,9 +803,11 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0xA1C20, GameLevelManager_userNameForUserID);
     MHook::registerHook(base + 0x4DE40, CreatorLayer_init);
     MHook::registerHook(base + 0x6BEF0, DailyLevelPage_updateTimers);
+    MHook::registerHook(base + 0x17C4F0, LevelLeaderboard_init); //0x17D090 onChangeType
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
 
     setupPageLimitBypass();
+    setupDailyNew();
 
     MH_EnableHook(MH_ALL_HOOKS);
 
