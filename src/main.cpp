@@ -297,6 +297,14 @@ public:
         self->onUpdate(sender);*/
     }
 
+    void onLevelBrowserRandom(CCObject* sender){
+        auto layer = cast<LevelBrowserLayer*>(this);
+        int pageMax = layer->total / 10;
+        int pageToLoad = std::rand() % pageMax;
+        layer->searchObject->m_nPage = pageToLoad;
+        layer->loadPage(layer->searchObject);
+    }
+
 };
 
 bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, void* c) {
@@ -690,6 +698,30 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
     if(self->total == 9999) self->nextBtn->setVisible(true);
 }
 
+bool __fastcall LevelBrowserLayer_init(LevelBrowserLayer* self, void* a, GJSearchObject* searchObject) {
+    if(!MHook::getOriginal(LevelBrowserLayer_init)(self, a, searchObject)) return false;
+
+    //TODO: load the textures in a proper place
+    CCTextureCache::sharedTextureCache()->addImage("BI_GameSheet.png", 0);
+    CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("BI_GameSheet.plist");
+
+    auto winSize = CCDirector::sharedDirector()->getWinSize();
+
+    CCMenu* menu = cast<CCMenu*>(self->nextBtn->getParent());
+    auto randomSprite = CCSprite::createWithSpriteFrameName("BI_randomBtn_001.png");
+    randomSprite->setScale(0.9f);
+    auto randomBtn = gd::CCMenuItemSpriteExtra::create(
+        randomSprite,
+        self,
+        menu_selector(GamingButton::onLevelBrowserRandom)
+    );
+    randomBtn->setPosition({(winSize.width / 2) - 23, (winSize.height / 2) - 72});
+
+    menu->addChild(randomBtn);
+
+    return true;
+}
+
 bool __fastcall CreatorLayer_init(CCLayer* self) {
     if(!MHook::getOriginal(CreatorLayer_init)(self)) return false;
 
@@ -821,6 +853,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x151E70, InfoLayer_loadPage);
     //setupProgressBars = very bad workaround for interoperability with gdshare lol (help how do i hook something thats already hooked)
     MHook::registerHook(base + 0x15C350, LevelBrowserLayer_updateLevelsLabel);
+    MHook::registerHook(base + 0x15A040, LevelBrowserLayer_init);
     MHook::registerHook(base + 0x177FC0, LevelInfoLayer_setupProgressBars);
     MHook::registerHook(base + 0x17AC90, LevelInfoLayer_onViewProfile);
     MHook::registerHook(base + 0x17ACF0, LevelInfoLayer_onLevelInfo);
