@@ -9,6 +9,7 @@
 #include <typeinfo>
 #include <cstring>
 #include <deque>
+#include <random>
 #include "utils.hpp"
 
 #include "layers/UnregisteredProfileLayer.h"
@@ -300,7 +301,16 @@ public:
     void onLevelBrowserRandom(CCObject* sender){
         auto layer = cast<LevelBrowserLayer*>(this);
         int pageMax = layer->total / 10;
-        int pageToLoad = std::rand() % pageMax;
+        //int pageToLoad = std::rand() % pageMax;
+
+        std::random_device os_seed;
+        const unsigned int seed = os_seed();
+
+        std::mt19937 generator(seed);
+        std::uniform_int_distribution<int> distribute(0, pageMax);
+
+        int pageToLoad = distribute(generator);
+
         layer->searchObject->m_nPage = pageToLoad;
         layer->loadPage(layer->searchObject);
     }
