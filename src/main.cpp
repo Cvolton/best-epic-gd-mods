@@ -733,7 +733,7 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
 }
 
 void __fastcall CreatorLayer_onChallenge(CCLayer* self, void* a, CCMenuItemSpriteExtra* sender) {
-    for(int i = 0; i < sender->getChildrenCount(); i++){
+    for(unsigned int i = 0; i < sender->getChildrenCount(); i++){
         auto child = dynamic_cast<CCSprite*>(sender->getChildren()->objectAtIndex(i));
         if(child != nullptr && child->getTag() == questBtnExMarkTag) child->setVisible(false);
     }
