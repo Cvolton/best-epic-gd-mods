@@ -692,6 +692,21 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
 bool __fastcall CreatorLayer_init(CCLayer* self) {
     if(!MHook::getOriginal(CreatorLayer_init)(self)) return false;
 
+    auto GSM = GameStatsManager::sharedState();
+    //GSM->m_activeChallenges->writeToFile("c:/users/brabe/documents/challenges.plist");
+    std::ostringstream gaming;
+    for(int i = 1; i < 4; i++){
+        GJChallengeItem* item = GSM->getChallenge(i);
+        //GJChallengeItem* item = cast<GJChallengeItem*>(GSM->m_activeChallenges->objectForKey(CCString::createWithFormat("%i", i)->getCString()));
+        if(item != nullptr) gaming << ";" << item->m_bCanClaim;
+    }
+    FLAlertLayer::create(nullptr, "User Info", "OK", nullptr,
+        gaming.str()
+        //std::to_string(item->m_bCanClaim)
+        //std::to_string(->m_bCanClaim)
+        //std::to_string(sizeof(CCNode))
+    )->show();
+
     auto CM = CvoltonManager::sharedState();
     CM->doUpdateCheck();
 
