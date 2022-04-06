@@ -22,6 +22,7 @@ using namespace gd;
 
 const int cvoltonID = 6330800;
 const int commentPageBtnTag = 863390891;
+const int questBtnExMarkTag = 863390892;
 
 class CustomLevelSearchLayer : public gd::FLAlertLayer {
     gd::GJGameLevel* level;
@@ -692,24 +693,11 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
 bool __fastcall CreatorLayer_init(CCLayer* self) {
     if(!MHook::getOriginal(CreatorLayer_init)(self)) return false;
 
-    auto GSM = GameStatsManager::sharedState();
-    //GSM->m_activeChallenges->writeToFile("c:/users/brabe/documents/challenges.plist");
-    std::ostringstream gaming;
-    for(int i = 1; i < 4; i++){
-        GJChallengeItem* item = GSM->getChallenge(i);
-        //GJChallengeItem* item = cast<GJChallengeItem*>(GSM->m_activeChallenges->objectForKey(CCString::createWithFormat("%i", i)->getCString()));
-        if(item != nullptr) gaming << ";" << item->m_bCanClaim;
-    }
-    FLAlertLayer::create(nullptr, "User Info", "OK", nullptr,
-        gaming.str()
-        //std::to_string(item->m_bCanClaim)
-        //std::to_string(->m_bCanClaim)
-        //std::to_string(sizeof(CCNode))
-    )->show();
-
+    //update check
     auto CM = CvoltonManager::sharedState();
     CM->doUpdateCheck();
 
+    //betterinfo btn
     auto menu = cast<CCMenu*>(self->getChildren()->objectAtIndex(1));
 
     auto door = cast<CCMenuItemSpriteExtra*>(menu->getChildren()->objectAtIndex(12));
@@ -724,7 +712,32 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
     buttonButton->setPosition({door->getPositionX() - 2,0});
     menu->addChild(buttonButton);
 
+    //quest exclamation mark
+    bool showExclamation = false;
+    auto GSM = GameStatsManager::sharedState();
+    for(int i = 1; i < 4; i++){
+        GJChallengeItem* item = GSM->getChallenge(i);
+        if(item->m_bCanClaim) showExclamation = true;
+    }
+
+    if(showExclamation){
+        auto questBtn = cast<CCMenuItemSpriteExtra*>(menu->getChildren()->objectAtIndex(3));
+        auto exMark = CCSprite::createWithSpriteFrameName("exMark_001.png");
+        exMark->setPosition({16.5,75});
+        exMark->setScale(0.7f);
+        exMark->setTag(questBtnExMarkTag);
+        questBtn->addChild(exMark);
+    }
+
     return true;
+}
+
+void __fastcall CreatorLayer_onChallenge(CCLayer* self, void* a, CCMenuItemSpriteExtra* sender) {
+    for(int i = 0; i < sender->getChildrenCount(); i++){
+        auto child = dynamic_cast<CCSprite*>(sender->getChildren()->objectAtIndex(i));
+        if(child != nullptr && child->getTag() == questBtnExMarkTag) child->setVisible(false);
+    }
+    MHook::getOriginal(CreatorLayer_onChallenge)(self, a, sender);
 }
 
 void __fastcall DailyLevelPage_updateTimers(DailyLevelPage* self, void* a, float something) {
@@ -817,6 +830,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x210040, ProfilePage_loadPageFromUserInfo);
     MHook::registerHook(base + 0xA1C20, GameLevelManager_userNameForUserID);
     MHook::registerHook(base + 0x4DE40, CreatorLayer_init);
+    MHook::registerHook(base + 0x4F1B0, CreatorLayer_onChallenge);
     MHook::registerHook(base + 0x6BEF0, DailyLevelPage_updateTimers);
     MHook::registerHook(base + 0x17C4F0, LevelLeaderboard_init); //0x17D090 onChangeType
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
