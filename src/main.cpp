@@ -716,6 +716,7 @@ bool __fastcall LevelBrowserLayer_init(LevelBrowserLayer* self, void* a, GJSearc
     CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("BI_GameSheet.plist");
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
+    bool isLocal = searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels || searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels;
 
     CCMenu* menu = cast<CCMenu*>(self->nextBtn->getParent());
     auto randomSprite = CCSprite::createWithSpriteFrameName("BI_randomBtn_001.png");
@@ -725,7 +726,8 @@ bool __fastcall LevelBrowserLayer_init(LevelBrowserLayer* self, void* a, GJSearc
         self,
         menu_selector(GamingButton::onLevelBrowserRandom)
     );
-    randomBtn->setPosition({(winSize.width / 2) - 23, (winSize.height / 2) - 72});
+    randomBtn->setPosition({ (winSize.width / 2) - 23, (winSize.height / 2) - 72});
+    if(isLocal) randomBtn->setPosition({(winSize.width / 2) - 58, (winSize.height / 2) - 38.5f});
 
     menu->addChild(randomBtn);
 
