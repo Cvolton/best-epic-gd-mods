@@ -300,6 +300,9 @@ public:
 
     void onLevelBrowserRandom(CCObject* sender){
         auto layer = cast<LevelBrowserLayer*>(this);
+
+        if(layer->searchObject == nullptr) return;
+
         int pageMax = layer->total / 10;
         //int pageToLoad = std::rand() % pageMax;
 
