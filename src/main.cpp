@@ -237,6 +237,19 @@ public:
         //GLM->getGJUserInfo(something);
     }
 
+    void onProfilePageReload(CCObject* sender){
+        //TODO: improve this™️
+        auto self = cast<ProfilePage*>(this);
+
+        auto GLM = GameLevelManager::sharedState();
+
+        auto score = self->score;
+        GLM->resetStoredUserInfo(score->getAccountID());
+        GLM->resetAccountComments(score->getAccountID());
+
+        GLM->getGJUserInfo(self->something);
+    }
+
     void onCustomSearch(CCObject* sender){
         auto self = cast<InfoLayer*>(this);
 
@@ -463,31 +476,42 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
     }
 }
 
-void* __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd::GJUserScore* a2){
-    void* returnValue = MHook::getOriginal(ProfilePage_loadPageFromUserInfo)(self, a, a2);
+void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd::GJUserScore* a2){
+    MHook::getOriginal(ProfilePage_loadPageFromUserInfo)(self, a, a2);
 
     auto layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(0));
 
-    for(unsigned int i = 0; i < layer->getChildrenCount(); i++){
-        auto menu = dynamic_cast<CCMenu*>(layer->getChildren()->objectAtIndex(i));
-        if(menu != nullptr){
-            auto infoSprite = CCSprite::createWithSpriteFrameName("GJ_infoBtn_001.png");
-            infoSprite->setScale(0.7f);
-            auto infoButton = gd::CCMenuItemSpriteExtra::create(
-                infoSprite,
-                self,
-                menu_selector(GamingButton::onProfilePageInfo)
-            );
-            menu->addChild(infoButton);
-            infoButton->setPosition({16, -135});
-            //infoButton->setScale(0.8f);
-            infoButton->setSizeMult(1.2f);
-        }
+    auto menu = self->m_pButtonMenu;
+
+    auto infoSprite = CCSprite::createWithSpriteFrameName("GJ_infoBtn_001.png");
+    infoSprite->setScale(0.7f);
+    auto infoButton = gd::CCMenuItemSpriteExtra::create(
+        infoSprite,
+        self,
+        menu_selector(GamingButton::onProfilePageInfo)
+    );
+    menu->addChild(infoButton);
+    infoButton->setPosition({16, -135});
+    //infoButton->setScale(0.8f);
+    infoButton->setSizeMult(1.2f);
+
+    self->objectsInMenu->addObject(infoButton);
+
+    if(a2->getUserID() != GameManager::sharedState()->m_nPlayerUserID){
+        auto refreshSprite = CCSprite::createWithSpriteFrameName("GJ_updateBtn_001.png");
+        //refreshSprite->setScale(1f);
+        auto refreshButton = gd::CCMenuItemSpriteExtra::create(
+            refreshSprite,
+            self,
+            menu_selector(GamingButton::onProfilePageReload)
+        );
+        menu->addChild(refreshButton);
+        refreshButton->setPosition({0, -269});
+        //refreshButton->setScale(0.8f);
+        refreshButton->setSizeMult(1.2f);
+
+        self->objectsInMenu->addObject(refreshButton);
     }
-
-    //self->reloadButton->setVisible(true);
-
-    return returnValue;
 }
 
 /*void* __fastcall ProfilePage_getUserInfoFailed(ProfilePage* self, void* a, gd::GJUserScore* a2){
