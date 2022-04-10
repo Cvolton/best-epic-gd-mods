@@ -822,7 +822,7 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
     auto GSM = GameStatsManager::sharedState();
     for(int i = 1; i < 4; i++){
         GJChallengeItem* item = GSM->getChallenge(i);
-        if(item->m_bCanClaim) showExclamation = true;
+        if(item != nullptr && item->m_bCanClaim) showExclamation = true;
     }
 
     if(showExclamation){
