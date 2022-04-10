@@ -14,6 +14,7 @@ public:
     static std::string zeroIfNA(int value);
     static std::string workingTime(int value);
     static std::string printableProgress(std::string personalBests, int percentage);
+    static void showProgressDialog(gd::GJGameLevel* level);
     bool init();
     static cocos2d::CCLabelBMFont* createTextLabel(const std::string text, const cocos2d::CCPoint& position, const float scale, cocos2d::CCNode* menu, const char* font = "bigFont.fnt");
 };

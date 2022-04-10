@@ -8,6 +8,9 @@ class DailyCell : public gd::TableViewCell {
         void draw() override;
         void onView(cocos2d::CCObject* sender);
         void onLeaderboards(cocos2d::CCObject* sender);
+        void onInfo(cocos2d::CCObject* sender);
+        int getTotalDiamonds();
+        int getAwardedDiamonds();
     
     public:
         void loadFromLevel(gd::GJGameLevel* level);

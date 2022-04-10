@@ -254,3 +254,31 @@ CCLabelBMFont* ExtendedLevelInfo::createTextLabel(const std::string text, const 
     menu->addChild(bmFont);
     return bmFont;
 }
+
+void ExtendedLevelInfo::showProgressDialog(GJGameLevel* level){
+
+    std::ostringstream contentStream;
+    contentStream << "<cg>Total Attempts</c>: " << level->attempts
+        << "\n<cl>Total Jumps</c>: " << level->jumps
+        << "\n<co>Clicks (best att.)</c>: " << level->clicks // the contents of this variable make no sense to me
+        << "\n<co>Time (best att.)</c>: " << ExtendedLevelInfo::workingTime(level->attemptTime) // the contents of this variable make no sense to me
+        //<< "\n<co>Is legit</c>: " << level->isCompletionLegitimate // the contents of this variable make no sense to me
+        << "\n<cp>Normal</c>: " << level->normalPercent
+        << "%\n<co>Practice</c>: " << level->practicePercent << "%";
+
+    if(level->orbCompletion != level->newNormalPercent2) contentStream << "\n<cj>2.1 Normal</c>: " << level->orbCompletion << "%";
+    if(level->newNormalPercent2 != level->normalPercent) contentStream << "\n<cr>2.11 Normal</c>: " << level->newNormalPercent2 << "%";
+    std::string progresses;
+    if(level->personalBests != ""){
+        progresses = ExtendedLevelInfo::printableProgress(level->personalBests, level->newNormalPercent2);
+        contentStream << "\n\n<cy>Progresses</c>: " << progresses;
+    }
+    //contentStream << "\n\nProgresses: " << level->personalBests;
+
+    //if(score->getUserID() == 6330800) contentStream << "\n\nThis user is epic!";
+
+    /*float dialogWidth = 250;
+    if(progresses.length() > 48) dialogWidth = 350;
+    if(progresses.length() > 72) dialogWidth = 400;*/
+    gd::FLAlertLayer::create(nullptr, "Level Stats", "OK", nullptr, contentStream.str())->show();
+}
