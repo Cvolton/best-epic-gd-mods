@@ -507,11 +507,45 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         );
         menu->addChild(refreshButton);
         refreshButton->setPosition({0, -269});
+        //refreshButton->setPosition({16,-175});
         //refreshButton->setScale(0.8f);
         refreshButton->setSizeMult(1.2f);
 
         self->objectsInMenu->addObject(refreshButton);
     }
+
+}
+
+bool __fastcall ProfilePage_init(ProfilePage* self, void* a, int id, bool a2){
+    if(!MHook::getOriginal(ProfilePage_init)(self, a, id, a2)) return false;
+
+    auto layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(0));
+
+    //auto menu = self->m_pButtonMenu;
+
+    for(unsigned int i = 0; i < self->m_pButtonMenu->getChildrenCount(); i++){
+        CCNode* node = dynamic_cast<CCNode*>(self->m_pButtonMenu->getChildren()->objectAtIndex(i));
+        if(node != nullptr && node->getPositionX() == 12 && node->getPositionY() == -258) node->setPosition({52, -258});
+    }
+
+    CCNode* followTxt = dynamic_cast<CCNode*>(layer->getChildren()->objectAtIndex(6));
+    if(followTxt->getPositionY() == 35) followTxt->setPositionX(followTxt->getPositionX() + 40);
+
+    /*auto menu = CCMenu::create();
+    menu->setPosition({ 0, 0 });
+    menu->setZOrder(1000);
+    for (int i = 0; i < layer->getChildrenCount(); i++) {
+        auto text = CCLabelBMFont::create(std::to_string(i).c_str(), "bigFont.fnt");
+        auto node = (CCNode*)layer->getChildren()->objectAtIndex(i);
+        text->setAnchorPoint(node->getAnchorPoint());
+        text->setScale(0.5f);
+        text->setPosition(node->getPosition());
+        text->setZOrder(1000);
+        menu->addChild(text);
+    }
+    layer->addChild(menu);*/
+
+    return true;
 }
 
 /*void* __fastcall ProfilePage_getUserInfoFailed(ProfilePage* self, void* a, gd::GJUserScore* a2){
@@ -900,6 +934,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x5A020, LevelCell_loadCustomLevelCell);
     MHook::registerHook(base + 0x5F3D0, CommentCell_loadFromComment);
     MHook::registerHook(base + 0x210040, ProfilePage_loadPageFromUserInfo);
+    MHook::registerHook(base + 0x20EF00, ProfilePage_init);
     MHook::registerHook(base + 0xA1C20, GameLevelManager_userNameForUserID);
     MHook::registerHook(base + 0x4DE40, CreatorLayer_init);
     MHook::registerHook(base + 0x4F1B0, CreatorLayer_onChallenge);
