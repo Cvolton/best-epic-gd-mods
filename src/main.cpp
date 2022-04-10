@@ -499,7 +499,7 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
 
     if(a2->getUserID() != GameManager::sharedState()->m_nPlayerUserID){
         auto refreshSprite = CCSprite::createWithSpriteFrameName("GJ_updateBtn_001.png");
-        //refreshSprite->setScale(1f);
+        //refreshSprite->setScale(0.7f);
         auto refreshButton = gd::CCMenuItemSpriteExtra::create(
             refreshSprite,
             self,
