@@ -5,7 +5,7 @@
 
 DWORD WINAPI func(void* me) {
     auto hwnd = FindWindowW(NULL, L"Geometry Dash");
-    SetWindowTextW(hwnd, L"Geometrická pomlèka");
+    SetWindowTextW(hwnd, L"Geometrická pomlèka 2.2 pøímo od Roberta Topaly CZ/SK v hlavní roli v èeském znìní Petr Rychlý");
     return 0;
 }
 
