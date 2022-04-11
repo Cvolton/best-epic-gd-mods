@@ -59,8 +59,6 @@ bool DailyViewLayer::init(bool isWeekly) {
     }
     std::sort(sortedLevels->data->arr, sortedLevels->data->arr + sortedLevels->data->num, DailyViewLayer::compareDailies);
 
-    loadPage(0);
-
     auto menu = CCMenu::create();
     addChild(menu);
 
@@ -83,6 +81,7 @@ bool DailyViewLayer::init(bool isWeekly) {
     nextBtn->setPosition({+ (winSize.width / 2) - 25, 0});
     menu->addChild(nextBtn);
 
+    loadPage(0);
     return true;
 }
 
@@ -110,6 +109,12 @@ void DailyViewLayer::loadPage(unsigned int page){
     listLayer = GJListLayer::create(dailyView, "Daily Levels", {191, 114, 62, 255}, 356.f, 220.f);
     listLayer->setPosition(winSize / 2 - listLayer->getScaledContentSize() / 2);
     addChild(listLayer);
+
+    if(page == 0) prevBtn->setVisible(false);
+    else prevBtn->setVisible(true);
+
+    if(sortedLevels->count() >= lastIndex) nextBtn->setVisible(true);
+    else nextBtn->setVisible(false);
 }
 
 void DailyViewLayer::keyBackClicked() {
