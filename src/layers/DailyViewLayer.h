@@ -3,7 +3,7 @@
 #include <gd.h>
 #include "DailyListView.h"
 
-class DailyViewLayer : public gd::FLAlertLayer {
+class DailyViewLayer : public cocos2d::CCLayer {
     DailyListView* dailyView = nullptr;
     gd::GJListLayer* listLayer = nullptr;
     cocos2d::CCArray* sortedLevels = nullptr;
@@ -22,4 +22,5 @@ protected:
 public:
     static DailyViewLayer* create(bool isWeekly);
     static bool compareDailies(const void* l1, const void* l2);
+    static cocos2d::CCScene* scene(bool isWeekly);
 };

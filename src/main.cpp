@@ -334,8 +334,9 @@ public:
 
     void onDailyHistory(CCObject* sender){
         auto self = cast<DailyLevelPage*>(this);
-        DailyViewLayer* layer = DailyViewLayer::create(self->isWeekly);
-        layer->show();
+        auto layer = DailyViewLayer::scene(self->isWeekly);
+        auto transitionFade = CCTransitionFade::create(0.5, layer);
+        CCDirector::sharedDirector()->pushScene(transitionFade);
         //CCDirector::sharedDirector()->getRunningScene()->addChild(layer);
     }
 

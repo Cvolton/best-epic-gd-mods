@@ -24,17 +24,21 @@ bool DailyViewLayer::compareDailies(const void* l1, const void* l2){
 
 bool DailyViewLayer::init(bool isWeekly) {
 
-    initWithColor({0, 0, 0, 0x4B});
     this->isWeekly = isWeekly;
-
-    m_pLayer = cocos2d::CCLayer::create();
-    this->addChild(m_pLayer);
 
     auto GLM = gd::GameLevelManager::sharedState();
     auto winSize = CCDirector::sharedDirector()->getWinSize();
+    auto backgroundSprite = CCSprite::create("game_bg_14_001.png");
 
-    m_pButtonMenu = CCMenu::create();
-    m_pLayer->addChild(m_pButtonMenu);
+    backgroundSprite->setScale(winSize.width / backgroundSprite->getContentSize().width);
+    backgroundSprite->setAnchorPoint({0, 0});
+    backgroundSprite->setPosition({0,-75});
+    backgroundSprite->setColor({164, 0, 255}); //purple
+    backgroundSprite->setZOrder(-2);
+    addChild(backgroundSprite);
+
+    auto menu = CCMenu::create();
+    addChild(menu);
     
     auto backBtn = gd::CCMenuItemSpriteExtra::create(
         CCSprite::createWithSpriteFrameName("GJ_arrow_01_001.png"),
@@ -43,7 +47,7 @@ bool DailyViewLayer::init(bool isWeekly) {
     );
 
     backBtn->setPosition({(-winSize.width / 2) + 25, (winSize.height / 2) - 25});
-    m_pButtonMenu->addChild(backBtn);
+    menu->addChild(backBtn);
 
     /*auto menuBack = CCMenu::create();
     menuBack->addChild(backBtn);
@@ -76,7 +80,7 @@ bool DailyViewLayer::init(bool isWeekly) {
         menu_selector(DailyViewLayer::onPrev)
     );
     prevBtn->setPosition({- (winSize.width / 2) + 25, 0});
-    m_pButtonMenu->addChild(prevBtn);
+    menu->addChild(prevBtn);
 
     auto nextSprite = CCSprite::createWithSpriteFrameName("GJ_arrow_03_001.png");
     nextSprite->setFlipX(true);
@@ -86,13 +90,24 @@ bool DailyViewLayer::init(bool isWeekly) {
         menu_selector(DailyViewLayer::onNext)
     );
     nextBtn->setPosition({+ (winSize.width / 2) - 25, 0});
-    m_pButtonMenu->addChild(nextBtn);
+    menu->addChild(nextBtn);
 
     counter = CCLabelBMFont::create("0 to 0 of 0", "goldFont.fnt");
     counter->setAnchorPoint({ 1.f, 1.f });
     counter->setPosition(winSize - CCPoint(7,3));
     counter->setScale(0.5f);
-    m_pLayer->addChild(counter);
+    addChild(counter);
+
+    auto cornerBL = CCSprite::createWithSpriteFrameName("GJ_sideArt_001.png");
+    cornerBL->setPosition({0,0});
+    cornerBL->setAnchorPoint({0,0});
+    addChild(cornerBL, -1);
+
+    auto cornerBR = CCSprite::createWithSpriteFrameName("GJ_sideArt_001.png");
+    cornerBR->setPosition({winSize.width,0});
+    cornerBR->setAnchorPoint({0,0});
+    cornerBR->setRotation(270);
+    addChild(cornerBR, -1);
 
     loadPage(0);
     return true;
@@ -121,7 +136,7 @@ void DailyViewLayer::loadPage(unsigned int page){
     dailyView = DailyListView::create(displayedLevels, 356.f, 220.f);
     listLayer = GJListLayer::create(dailyView, isWeekly ? "Weekly Demons" : "Daily Levels", {191, 114, 62, 255}, 356.f, 220.f);
     listLayer->setPosition(winSize / 2 - listLayer->getScaledContentSize() / 2 - CCPoint(0,5));
-    m_pLayer->addChild(listLayer);
+    addChild(listLayer);
 
     if(page == 0) prevBtn->setVisible(false);
     else prevBtn->setVisible(true);
@@ -136,7 +151,7 @@ void DailyViewLayer::keyBackClicked() {
     setTouchEnabled(false);
     setKeypadEnabled(false);
     sortedLevels->release();
-    removeFromParentAndCleanup(true);
+    CCDirector::sharedDirector()->popSceneWithTransition(0.5f, PopTransition::kPopTransitionFade);
 }
 
 
@@ -150,4 +165,11 @@ void DailyViewLayer::onPrev(CCObject* object) {
 
 void DailyViewLayer::onNext(CCObject* object) {
     loadPage(++page);
+}
+
+CCScene* DailyViewLayer::scene(bool isWeekly) {
+    auto layer = DailyViewLayer::create(isWeekly);
+    auto scene = CCScene::create();
+    scene->addChild(layer);
+    return scene;
 }
