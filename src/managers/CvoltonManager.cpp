@@ -1,5 +1,6 @@
 #include "CvoltonManager.h"
 #include <gd.h>
+#include <random>
 
 using namespace cocos2d;
 using namespace cocos2d::extension;
@@ -139,4 +140,14 @@ void CvoltonManager::toggleOption(std::string option){
 void CvoltonManager::loadTextures(){
     CCTextureCache::sharedTextureCache()->addImage("BI_GameSheet.png", 0);
     CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("BI_GameSheet.plist");
+}
+
+int CvoltonManager::randomNumber(int start, int end){
+    std::random_device os_seed;
+    const unsigned int seed = os_seed();
+
+    std::mt19937 generator(seed);
+    std::uniform_int_distribution<int> distribute(start, end);
+
+    return distribute(generator);
 }

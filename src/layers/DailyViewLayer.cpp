@@ -1,5 +1,6 @@
 #include "DailyViewLayer.h"
 #include "DailyListView.h"
+#include "JumpToPageLayer.h"
 #include "../managers/CvoltonManager.h"
 
 using namespace gd;
@@ -24,6 +25,7 @@ bool DailyViewLayer::compareDailies(const void* l1, const void* l2){
 
 bool DailyViewLayer::init(bool isWeekly) {
 
+    CvoltonManager::sharedState()->loadTextures();
     this->isWeekly = isWeekly;
 
     auto GLM = gd::GameLevelManager::sharedState();
@@ -98,6 +100,7 @@ bool DailyViewLayer::init(bool isWeekly) {
     counter->setScale(0.5f);
     addChild(counter);
 
+    //corners
     auto cornerBL = CCSprite::createWithSpriteFrameName("GJ_sideArt_001.png");
     cornerBL->setPosition({0,0});
     cornerBL->setAnchorPoint({0,0});
@@ -108,6 +111,28 @@ bool DailyViewLayer::init(bool isWeekly) {
     cornerBR->setAnchorPoint({0,0});
     cornerBR->setRotation(270);
     addChild(cornerBR, -1);
+
+    //navigation buttons
+    pageBtnSprite = gd::ButtonSprite::create("1", 23, true, "bigFont.fnt", "GJ_button_02.png", 40, .7f);
+    pageBtnSprite->setScale(0.7f);
+    auto pageBtn = gd::CCMenuItemSpriteExtra::create(
+        pageBtnSprite,
+        this,
+        menu_selector(DailyViewLayer::onJumpToPageLayer)
+    );
+    pageBtn->setSizeMult(1.2f);
+    pageBtn->setPosition({+ (winSize.width / 2) - 23, (winSize.height / 2) - 37});
+    menu->addChild(pageBtn);
+
+    auto randomSprite = CCSprite::createWithSpriteFrameName("BI_randomBtn_001.png");
+    randomSprite->setScale(0.9f);
+    auto randomBtn = gd::CCMenuItemSpriteExtra::create(
+        randomSprite,
+        this,
+        menu_selector(DailyViewLayer::onRandom)
+    );
+    randomBtn->setPosition({ (winSize.width / 2) - 23, (winSize.height / 2) - 72});
+    menu->addChild(randomBtn);
 
     loadPage(0);
     return true;
@@ -122,7 +147,7 @@ void DailyViewLayer::loadPage(unsigned int page){
     this->page = page;
     CCArray* displayedLevels = CCArray::create();
     //TODO: can we clone this by passing an iterator or something like that
-    const unsigned int levelCount = (gd::GameManager::sharedState()->getGameVariable("0093")) ? 20 : 10;
+    const unsigned int levelCount = levelsPerPage();
     unsigned int firstIndex = page * levelCount;
     unsigned int lastIndex = (page+1) * levelCount;
 
@@ -144,6 +169,8 @@ void DailyViewLayer::loadPage(unsigned int page){
     if(sortedLevels->count() >= lastIndex) nextBtn->setVisible(true);
     else nextBtn->setVisible(false);
 
+    pageBtnSprite->setString(std::to_string(page+1).c_str());
+
     counter->setCString(CCString::createWithFormat("%i to %i of %i", firstIndex+1, (sortedLevels->count() >= lastIndex) ? lastIndex : sortedLevels->count(), sortedLevels->count())->getCString());
 }
 
@@ -159,12 +186,20 @@ void DailyViewLayer::onBack(CCObject* object) {
     keyBackClicked();
 }
 
-void DailyViewLayer::onPrev(CCObject* object) {
+void DailyViewLayer::onPrev(CCObject* object) { //TODO: arrows and gamepad btns
     loadPage(--page);
 }
 
-void DailyViewLayer::onNext(CCObject* object) {
+void DailyViewLayer::onNext(CCObject* object) { //TODO: arrows and gamepad btns
     loadPage(++page);
+}
+
+void DailyViewLayer::onJumpToPageLayer(CCObject* sender){
+    JumpToPageLayer::create(this)->show();
+}
+
+void DailyViewLayer::onRandom(CCObject* sender){
+    loadPage(CvoltonManager::sharedState()->randomNumber(0, sortedLevels->count() / levelsPerPage()));
 }
 
 CCScene* DailyViewLayer::scene(bool isWeekly) {
@@ -172,4 +207,12 @@ CCScene* DailyViewLayer::scene(bool isWeekly) {
     auto scene = CCScene::create();
     scene->addChild(layer);
     return scene;
+}
+
+int DailyViewLayer::getPage() const{
+    return page;
+}
+
+int DailyViewLayer::levelsPerPage() const{
+    return (gd::GameManager::sharedState()->getGameVariable("0093")) ? 20 : 10;
 }
