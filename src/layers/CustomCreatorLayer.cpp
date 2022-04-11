@@ -3,6 +3,7 @@
 #include "CvoltonOptionsLayer.h"
 #include "LevelIDLayer.h"
 #include "DailyListView.h"
+#include "DailyViewLayer.h"
 #include "../managers/CvoltonManager.h"
 
 using namespace gd;
@@ -179,19 +180,9 @@ void CustomCreatorLayer::onInfo(CCObject* object) {
         450,
         "This is the main menu for all features related to the mod.\n\n<cy>Featured:</c> Levels featured in Geometry Dash World\n<cg>Most liked:</c> \"Most Liked\" in Geometry Dash World,\nreal purpose unknown.\n<cj>Search:</c> View comments of any level ID.\n\n<cl>Settings:</c> Opens the mod settings\n<cr>Update:</c> Opens the mod update menu"
     )->show();*/
-    auto GLM = gd::GameLevelManager::sharedState();
-    auto winSize = CCDirector::sharedDirector()->getWinSize();
-    auto dailyLevels = GLM->m_dailyLevels;
-    CCArray* levels = CCArray::create();
-    CCDictElement* obj;
-    CCDICT_FOREACH(dailyLevels, obj){
-        levels->addObject(obj->getObject());
-    }
-    auto dailyView = DailyListView::create(levels, 356.f, 220.f);
-    auto listLayer = GJListLayer::create(dailyView, "Daily Levels", {255, 255, 255, 255}, 356.f, 220.f);
-    listLayer->setPosition(winSize / 2 - listLayer->getScaledContentSize() / 2);
-    //listLayer->setPosition(winSize / 2);
-    CCDirector::sharedDirector()->getRunningScene()->addChild(listLayer);
+
+    DailyViewLayer* layer = DailyViewLayer::create(false);
+    CCDirector::sharedDirector()->getRunningScene()->addChild(layer);
 }
 
 void CustomCreatorLayer::onSearch(CCObject* object) {

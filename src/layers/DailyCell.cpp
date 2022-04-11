@@ -38,8 +38,8 @@ void DailyCell::loadFromLevel(GJGameLevel* level) {
     this->m_pLayer->addChild(starsSprite);
 
     auto title = CCLabelBMFont::create((levelFromSaved == nullptr) ? "Unknown" : levelFromSaved->levelName.c_str(), "bigFont.fnt");
-    title->setAnchorPoint({ 0.0f, 0.1f });
-    title->setPosition(43.0f, 33.0f);
+    title->setAnchorPoint({ 0.0f, .5f });
+    title->setPosition(43.0f, 42.f);
     title->limitLabelWidth(170, .7f, .4f);
     this->m_pLayer->addChild(title);
 
@@ -57,7 +57,7 @@ void DailyCell::loadFromLevel(GJGameLevel* level) {
     numberSprite->setScale(0.7f);
     this->m_pLayer->addChild(numberSprite);
 
-    auto number = CCLabelBMFont::create(CCString::createWithFormat("%i", level->dailyID)->getCString(), "bigFont.fnt");
+    auto number = CCLabelBMFont::create(CCString::createWithFormat("%i", level->dailyID % 100000)->getCString(), "bigFont.fnt");
     number->setAnchorPoint({ 0.0f, 0.5f });
     number->setPosition(57.5f, 10.0f);
     number->setScale(.325f);
