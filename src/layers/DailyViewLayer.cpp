@@ -101,14 +101,13 @@ void DailyViewLayer::loadPage(unsigned int page){
 
     for(unsigned int i = page * levelCount; i < lastIndex; i++){
         auto levelObject = sortedLevels->objectAtIndex(i);
-        if(levelObject == nullptr) break;
+        if(i >= sortedLevels->count() || levelObject == nullptr) break;
 
         displayedLevels->addObject(levelObject);
     }
 
-    //TODO: crash when array is empty
     dailyView = DailyListView::create(displayedLevels, 356.f, 220.f);
-    listLayer = GJListLayer::create(dailyView, "Daily Levels", {255, 255, 255, 255}, 356.f, 220.f);
+    listLayer = GJListLayer::create(dailyView, "Daily Levels", {191, 114, 62, 255}, 356.f, 220.f);
     listLayer->setPosition(winSize / 2 - listLayer->getScaledContentSize() / 2);
     addChild(listLayer);
 }
