@@ -9,6 +9,7 @@ class DailyViewLayer : public cocos2d::CCLayerColor {
     cocos2d::CCArray* sortedLevels = nullptr;
     gd::CCMenuItemSpriteExtra* prevBtn = nullptr;
     gd::CCMenuItemSpriteExtra* nextBtn = nullptr;
+    cocos2d::CCLabelBMFont* counter = nullptr;
     unsigned int page = 0;
     bool isWeekly = false;
 protected:

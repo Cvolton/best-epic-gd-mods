@@ -81,6 +81,12 @@ bool DailyViewLayer::init(bool isWeekly) {
     nextBtn->setPosition({+ (winSize.width / 2) - 25, 0});
     menu->addChild(nextBtn);
 
+    counter = CCLabelBMFont::create("0 to 0 of 0", "goldFont.fnt");
+    counter->setAnchorPoint({ 1.f, 1.f });
+    counter->setPosition(winSize - CCPoint(7,3));
+    counter->setScale(0.5f);
+    addChild(counter);
+
     loadPage(0);
     return true;
 }
@@ -96,9 +102,10 @@ void DailyViewLayer::loadPage(unsigned int page){
     //TODO: can we clone this by passing an iterator or something like that
     //TODO: read the game variable that tells it if we want 10 or 20 lvls
     const unsigned int levelCount = 10;
+    unsigned int firstIndex = page * levelCount;
     unsigned int lastIndex = (page+1) * levelCount;
 
-    for(unsigned int i = page * levelCount; i < lastIndex; i++){
+    for(unsigned int i = firstIndex; i < lastIndex; i++){
         auto levelObject = sortedLevels->objectAtIndex(i);
         if(i >= sortedLevels->count() || levelObject == nullptr) break;
 
@@ -107,7 +114,7 @@ void DailyViewLayer::loadPage(unsigned int page){
 
     dailyView = DailyListView::create(displayedLevels, 356.f, 220.f);
     listLayer = GJListLayer::create(dailyView, "Daily Levels", {191, 114, 62, 255}, 356.f, 220.f);
-    listLayer->setPosition(winSize / 2 - listLayer->getScaledContentSize() / 2);
+    listLayer->setPosition(winSize / 2 - listLayer->getScaledContentSize() / 2 - CCPoint(0,5));
     addChild(listLayer);
 
     if(page == 0) prevBtn->setVisible(false);
@@ -115,6 +122,8 @@ void DailyViewLayer::loadPage(unsigned int page){
 
     if(sortedLevels->count() >= lastIndex) nextBtn->setVisible(true);
     else nextBtn->setVisible(false);
+
+    counter->setCString(CCString::createWithFormat("%i to %i of %i", firstIndex+1, (sortedLevels->count() >= lastIndex) ? lastIndex : sortedLevels->count(), sortedLevels->count())->getCString());
 }
 
 void DailyViewLayer::keyBackClicked() {
