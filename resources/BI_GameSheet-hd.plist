@@ -49,6 +49,21 @@
     <key>textureRotated</key>
     <false/>
    </dict>
+   <key>BI_historyBtn_001.png</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{91,92}</string>
+    <key>spriteSourceSize</key>
+    <string>{91,92}</string>
+    <key>textureRect</key>
+    <string>{{201,2},{91,92}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
    <key>BI_mostLikedBtn_001.png</key>
    <dict>
     <key>aliases</key>
@@ -60,7 +75,22 @@
     <key>spriteSourceSize</key>
     <string>{199,199}</string>
     <key>textureRect</key>
-    <string>{{201,2},{199,199}}</string>
+    <string>{{294,2},{199,199}}</string>
+    <key>textureRotated</key>
+    <false/>
+   </dict>
+   <key>BI_randomBtn_001.png</key>
+   <dict>
+    <key>aliases</key>
+    <array/>
+    <key>spriteOffset</key>
+    <string>{0,0}</string>
+    <key>spriteSize</key>
+    <string>{65,66}</string>
+    <key>spriteSourceSize</key>
+    <string>{65,66}</string>
+    <key>textureRect</key>
+    <string>{{495,2},{65,66}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -74,9 +104,9 @@
    <key>premultiplyAlpha</key>
    <false/>
    <key>realTextureFileName</key>
-   <string>BI_GameSheet_hd.png</string>
+   <string>BI_GameSheet-hd.png</string>
    <key>size</key>
-   <string>{402,203}</string>
+   <string>{562,203}</string>
    <key>smartupdate</key>
    <string>$none</string>
    <key>textureFileName</key>
