@@ -16,6 +16,7 @@
 #include "layers/JumpToPageLayer.h"
 #include "layers/ExtendedLevelInfo.h"
 #include "layers/CustomCreatorLayer.h"
+#include "layers/DailyViewLayer.h"
 #include "managers/CvoltonManager.h"
 
 using namespace cocos2d;
@@ -329,6 +330,13 @@ public:
 
         layer->searchObject->m_nPage = pageToLoad;
         layer->loadPage(layer->searchObject);
+    }
+
+    void onDailyHistory(CCObject* sender){
+        auto self = cast<DailyLevelPage*>(this);
+        DailyViewLayer* layer = DailyViewLayer::create(self->isWeekly);
+        layer->show();
+        //CCDirector::sharedDirector()->getRunningScene()->addChild(layer);
     }
 
 };
@@ -726,8 +734,7 @@ bool __fastcall LevelBrowserLayer_init(LevelBrowserLayer* self, void* a, GJSearc
     if(!MHook::getOriginal(LevelBrowserLayer_init)(self, a, searchObject)) return false;
 
     //TODO: load the textures in a proper place
-    CCTextureCache::sharedTextureCache()->addImage("BI_GameSheet.png", 0);
-    CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("BI_GameSheet.plist");
+    CvoltonManager::sharedState()->loadTextures();
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
     bool isLocal = searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels || searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels;
@@ -819,6 +826,26 @@ void __fastcall DailyLevelPage_updateTimers(DailyLevelPage* self, void* a, float
     layer->addChild(currentDailyNode);
 }
 
+bool __fastcall DailyLevelPage_init(DailyLevelPage* self, void* a, bool isWeekly) { //type is usually an enum but i dont have that rn
+    if(!MHook::getOriginal(DailyLevelPage_init)(self, a, isWeekly)) return false;
+
+    CvoltonManager::sharedState()->loadTextures();
+
+    CCMenu* menu = self->m_pButtonMenu;
+
+    auto historySprite = CCSprite::createWithSpriteFrameName("BI_historyBtn_001.png");
+    historySprite->setScale(0.8f);
+    auto historyBtn = gd::CCMenuItemSpriteExtra::create(
+        historySprite,
+        self,
+        menu_selector(GamingButton::onDailyHistory)
+    );
+    historyBtn->setPosition({13, -247});
+    menu->addChild(historyBtn);
+
+    return true;
+}
+
 bool __fastcall LevelLeaderboard_init(LevelLeaderboard* self, void* a, GJGameLevel* level, int type) { //type is usually an enum but i dont have that rn
     if(!MHook::getOriginal(LevelLeaderboard_init)(self, a, level, type)) return false;
 
@@ -892,6 +919,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x4DE40, CreatorLayer_init);
     MHook::registerHook(base + 0x4F1B0, CreatorLayer_onChallenge);
     MHook::registerHook(base + 0x6BEF0, DailyLevelPage_updateTimers);
+    MHook::registerHook(base + 0x6A900, DailyLevelPage_init);
     MHook::registerHook(base + 0x17C4F0, LevelLeaderboard_init); //0x17D090 onChangeType
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
 

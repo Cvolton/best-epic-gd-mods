@@ -29,9 +29,6 @@ bool CustomCreatorLayer::init() {
     std::ostringstream bgStream;
     bgStream << "game_bg_" << backgrounds[bgNumber] << "_001.png";*/
 
-    CCTextureCache::sharedTextureCache()->addImage("BI_GameSheet.png", 0);
-    CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("BI_GameSheet.plist");
-
     auto backgroundSprite = CCSprite::create("game_bg_14_001.png"); //stones bg
     //auto backgroundSprite = CCSprite::create("GJ_gradientBG.png"); //rob bg
     //auto backgroundSprite = CCSprite::create(bgStream.str().c_str());
@@ -40,6 +37,7 @@ bool CustomCreatorLayer::init() {
     auto winSize = CCDirector::sharedDirector()->getWinSize();
     auto size = backgroundSprite->getContentSize();
     auto CM = CvoltonManager::sharedState();
+    CM->loadTextures();
     
     backgroundSprite->setScale(winSize.width / size.width);
     //backgroundSprite->setScaleX(winSize.width / size.width);
@@ -172,17 +170,14 @@ void CustomCreatorLayer::onBack(CCObject* object) {
 }
 
 void CustomCreatorLayer::onInfo(CCObject* object) {
-    /*gd::FLAlertLayer::create(
+    gd::FLAlertLayer::create(
         nullptr, 
         CvoltonManager::modName, 
         "OK", 
         nullptr,
         450,
         "This is the main menu for all features related to the mod.\n\n<cy>Featured:</c> Levels featured in Geometry Dash World\n<cg>Most liked:</c> \"Most Liked\" in Geometry Dash World,\nreal purpose unknown.\n<cj>Search:</c> View comments of any level ID.\n\n<cl>Settings:</c> Opens the mod settings\n<cr>Update:</c> Opens the mod update menu"
-    )->show();*/
-
-    DailyViewLayer* layer = DailyViewLayer::create(false);
-    CCDirector::sharedDirector()->getRunningScene()->addChild(layer);
+    )->show();
 }
 
 void CustomCreatorLayer::onSearch(CCObject* object) {

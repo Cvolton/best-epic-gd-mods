@@ -38,4 +38,5 @@ public:
 	bool getOption(std::string option);
 	void toggleOption(std::string option);
 	const char* getUserName(int id);
+	void loadTextures();
 };

@@ -3,7 +3,7 @@
 #include <gd.h>
 #include "DailyListView.h"
 
-class DailyViewLayer : public cocos2d::CCLayerColor {
+class DailyViewLayer : public gd::FLAlertLayer {
     DailyListView* dailyView = nullptr;
     gd::GJListLayer* listLayer = nullptr;
     cocos2d::CCArray* sortedLevels = nullptr;

@@ -24,11 +24,17 @@ bool DailyViewLayer::compareDailies(const void* l1, const void* l2){
 
 bool DailyViewLayer::init(bool isWeekly) {
 
-    initWithColor({0, 0, 0, 150});
+    initWithColor({0, 0, 0, 0x4B});
     this->isWeekly = isWeekly;
+
+    m_pLayer = cocos2d::CCLayer::create();
+    this->addChild(m_pLayer);
 
     auto GLM = gd::GameLevelManager::sharedState();
     auto winSize = CCDirector::sharedDirector()->getWinSize();
+
+    m_pButtonMenu = CCMenu::create();
+    m_pLayer->addChild(m_pButtonMenu);
     
     auto backBtn = gd::CCMenuItemSpriteExtra::create(
         CCSprite::createWithSpriteFrameName("GJ_arrow_01_001.png"),
@@ -36,12 +42,16 @@ bool DailyViewLayer::init(bool isWeekly) {
         menu_selector(DailyViewLayer::onBack)
     );
 
-    auto menuBack = CCMenu::create();
+    backBtn->setPosition({(-winSize.width / 2) + 25, (winSize.height / 2) - 25});
+    m_pButtonMenu->addChild(backBtn);
+
+    /*auto menuBack = CCMenu::create();
     menuBack->addChild(backBtn);
     menuBack->setPosition({25, winSize.height - 25});
 
-    addChild(menuBack);
+    addChild(menuBack);*/
 
+    setTouchEnabled(true);
     setKeypadEnabled(true);
 
     auto dailyLevels = GLM->m_dailyLevels;
@@ -59,9 +69,6 @@ bool DailyViewLayer::init(bool isWeekly) {
     }
     std::sort(sortedLevels->data->arr, sortedLevels->data->arr + sortedLevels->data->num, DailyViewLayer::compareDailies);
 
-    auto menu = CCMenu::create();
-    addChild(menu);
-
     auto prevSprite = CCSprite::createWithSpriteFrameName("GJ_arrow_03_001.png");
     prevBtn = gd::CCMenuItemSpriteExtra::create(
         prevSprite,
@@ -69,7 +76,7 @@ bool DailyViewLayer::init(bool isWeekly) {
         menu_selector(DailyViewLayer::onPrev)
     );
     prevBtn->setPosition({- (winSize.width / 2) + 25, 0});
-    menu->addChild(prevBtn);
+    m_pButtonMenu->addChild(prevBtn);
 
     auto nextSprite = CCSprite::createWithSpriteFrameName("GJ_arrow_03_001.png");
     nextSprite->setFlipX(true);
@@ -79,13 +86,13 @@ bool DailyViewLayer::init(bool isWeekly) {
         menu_selector(DailyViewLayer::onNext)
     );
     nextBtn->setPosition({+ (winSize.width / 2) - 25, 0});
-    menu->addChild(nextBtn);
+    m_pButtonMenu->addChild(nextBtn);
 
     counter = CCLabelBMFont::create("0 to 0 of 0", "goldFont.fnt");
     counter->setAnchorPoint({ 1.f, 1.f });
     counter->setPosition(winSize - CCPoint(7,3));
     counter->setScale(0.5f);
-    addChild(counter);
+    m_pLayer->addChild(counter);
 
     loadPage(0);
     return true;
@@ -100,8 +107,7 @@ void DailyViewLayer::loadPage(unsigned int page){
     this->page = page;
     CCArray* displayedLevels = CCArray::create();
     //TODO: can we clone this by passing an iterator or something like that
-    //TODO: read the game variable that tells it if we want 10 or 20 lvls
-    const unsigned int levelCount = 10;
+    const unsigned int levelCount = (gd::GameManager::sharedState()->getGameVariable("0093")) ? 20 : 10;
     unsigned int firstIndex = page * levelCount;
     unsigned int lastIndex = (page+1) * levelCount;
 
@@ -113,9 +119,9 @@ void DailyViewLayer::loadPage(unsigned int page){
     }
 
     dailyView = DailyListView::create(displayedLevels, 356.f, 220.f);
-    listLayer = GJListLayer::create(dailyView, "Daily Levels", {191, 114, 62, 255}, 356.f, 220.f);
+    listLayer = GJListLayer::create(dailyView, isWeekly ? "Weekly Demons" : "Daily Levels", {191, 114, 62, 255}, 356.f, 220.f);
     listLayer->setPosition(winSize / 2 - listLayer->getScaledContentSize() / 2 - CCPoint(0,5));
-    addChild(listLayer);
+    m_pLayer->addChild(listLayer);
 
     if(page == 0) prevBtn->setVisible(false);
     else prevBtn->setVisible(true);
@@ -127,6 +133,8 @@ void DailyViewLayer::loadPage(unsigned int page){
 }
 
 void DailyViewLayer::keyBackClicked() {
+    setTouchEnabled(false);
+    setKeypadEnabled(false);
     sortedLevels->release();
     removeFromParentAndCleanup(true);
 }

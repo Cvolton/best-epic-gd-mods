@@ -135,3 +135,8 @@ void CvoltonManager::toggleOption(std::string option){
 
     this->save();
 }
+
+void CvoltonManager::loadTextures(){
+    CCTextureCache::sharedTextureCache()->addImage("BI_GameSheet.png", 0);
+    CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("BI_GameSheet.plist");
+}
