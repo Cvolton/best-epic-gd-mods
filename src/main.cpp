@@ -214,12 +214,13 @@ public:
         auto layer = cast<ProfilePage*>(this);
 
         auto score = layer->score;
+        auto GM = GameManager::sharedState();
 
         std::ostringstream contentStream;
-        contentStream << "User ID: " << score->getUserID()
+        if(a2->getUserID() == GM->m_nPlayerUserID) contentStream << "User ID: " << score->getUserID()
             << "\nAccount ID: " << score->getAccountID()
-            << "\n"//Leaderboard Icon: " << StaticStringHelper::getIconType(score->getIconType()) (is not sent)
-            << "\nFriend Requests: " << StaticStringHelper::getFriendRequestType(score->getFriendStatus())
+            << "\n";//Leaderboard Icon: " << StaticStringHelper::getIconType(score->getIconType()) (is not sent)
+        contentStream << "\nFriend Requests: " << StaticStringHelper::getFriendRequestType(score->getFriendStatus())
             << "\nPrivate Messages: " << StaticStringHelper::getMessageType(score->getMessageState())
             << "\nComment History: " << StaticStringHelper::getMessageType(score->getCommentHistoryStatus());
 
@@ -514,6 +515,24 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         refreshButton->setSizeMult(1.2f);
 
         self->objectsInMenu->addObject(refreshButton);
+
+        auto userIDNode = CCLabelBMFont::create(CCString::createWithFormat("User ID: %i", a2->getUserID())->getCString(), "chatFont.fnt");
+        userIDNode->setPosition({38,-248});
+        userIDNode->setAnchorPoint({0,1});
+        userIDNode->setScale(0.6f);
+        userIDNode->setColor({255,255,255});
+        userIDNode->setOpacity(220);
+        menu->addChild(userIDNode);
+        self->objectsInMenu->addObject(userIDNode);
+
+        auto accountIDNode = CCLabelBMFont::create(CCString::createWithFormat("Account ID: %i", a2->getAccountID())->getCString(), "chatFont.fnt");
+        accountIDNode->setPosition({38,-258});
+        accountIDNode->setAnchorPoint({0,1});
+        accountIDNode->setScale(0.6f);
+        accountIDNode->setColor({255,255,255});
+        accountIDNode->setOpacity(220);
+        menu->addChild(accountIDNode);
+        self->objectsInMenu->addObject(accountIDNode);
     }
 
 }
@@ -527,11 +546,11 @@ bool __fastcall ProfilePage_init(ProfilePage* self, void* a, int id, bool a2){
 
     for(unsigned int i = 0; i < self->m_pButtonMenu->getChildrenCount(); i++){
         CCNode* node = dynamic_cast<CCNode*>(self->m_pButtonMenu->getChildren()->objectAtIndex(i));
-        if(node != nullptr && node->getPositionX() == 12 && node->getPositionY() == -258) node->setPosition({52, -258});
+        if(node != nullptr && node->getPositionX() == 12 && node->getPositionY() == -258) node->setPosition(16, -224); //node->setPosition({52, -258}); // //
     }
 
     CCNode* followTxt = dynamic_cast<CCNode*>(layer->getChildren()->objectAtIndex(6));
-    if(followTxt->getPositionY() == 35) followTxt->setPositionX(followTxt->getPositionX() + 40);
+    if(followTxt->getPositionY() == 35) followTxt->setVisible(false); //followTxt->setPositionX(followTxt->getPositionX() + 40);
 
     /*auto menu = CCMenu::create();
     menu->setPosition({ 0, 0 });
