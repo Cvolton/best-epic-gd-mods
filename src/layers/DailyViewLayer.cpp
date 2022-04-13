@@ -216,3 +216,18 @@ int DailyViewLayer::getPage() const{
 int DailyViewLayer::levelsPerPage() const{
     return (gd::GameManager::sharedState()->getGameVariable("0093")) ? 20 : 10;
 }
+
+void DailyViewLayer::keyDown(enumKeyCodes key){
+    switch(key){
+        case KEY_Left:
+        case CONTROLLER_Left:
+            if(prevBtn->isVisible() == true) onPrev(nullptr);
+            break;
+        case KEY_Right:
+        case CONTROLLER_Right:
+            if(nextBtn->isVisible() == true) onNext(nullptr);
+            break;
+        default:
+            CCLayer::keyDown(key);
+    }
+}
