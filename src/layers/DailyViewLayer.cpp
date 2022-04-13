@@ -31,6 +31,7 @@ bool DailyViewLayer::init(bool isWeekly) {
     auto GLM = gd::GameLevelManager::sharedState();
     auto winSize = CCDirector::sharedDirector()->getWinSize();
     auto backgroundSprite = CCSprite::create("game_bg_14_001.png");
+    bool controllerConnected = CCApplication::sharedApplication()->getControllerConnected();
 
     backgroundSprite->setScale(winSize.width / backgroundSprite->getContentSize().width);
     backgroundSprite->setAnchorPoint({0, 0});
@@ -75,7 +76,7 @@ bool DailyViewLayer::init(bool isWeekly) {
     }
     std::sort(sortedLevels->data->arr, sortedLevels->data->arr + sortedLevels->data->num, DailyViewLayer::compareDailies);
 
-    auto prevSprite = CCSprite::createWithSpriteFrameName("GJ_arrow_03_001.png");
+    auto prevSprite = CCSprite::createWithSpriteFrameName(controllerConnected ? "controllerBtn_DPad_Left_001.png" : "GJ_arrow_03_001.png");
     prevBtn = gd::CCMenuItemSpriteExtra::create(
         prevSprite,
         this,
@@ -84,8 +85,8 @@ bool DailyViewLayer::init(bool isWeekly) {
     prevBtn->setPosition({- (winSize.width / 2) + 25, 0});
     menu->addChild(prevBtn);
 
-    auto nextSprite = CCSprite::createWithSpriteFrameName("GJ_arrow_03_001.png");
-    nextSprite->setFlipX(true);
+    auto nextSprite = CCSprite::createWithSpriteFrameName(controllerConnected ? "controllerBtn_DPad_Right_001.png" : "GJ_arrow_03_001.png");
+    if(!controllerConnected) nextSprite->setFlipX(true);
     nextBtn = gd::CCMenuItemSpriteExtra::create(
         nextSprite,
         this,
