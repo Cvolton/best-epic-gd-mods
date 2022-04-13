@@ -151,3 +151,29 @@ int CvoltonManager::randomNumber(int start, int end){
 
     return distribute(generator);
 }
+
+int CvoltonManager::completedLevelsForStars(int stars){
+    //TODO: do not iterate this 10 times for values 0-10
+    int res = 0;
+    auto GLM = GameLevelManager::sharedState();
+    auto levels = GLM->m_onlineLevels;
+    CCDictElement* obj;
+    CCDICT_FOREACH(levels, obj){
+        auto currentLvl = static_cast<GJGameLevel*>(obj->getObject());
+        if(currentLvl != nullptr && currentLvl->stars == stars && currentLvl->normalPercent == 100) res++;
+    }
+
+    auto dailyLevels = GLM->m_dailyLevels;
+    CCDICT_FOREACH(dailyLevels, obj){
+        auto currentLvl = static_cast<GJGameLevel*>(obj->getObject());
+        if(currentLvl != nullptr && currentLvl->stars == stars && currentLvl->normalPercent == 100) res++;
+    }
+
+    auto gauntletLevels = GLM->m_gauntletLevels;
+    CCDICT_FOREACH(gauntletLevels, obj){
+        auto currentLvl = static_cast<GJGameLevel*>(obj->getObject());
+        if(currentLvl != nullptr && currentLvl->stars == stars && currentLvl->normalPercent == 100) res++;
+    }
+
+    return res;
+}

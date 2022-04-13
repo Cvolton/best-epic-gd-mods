@@ -40,4 +40,5 @@ public:
 	const char* getUserName(int id);
 	void loadTextures();
 	int randomNumber(int start, int end);
+	int completedLevelsForStars(int stars);
 };

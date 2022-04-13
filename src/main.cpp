@@ -217,7 +217,7 @@ public:
         auto GM = GameManager::sharedState();
 
         std::ostringstream contentStream;
-        if(a2->getUserID() == GM->m_nPlayerUserID) contentStream << "User ID: " << score->getUserID()
+        if(score->getUserID() == GM->m_nPlayerUserID) contentStream << "User ID: " << score->getUserID()
             << "\nAccount ID: " << score->getAccountID()
             << "\n";//Leaderboard Icon: " << StaticStringHelper::getIconType(score->getIconType()) (is not sent)
         contentStream << "\nFriend Requests: " << StaticStringHelper::getFriendRequestType(score->getFriendStatus())
