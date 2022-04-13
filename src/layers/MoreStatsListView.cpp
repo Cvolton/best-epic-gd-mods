@@ -21,10 +21,10 @@ void MoreStatsListView::setupList() {
 
     this->m_pTableView->reloadData();
 
+    this->m_pTableView->moveToTop();
+
     if (this->m_pEntries->count() == 1)
         this->m_pTableView->moveToTopWithOffset(this->m_fItemSeparation);
-    
-    this->m_pTableView->moveToTop();
 }
 
 void MoreStatsListView::loadCell(TableViewCell* cell, unsigned int index) {
