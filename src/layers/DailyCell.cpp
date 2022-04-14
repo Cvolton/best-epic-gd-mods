@@ -138,7 +138,7 @@ void DailyCell::loadFromLevel(GJGameLevel* level) {
     auto coinDict = GameStatsManager::sharedState()->m_verifiedUserCoins;
 
     float coinX = practice->getPositionX() + ((practice->getContentSize().width) * practice->getScaleX());
-    for(int i = 0; i < ((levelFromSaved == nullptr) ? 3 : levelFromSaved->coins); i++){
+    for(int i = 1; i <= ((levelFromSaved == nullptr) ? 3 : levelFromSaved->coins); i++){
         bool isCollected = coinDict->objectForKey(level->getCoinKey(i)) == nullptr;
         auto coinSprite = CCSprite::createWithSpriteFrameName("usercoin_small01_001.png");
         if(isCollected) coinSprite->setColor({165, 165, 165});
