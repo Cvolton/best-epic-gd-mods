@@ -135,19 +135,17 @@ void DailyCell::loadFromLevel(GJGameLevel* level) {
     coin->setScale(.325f);
     this->m_pLayer->addChild(coin);*/
 
+    auto coinDict = GameStatsManager::sharedState()->m_verifiedUserCoins;
+
     float coinX = practice->getPositionX() + ((practice->getContentSize().width) * practice->getScaleX());
     for(int i = 0; i < ((levelFromSaved == nullptr) ? 3 : levelFromSaved->coins); i++){
-        bool isCollected = false;
-        switch(i){
-            case 0: isCollected = level->firstCoinVerified; break;
-            case 1: isCollected = level->secondCoinVerified; break;
-            case 2: isCollected = level->thirdCoinVerified; break;
-            default: break;
-        }
-        auto coinSprite = CCSprite::createWithSpriteFrameName(isCollected ? "GJ_coinsIcon2_001.png" : "GJ_coinsIcon_gray_001.png");
+        bool isCollected = coinDict->objectForKey(level->getCoinKey(i)) == nullptr;
+        auto coinSprite = CCSprite::createWithSpriteFrameName("usercoin_small01_001.png");
+        if(isCollected) coinSprite->setColor({165, 165, 165});
         coinSprite->setPosition({coinX += 6, 23});
         coinSprite->setAnchorPoint({0, 0.5f});
-        coinSprite->setScale(0.35f);
+        coinSprite->setScale(0.7f);
+        //coinSprite->setScale(0.35f);
         this->m_pLayer->addChild(coinSprite);
     }
 
