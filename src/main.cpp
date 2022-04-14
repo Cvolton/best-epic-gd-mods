@@ -219,8 +219,8 @@ public:
         std::ostringstream contentStream;
         if(score->getUserID() == GM->m_nPlayerUserID) contentStream << "User ID: " << score->getUserID()
             << "\nAccount ID: " << score->getAccountID()
-            << "\n";//Leaderboard Icon: " << StaticStringHelper::getIconType(score->getIconType()) (is not sent)
-        contentStream << "\nFriend Requests: " << StaticStringHelper::getFriendRequestType(score->getFriendStatus())
+            << "\n\n";//Leaderboard Icon: " << StaticStringHelper::getIconType(score->getIconType()) (is not sent)
+        contentStream << "Friend Requests: " << StaticStringHelper::getFriendRequestType(score->getFriendStatus())
             << "\nPrivate Messages: " << StaticStringHelper::getMessageType(score->getMessageState())
             << "\nComment History: " << StaticStringHelper::getMessageType(score->getCommentHistoryStatus());
 
