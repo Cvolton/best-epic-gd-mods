@@ -269,6 +269,7 @@ public:
         level->levelID = layer->comment->m_nLevelID;
 
         InfoLayer* infoLayer = InfoLayer::create(level, nullptr);
+        infoLayer->setParentFLAlert(layer->getParent()->getParent()->getParent()->getParent()->getParent()->getParent());
         infoLayer->show();
 
         //gd::FLAlertLayer::create(nullptr, "Level Stats", "OK", nullptr, std::to_string(layer->comment->m_nLevelID))->show();

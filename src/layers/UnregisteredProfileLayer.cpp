@@ -10,7 +10,7 @@ UnregisteredProfileLayer* UnregisteredProfileLayer::create(gd::GJUserScore* scor
     auto ret = new UnregisteredProfileLayer();
     score->retain();
     ret->score = score;
-    invoker->retain();
+    if(invoker != nullptr) invoker->retain();
     ret->invoker = invoker;
     if (ret && ret->init()) {
         //robert 1 :D
