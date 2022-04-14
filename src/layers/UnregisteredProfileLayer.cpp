@@ -6,10 +6,12 @@
 using namespace cocos2d;
 using namespace gd;
 
-UnregisteredProfileLayer* UnregisteredProfileLayer::create(gd::GJUserScore* score){
+UnregisteredProfileLayer* UnregisteredProfileLayer::create(gd::GJUserScore* score, CCNode* invoker){
     auto ret = new UnregisteredProfileLayer();
     score->retain();
     ret->score = score;
+    invoker->retain();
+    ret->invoker = invoker;
     if (ret && ret->init()) {
         //robert 1 :D
         ret->autorelease();
@@ -24,15 +26,16 @@ UnregisteredProfileLayer* UnregisteredProfileLayer::create(gd::GJUserScore* scor
 void UnregisteredProfileLayer::onClose(cocos2d::CCObject* sender)
 {
     score->release();
+    if(invoker != nullptr) invoker->release();
     setKeypadEnabled(false);
     removeFromParentAndCleanup(true);
 }
 
-void UnregisteredProfileLayer::displayProfile(int userID, std::string userName){
+void UnregisteredProfileLayer::displayProfile(int userID, std::string userName, CCNode* invoker){
     gd::GJUserScore* score = gd::GJUserScore::create();
     score->setUserID(userID);
     score->setPlayerName(userName);
-    UnregisteredProfileLayer* profileLayer = UnregisteredProfileLayer::create(score);
+    UnregisteredProfileLayer* profileLayer = UnregisteredProfileLayer::create(score, invoker);
     profileLayer->show();
 }
 
@@ -51,7 +54,7 @@ void UnregisteredProfileLayer::onMyLevels(CCObject* sender) {
 
 void UnregisteredProfileLayer::onCommentHistory(CCObject* sender) {
     InfoLayer* infoLayer = InfoLayer::create(nullptr, score);
-    //infoLayer->setParentFLAlert(this);
+    infoLayer->setParentFLAlert(invoker);
     //this->m_pTarget = infoLayer;
     infoLayer->show();
     onClose(sender);

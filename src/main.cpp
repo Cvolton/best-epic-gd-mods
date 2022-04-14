@@ -206,7 +206,7 @@ public:
     void onProfilePage(CCObject* sender){
         auto layer = cast<CommentCell*>(this);
         layer->comment->m_pUserScore->setUserID(layer->comment->m_nAuthorPlayerID);
-        UnregisteredProfileLayer* profileLayer = UnregisteredProfileLayer::create(layer->comment->m_pUserScore);
+        UnregisteredProfileLayer* profileLayer = UnregisteredProfileLayer::create(layer->comment->m_pUserScore, layer->getParent()->getParent()->getParent()->getParent()->getParent()->getParent());
         profileLayer->show();
     }
 
