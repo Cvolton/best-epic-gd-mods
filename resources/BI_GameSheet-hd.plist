@@ -30,7 +30,7 @@
     <key>spriteSourceSize</key>
     <string>{0,0}</string>
     <key>textureRect</key>
-    <string>{{2,0},{0,0}}</string>
+    <string>{{1,0},{0,0}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -45,7 +45,7 @@
     <key>spriteSourceSize</key>
     <string>{199,199}</string>
     <key>textureRect</key>
-    <string>{{0,2},{199,199}}</string>
+    <string>{{0,1},{199,199}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -60,7 +60,7 @@
     <key>spriteSourceSize</key>
     <string>{91,92}</string>
     <key>textureRect</key>
-    <string>{{201,2},{91,92}}</string>
+    <string>{{200,1},{91,92}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -75,7 +75,7 @@
     <key>spriteSourceSize</key>
     <string>{199,199}</string>
     <key>textureRect</key>
-    <string>{{294,2},{199,199}}</string>
+    <string>{{292,1},{199,199}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -90,7 +90,7 @@
     <key>spriteSourceSize</key>
     <string>{65,66}</string>
     <key>textureRect</key>
-    <string>{{495,2},{65,66}}</string>
+    <string>{{492,1},{65,66}}</string>
     <key>textureRotated</key>
     <false/>
    </dict>
@@ -106,7 +106,7 @@
    <key>realTextureFileName</key>
    <string>BI_GameSheet-hd.png</string>
    <key>size</key>
-   <string>{562,203}</string>
+   <string>{558,201}</string>
    <key>smartupdate</key>
    <string>$none</string>
    <key>textureFileName</key>
