@@ -167,7 +167,7 @@ void DailyViewLayer::loadPage(unsigned int page){
     if(page == 0) prevBtn->setVisible(false);
     else prevBtn->setVisible(true);
 
-    if(sortedLevels->count() >= lastIndex) nextBtn->setVisible(true);
+    if(sortedLevels->count() > lastIndex) nextBtn->setVisible(true);
     else nextBtn->setVisible(false);
 
     pageBtnSprite->setString(std::to_string(page+1).c_str());
