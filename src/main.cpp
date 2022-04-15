@@ -24,6 +24,7 @@ using namespace gd;
 const int cvoltonID = 6330800;
 const int commentPageBtnTag = 863390891;
 const int questBtnExMarkTag = 863390892;
+const int randomBtnTag = 863390893;
 
 class CustomLevelSearchLayer : public gd::FLAlertLayer {
     gd::GJGameLevel* level;
@@ -750,18 +751,17 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
     MHook::getOriginal(LevelBrowserLayer_updateLevelsLabel)(self, a);
 
     if(self->total == 9999) self->nextBtn->setVisible(true);
-}
 
-bool __fastcall LevelBrowserLayer_init(LevelBrowserLayer* self, void* a, GJSearchObject* searchObject) {
-    if(!MHook::getOriginal(LevelBrowserLayer_init)(self, a, searchObject)) return false;
+    CCMenu* menu = cast<CCMenu*>(self->nextBtn->getParent());
+    for(unsigned int i = 0; i < menu->getChildrenCount(); i++){
+        if(menu->getChildren()->objectAtIndex(i) != nullptr && menu->getChildren()->objectAtIndex(i)->getTag() == randomBtnTag) return;
+    }
 
-    //TODO: load the textures in a proper place
     CvoltonManager::sharedState()->loadTextures();
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
-    bool isLocal = searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels || searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels;
+    bool isLocal = self->searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels;
 
-    CCMenu* menu = cast<CCMenu*>(self->nextBtn->getParent());
     auto randomSprite = CCSprite::createWithSpriteFrameName("BI_randomBtn_001.png");
     randomSprite->setScale(0.9f);
     auto randomBtn = gd::CCMenuItemSpriteExtra::create(
@@ -770,12 +770,20 @@ bool __fastcall LevelBrowserLayer_init(LevelBrowserLayer* self, void* a, GJSearc
         menu_selector(GamingButton::onLevelBrowserRandom)
     );
     randomBtn->setPosition({ (winSize.width / 2) - 23, (winSize.height / 2) - 72});
+    randomBtn->setTag(randomBtnTag);
     if(isLocal) randomBtn->setPosition({(winSize.width / 2) - 58, (winSize.height / 2) - 38.5f});
 
     menu->addChild(randomBtn);
+}
+
+/*bool __fastcall LevelBrowserLayer_init(LevelBrowserLayer* self, void* a, GJSearchObject* searchObject) {
+    if(!MHook::getOriginal(LevelBrowserLayer_init)(self, a, searchObject)) return false;
+
+    //TODO: load the textures in a proper place
+    
 
     return true;
-}
+}*/
 
 bool __fastcall CreatorLayer_init(CCLayer* self) {
     if(!MHook::getOriginal(CreatorLayer_init)(self)) return false;
@@ -919,6 +927,9 @@ DWORD WINAPI my_thread(void* hModule) {
 
     MH_Initialize();
 
+    /*auto gdshare = reinterpret_cast<uintptr_t>(GetModuleHandle("GDShare-v0.3.4.dll"));
+    auto betteredit = reinterpret_cast<uintptr_t>(GetModuleHandle("BetterEdit-v4.0.5.dll"));*/
+
     //base = reinterpret_cast<uintptr_t>(GetModuleHandle(0));
     
     MHook::registerHook(base + 0x14F5A0, InfoLayer_init);
@@ -928,7 +939,14 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x151E70, InfoLayer_loadPage);
     //setupProgressBars = very bad workaround for interoperability with gdshare lol (help how do i hook something thats already hooked)
     MHook::registerHook(base + 0x15C350, LevelBrowserLayer_updateLevelsLabel);
-    MHook::registerHook(base + 0x15A040, LevelBrowserLayer_init);
+
+    /*bool LevelBrowserLayer_hook = false;
+    if(!MHook::registerHook(base + 0x15A040, LevelBrowserLayer_init)){
+        //gdshare conflict
+        if(gdshare != 0) LevelBrowserLayer_hook = MHook::registerHook(gdshare + 0xFBD0, LevelBrowserLayer_init);
+        //betteredit conflict
+        if(!LevelBrowserLayer_hook && betteredit != 0) MHook::registerHook(betteredit + 0x3FF50, LevelBrowserLayer_init);
+    }*/
     MHook::registerHook(base + 0x177FC0, LevelInfoLayer_setupProgressBars);
     MHook::registerHook(base + 0x17AC90, LevelInfoLayer_onViewProfile);
     MHook::registerHook(base + 0x17ACF0, LevelInfoLayer_onLevelInfo);
