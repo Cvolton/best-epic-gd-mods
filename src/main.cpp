@@ -651,6 +651,14 @@ void __fastcall LevelInfoLayer_onLevelInfo(LevelInfoLayer* self, void* a, CCObje
     ExtendedLevelInfo::showProgressDialog(self->level);
 }
 
+void __fastcall EditLevelLayer_onLevelInfo(EditLevelLayer* self, void* a, CCObject* sender) {
+    ExtendedLevelInfo::showProgressDialog(self->m_pLevel);
+}
+
+/*void __fastcall LevelPage_onInfo(LevelPage* self, void* a, CCObject* sender) {
+    ExtendedLevelInfo::showProgressDialog(self->m_pLevel);
+}*/
+
 void __fastcall InfoLayer_onLevelInfo(InfoLayer* self, void* a, CCObject* sender) {
     auto CM = CvoltonManager::sharedState();
     if(CM->getOption("no_level_info")){
@@ -924,6 +932,8 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x177FC0, LevelInfoLayer_setupProgressBars);
     MHook::registerHook(base + 0x17AC90, LevelInfoLayer_onViewProfile);
     MHook::registerHook(base + 0x17ACF0, LevelInfoLayer_onLevelInfo);
+    MHook::registerHook(base + 0x70660, EditLevelLayer_onLevelInfo);
+    //MHook::registerHook(base + 0x1865E0, LevelPage_onInfo);
     MHook::registerHook(base + 0x5C790, LevelCell_onViewProfile);
     MHook::registerHook(base + 0x5A020, LevelCell_loadCustomLevelCell);
     MHook::registerHook(base + 0x5F3D0, CommentCell_loadFromComment);

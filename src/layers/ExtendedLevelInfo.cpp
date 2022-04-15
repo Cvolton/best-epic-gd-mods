@@ -257,25 +257,36 @@ CCLabelBMFont* ExtendedLevelInfo::createTextLabel(const std::string text, const 
 
 void ExtendedLevelInfo::showProgressDialog(GJGameLevel* level){
 
+    if(level == nullptr) return;
+
+    if(level->levelID == -1){
+        gd::FLAlertLayer::create(nullptr, "It's a secret...", "OK", nullptr, 300, "The <cr>darkness</c> lingers. Be careful who you trust...\nThere might be an <c_>impostor</c> among us.")->show();
+        return;
+    }
+
     std::ostringstream contentStream;
     contentStream << "<cg>Total Attempts</c>: " << level->attempts
         << "\n<cl>Total Jumps</c>: " << level->jumps
-        << "\n<co>Clicks (best att.)</c>: " << level->clicks // the contents of this variable make no sense to me
-        << "\n<co>Time (best att.)</c>: " << ExtendedLevelInfo::workingTime(level->attemptTime) // the contents of this variable make no sense to me
-        //<< "\n<co>Is legit</c>: " << level->isCompletionLegitimate // the contents of this variable make no sense to me
-        << "\n<cp>Normal</c>: " << level->normalPercent
+        << "\n<co>Clicks (best att.)</c>: " << level->clicks
+        << "\n<co>Time (best att.)</c>: " << ExtendedLevelInfo::workingTime(level->attemptTime);
+
+    if(level->levelType != GJLevelType::kGJLevelTypeEditor){ contentStream << "\n<cp>Normal</c>: " << level->normalPercent
         << "%\n<co>Practice</c>: " << level->practicePercent << "%";
 
-    if(level->orbCompletion != level->newNormalPercent2) contentStream << "\n<cj>2.1 Normal</c>: " << level->orbCompletion << "%";
-    if(level->newNormalPercent2 != level->normalPercent) contentStream << "\n<cr>2.11 Normal</c>: " << level->newNormalPercent2 << "%";
+        if(level->orbCompletion != level->normalPercent) contentStream << "\n<cj>Orbs</c>: " << level->orbCompletion << "%";
+        if(level->newNormalPercent2 != level->orbCompletion) contentStream << "\n<cr>Leaderboard</c>: " << level->newNormalPercent2 << "%";
+    }else{
+        contentStream << "\n<cp>Objects</c>: " << level->objectCount
+            << "\n<cr>In Editor</c>: " << ExtendedLevelInfo::workingTime(level->workingTime);
+        if(level->workingTime2) contentStream << "\n<cr>Editor (C)</c>: " << ExtendedLevelInfo::workingTime(level->workingTime2);
+        ;
+    }
+
     std::string progresses;
     if(level->personalBests != ""){
         progresses = ExtendedLevelInfo::printableProgress(level->personalBests, level->newNormalPercent2);
         contentStream << "\n\n<cy>Progresses</c>: " << progresses;
     }
-    //contentStream << "\n\nProgresses: " << level->personalBests;
-
-    //if(score->getUserID() == 6330800) contentStream << "\n\nThis user is epic!";
 
     /*float dialogWidth = 250;
     if(progresses.length() > 48) dialogWidth = 350;
