@@ -187,11 +187,11 @@ void DailyViewLayer::onBack(CCObject* object) {
     keyBackClicked();
 }
 
-void DailyViewLayer::onPrev(CCObject* object) { //TODO: arrows and gamepad btns
+void DailyViewLayer::onPrev(CCObject* object) {
     loadPage(--page);
 }
 
-void DailyViewLayer::onNext(CCObject* object) { //TODO: arrows and gamepad btns
+void DailyViewLayer::onNext(CCObject* object) {
     loadPage(++page);
 }
 
