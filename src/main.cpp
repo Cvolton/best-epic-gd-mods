@@ -791,6 +791,7 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
     //update check
     auto CM = CvoltonManager::sharedState();
     CM->doUpdateCheck();
+    CM->setActiveCreator(this);
 
     //betterinfo btn
     auto menu = cast<CCMenu*>(self->getChildren()->objectAtIndex(1));
@@ -832,6 +833,13 @@ void __fastcall CreatorLayer_onChallenge(CCLayer* self, void* a, CCMenuItemSprit
         auto child = dynamic_cast<CCSprite*>(sender->getChildren()->objectAtIndex(i));
         if(child != nullptr && child->getTag() == questBtnExMarkTag) child->setVisible(false);
     }
+    MHook::getOriginal(CreatorLayer_onChallenge)(self, a, sender);
+}
+
+void __fastcall CreatorLayer_onBack(CCLayer* self, void* a, CCMenuItemSpriteExtra* sender) {
+    auto CM = CvoltonManager::sharedState();
+    CM->setActiveCreator(nullptr);
+    
     MHook::getOriginal(CreatorLayer_onChallenge)(self, a, sender);
 }
 
@@ -960,6 +968,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0xA1C20, GameLevelManager_userNameForUserID);
     MHook::registerHook(base + 0x4DE40, CreatorLayer_init);
     MHook::registerHook(base + 0x4F1B0, CreatorLayer_onChallenge);
+    MHook::registerHook(base + 0x4FAE0, CreatorLayer_onBack);
     MHook::registerHook(base + 0x6BEF0, DailyLevelPage_updateTimers);
     MHook::registerHook(base + 0x6A900, DailyLevelPage_init);
     MHook::registerHook(base + 0x17C4F0, LevelLeaderboard_init); //0x17D090 onChangeType

@@ -14,6 +14,7 @@ public:
 	std::string changelog;
 	cocos2d::CCDictionary* nameDict;
 	cocos2d::CCDictionary* settingsDict;
+	gd::CreatorLayer* activeCreator = nullptr;
 	bool hasDoneUpdateCheck = false;
 
 	bool init();
@@ -33,6 +34,7 @@ public:
 	void doUpdateHttpRequest();
 	void doUpdateCheck();
 	void forceUpdateCheck();
+	void setActiveCreator(gd::CreatorLayer* activeCreator);
 	void downloadChangelog(CvoltonUpdateLayer* updateLayer);
 	bool isUpToDate();
 	bool getOption(std::string option);
