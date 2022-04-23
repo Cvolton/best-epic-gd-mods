@@ -224,19 +224,11 @@ public:
         contentStream << "Friend Requests: " << StaticStringHelper::getFriendRequestType(score->getFriendStatus())
             << "\nPrivate Messages: " << StaticStringHelper::getMessageType(score->getMessageState())
             << "\nComment History: " << StaticStringHelper::getMessageType(score->getCommentHistoryStatus());
+        if(score->getUserID() == GM->m_nPlayerUserID) contentStream << "\n\nBootups: " << GM->m_nBootups;
 
         //if(score->getUserID() == cvoltonID) contentStream << "\n\nThis user is epic!";
 
         gd::FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, contentStream.str())->show();
-
-        auto GLM = gd::GameLevelManager::sharedState();
-        /*GLM->m_userIDtoAccountIDDict->setObject(CCString::create("0"), 248868);
-        GLM->m_knownUsers->setObject(CCString::create("roadbose"), 248868);*/
-
-        //GLM->storeUserNames("248868:roadbose:0|16:Robert:71");
-
-        //auto GLM = gd::GameLevelManager::sharedState();
-        //GLM->getGJUserInfo(something);
     }
 
     void onProfilePageReload(CCObject* sender){
