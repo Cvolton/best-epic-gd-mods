@@ -328,6 +328,20 @@ public:
         //CCDirector::sharedDirector()->getRunningScene()->addChild(layer);
     }
 
+    void onLeaderboardRefresh(CCObject* sender){
+        auto GLM = gd::GameLevelManager::sharedState();
+        GLM->updateUserScore();
+        GLM->storedLevels->removeObjectForKey("leaderboard_creator");
+        GLM->storedLevels->removeObjectForKey("leaderboard_friends");
+        GLM->storedLevels->removeObjectForKey("leaderboard_global");
+        GLM->storedLevels->removeObjectForKey("leaderboard_top");
+
+        auto layer = LeaderboardsLayer::create(GLM->leaderboardState);
+        auto scene = CCScene::create();
+        scene->addChild(layer);
+        CCDirector::sharedDirector()->replaceScene(scene);
+    }
+
 };
 
 bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, void* c) {
@@ -897,6 +911,28 @@ bool __fastcall LevelLeaderboard_init(LevelLeaderboard* self, void* a, GJGameLev
     return true;
 }
 
+bool __fastcall LeaderboardsLayer_init(ProfilePage* self, void* a, int state){
+    if(!MHook::getOriginal(LeaderboardsLayer_init)(self, a, state)) return false;
+
+    auto winSize = CCDirector::sharedDirector()->getWinSize();
+    auto layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(0));
+
+    auto refreshBtn = gd::CCMenuItemSpriteExtra::create(
+        CCSprite::createWithSpriteFrameName("GJ_updateBtn_001.png"),
+        self,
+        menu_selector(GamingButton::onLeaderboardRefresh)
+    );
+
+    auto menuRefresh = CCMenu::create();
+    menuRefresh->addChild(refreshBtn);
+    menuRefresh->setPosition({winSize.width - 26.75f, 26.75f});
+    menuRefresh->setZOrder(2);
+
+    self->addChild(menuRefresh);
+
+    return true;
+}
+
 void setupPageLimitBypass(){
     auto proc = GetCurrentProcess();
     auto winapiBase = reinterpret_cast<char*>(base);
@@ -960,10 +996,11 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0xA1C20, GameLevelManager_userNameForUserID);
     MHook::registerHook(base + 0x4DE40, CreatorLayer_init);
     MHook::registerHook(base + 0x4F1B0, CreatorLayer_onChallenge);
-    MHook::registerHook(base + 0x4FAE0, CreatorLayer_onBack);
+    MHook::registerHook(base + 0x4FAE0, CreatorLayer_onBack); //onLeaderboards 0x4ED20
     MHook::registerHook(base + 0x6BEF0, DailyLevelPage_updateTimers);
     MHook::registerHook(base + 0x6A900, DailyLevelPage_init);
     MHook::registerHook(base + 0x17C4F0, LevelLeaderboard_init); //0x17D090 onChangeType
+    MHook::registerHook(base + 0x1587B0, LeaderboardsLayer_init);
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
 
     setupPageLimitBypass();
