@@ -783,7 +783,7 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
     //update check
     auto CM = CvoltonManager::sharedState();
     CM->doUpdateCheck();
-    CM->setActiveCreator(this);
+    CM->setActiveCreator(self);
 
     //betterinfo btn
     auto menu = cast<CCMenu*>(self->getChildren()->objectAtIndex(1));
@@ -831,8 +831,8 @@ void __fastcall CreatorLayer_onChallenge(CCLayer* self, void* a, CCMenuItemSprit
 void __fastcall CreatorLayer_onBack(CCLayer* self, void* a, CCMenuItemSpriteExtra* sender) {
     auto CM = CvoltonManager::sharedState();
     CM->setActiveCreator(nullptr);
-    
-    MHook::getOriginal(CreatorLayer_onChallenge)(self, a, sender);
+
+    MHook::getOriginal(CreatorLayer_onBack)(self, a, sender);
 }
 
 void __fastcall DailyLevelPage_updateTimers(DailyLevelPage* self, void* a, float something) {
