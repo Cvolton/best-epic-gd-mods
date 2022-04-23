@@ -791,6 +791,35 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
     return true;
 }*/
 
+void showQuestExclamationMark(CCLayer* creator){
+    //if(creator == nullptr || creator->getChildrenCount() < 2) return;
+    auto menu = dynamic_cast<CCMenu*>(creator->getChildren()->objectAtIndex(1));
+    auto GSM = GameStatsManager::sharedState();
+
+    bool showExclamation = true;
+    /*for(int i = 1; i < 4; i++){
+        GJChallengeItem* item = GSM->getChallenge(i);
+        if(item != nullptr && item->m_bCanClaim) showExclamation = true;
+    }*/
+
+    if(menu == nullptr || !showExclamation) return;
+
+    auto questBtn = static_cast<CCMenuItemSpriteExtra*>(menu->getChildren()->objectAtIndex(3));
+    if(questBtn == nullptr) return;
+
+    auto existingNode = questBtn->getChildByTag(questBtnExMarkTag);
+    if(existingNode != nullptr){
+        existingNode->setVisible(true);
+        return;
+    }
+
+    auto exMark = CCSprite::createWithSpriteFrameName("exMark_001.png");
+    exMark->setPosition({16.5,75});
+    exMark->setScale(0.7f);
+    exMark->setTag(questBtnExMarkTag);
+    questBtn->addChild(exMark);
+}
+
 bool __fastcall CreatorLayer_init(CCLayer* self) {
     if(!MHook::getOriginal(CreatorLayer_init)(self)) return false;
 
@@ -814,22 +843,7 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
     buttonButton->setPosition({door->getPositionX() - 2,0});
     menu->addChild(buttonButton);
 
-    //quest exclamation mark
-    bool showExclamation = false;
-    auto GSM = GameStatsManager::sharedState();
-    for(int i = 1; i < 4; i++){
-        GJChallengeItem* item = GSM->getChallenge(i);
-        if(item != nullptr && item->m_bCanClaim) showExclamation = true;
-    }
-
-    if(showExclamation){
-        auto questBtn = cast<CCMenuItemSpriteExtra*>(menu->getChildren()->objectAtIndex(3));
-        auto exMark = CCSprite::createWithSpriteFrameName("exMark_001.png");
-        exMark->setPosition({16.5,75});
-        exMark->setScale(0.7f);
-        exMark->setTag(questBtnExMarkTag);
-        questBtn->addChild(exMark);
-    }
+    //showQuestExclamationMark(self);
 
     return true;
 }
@@ -847,6 +861,12 @@ void __fastcall CreatorLayer_onBack(CCLayer* self, void* a, CCMenuItemSpriteExtr
     CM->setActiveCreator(nullptr);
 
     MHook::getOriginal(CreatorLayer_onBack)(self, a, sender);
+}
+
+void _fastcall CreatorLayer_sceneWillResume(uint8_t* self){
+    MHook::getOriginal(CreatorLayer_sceneWillResume)(self);
+
+    showQuestExclamationMark(reinterpret_cast<CCLayer*>(self - sizeof(CCLayer)));
 }
 
 void __fastcall DailyLevelPage_updateTimers(DailyLevelPage* self, void* a, float something) {
@@ -933,6 +953,13 @@ bool __fastcall LeaderboardsLayer_init(ProfilePage* self, void* a, int state){
     return true;
 }
 
+/*void __fastcall GameStatsManager_incrementChallenge(void* self, void* a, int challengeType, int count){
+    MHook::getOriginal(GameStatsManager_incrementChallenge)(self, a, challengeType, count);
+
+    auto CM = CvoltonManager::sharedState();
+    showQuestExclamationMark(CM->getActiveCreator());
+}*/
+
 void setupPageLimitBypass(){
     auto proc = GetCurrentProcess();
     auto winapiBase = reinterpret_cast<char*>(base);
@@ -996,11 +1023,13 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0xA1C20, GameLevelManager_userNameForUserID);
     MHook::registerHook(base + 0x4DE40, CreatorLayer_init);
     MHook::registerHook(base + 0x4F1B0, CreatorLayer_onChallenge);
-    MHook::registerHook(base + 0x4FAE0, CreatorLayer_onBack); //onLeaderboards 0x4ED20
+    MHook::registerHook(base + 0x4FAE0, CreatorLayer_onBack);
+    MHook::registerHook(base + 0x4FB50, CreatorLayer_sceneWillResume); //onLeaderboards 0x4ED20
     MHook::registerHook(base + 0x6BEF0, DailyLevelPage_updateTimers);
     MHook::registerHook(base + 0x6A900, DailyLevelPage_init);
     MHook::registerHook(base + 0x17C4F0, LevelLeaderboard_init); //0x17D090 onChangeType
     MHook::registerHook(base + 0x1587B0, LeaderboardsLayer_init);
+    //MHook::registerHook(base + 0xF9AE0, GameStatsManager_incrementChallenge);
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
 
     setupPageLimitBypass();

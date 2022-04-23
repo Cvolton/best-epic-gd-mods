@@ -34,7 +34,6 @@ public:
 	void doUpdateHttpRequest();
 	void doUpdateCheck();
 	void forceUpdateCheck();
-	void setActiveCreator(cocos2d::CCLayer* activeCreator);
 	void downloadChangelog(CvoltonUpdateLayer* updateLayer);
 	bool isUpToDate();
 	bool getOption(std::string option);
@@ -43,4 +42,6 @@ public:
 	void loadTextures();
 	int randomNumber(int start, int end);
 	int completedLevelsForStars(int stars);
+	void setActiveCreator(cocos2d::CCLayer* activeCreator);
+	cocos2d::CCLayer* CvoltonManager::getActiveCreator();
 };
