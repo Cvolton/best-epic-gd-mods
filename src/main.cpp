@@ -310,8 +310,9 @@ public:
         auto layer = cast<LevelBrowserLayer*>(this);
 
         if(layer->searchObject == nullptr) return;
+        bool isLocal = layer->searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels || layer->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels;
 
-        int pageMax = layer->total / 10;
+        int pageMax = layer->total / ((isLocal && gd::GameManager::sharedState()->getGameVariable("0093")) ? 20 : 10);
         //int pageToLoad = std::rand() % pageMax;
 
         int pageToLoad = CvoltonManager::sharedState()->randomNumber(0, pageMax);
