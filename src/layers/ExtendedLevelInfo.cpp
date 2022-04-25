@@ -260,7 +260,7 @@ void ExtendedLevelInfo::showProgressDialog(GJGameLevel* level){
     if(level == nullptr) return;
 
     if(level->levelID == -1){
-        gd::FLAlertLayer::create(nullptr, "It's a secret...", "OK", nullptr, 300, "The <cr>darkness</c> lingers. Be careful who you trust...\nThere might be an <c_>impostor</c> among us.")->show();
+        gd::FLAlertLayer::create(nullptr, "It's a secret...", "OK", nullptr, 360, "The <cr>darkness</c> lingers. Be careful who you trust...\nThere might be an <c_>impostor</c> among us.")->show();
         return;
     }
 
