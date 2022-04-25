@@ -796,11 +796,11 @@ void showQuestExclamationMark(CCLayer* creator){
     auto menu = dynamic_cast<CCMenu*>(creator->getChildren()->objectAtIndex(1));
     auto GSM = GameStatsManager::sharedState();
 
-    bool showExclamation = true;
-    /*for(int i = 1; i < 4; i++){
+    bool showExclamation = false;
+    for(int i = 1; i < 4; i++){
         GJChallengeItem* item = GSM->getChallenge(i);
         if(item != nullptr && item->m_bCanClaim) showExclamation = true;
-    }*/
+    }
 
     if(menu == nullptr || !showExclamation) return;
 
