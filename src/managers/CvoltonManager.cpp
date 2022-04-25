@@ -177,11 +177,3 @@ int CvoltonManager::completedLevelsForStars(int stars){
 
     return res;
 }
-
-void CvoltonManager::setActiveCreator(CCLayer* activeCreator) {
-    this->activeCreator = activeCreator;
-}
-
-CCLayer* CvoltonManager::getActiveCreator() {
-    return this->activeCreator;
-}

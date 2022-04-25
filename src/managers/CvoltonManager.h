@@ -14,7 +14,6 @@ public:
 	std::string changelog;
 	cocos2d::CCDictionary* nameDict;
 	cocos2d::CCDictionary* settingsDict;
-	cocos2d::CCLayer* activeCreator = nullptr;
 	bool hasDoneUpdateCheck = false;
 
 	bool init();
@@ -42,6 +41,4 @@ public:
 	void loadTextures();
 	int randomNumber(int start, int end);
 	int completedLevelsForStars(int stars);
-	void setActiveCreator(cocos2d::CCLayer* activeCreator);
-	cocos2d::CCLayer* CvoltonManager::getActiveCreator();
 };

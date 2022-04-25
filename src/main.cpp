@@ -826,7 +826,6 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
     //update check
     auto CM = CvoltonManager::sharedState();
     CM->doUpdateCheck();
-    CM->setActiveCreator(self);
 
     //betterinfo btn
     auto menu = cast<CCMenu*>(self->getChildren()->objectAtIndex(1));
@@ -858,7 +857,6 @@ void __fastcall CreatorLayer_onChallenge(CCLayer* self, void* a, CCMenuItemSprit
 
 void __fastcall CreatorLayer_onBack(CCLayer* self, void* a, CCMenuItemSpriteExtra* sender) {
     auto CM = CvoltonManager::sharedState();
-    CM->setActiveCreator(nullptr);
 
     MHook::getOriginal(CreatorLayer_onBack)(self, a, sender);
 }
