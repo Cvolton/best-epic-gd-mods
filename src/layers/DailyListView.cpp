@@ -22,7 +22,7 @@ void DailyListView::setupList() {
     this->m_pTableView->reloadData();
 
     auto coverage = calculateNodeCoverage(m_pTableView->m_pContentLayer->getChildren());
-    if (this->m_pEntries->count() > 1)
+    if (this->m_pEntries->count() > 4)
         m_pTableView->m_pContentLayer->setContentSize({-coverage.origin.x + coverage.size.width, -coverage.origin.y + coverage.size.height});
 
     this->m_pTableView->moveToTop();
