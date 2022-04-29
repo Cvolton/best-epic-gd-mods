@@ -972,7 +972,7 @@ GJSearchObject* __fastcall LevelSearchLayer_getSearchObject(LevelSearchLayer* se
         str.erase(str.find_last_not_of(' ') + 1);
     }
     
-    if(CM->getOption("search_contains") && type == SearchType::kSearchTypeSearch) str.insert(str.begin(), '%');
+    if(CM->getOption("search_contains") && type == SearchType::kSearchTypeSearch) str = "%25" + str;
     //FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, str)->show();
 
 
