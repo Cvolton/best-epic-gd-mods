@@ -84,6 +84,6 @@ void CvoltonSearchOptions::destroyToggles(){
 }
 
 void CvoltonSearchOptions::drawToggles(){
-    createToggle("search_contains", "Search Contains", -170, 75); //40 -60, 170 -60, 300 -60, 40 -110
+    createToggle("search_contains", "Name Contains", -170, 75); //40 -60, 170 -60, 300 -60, 40 -110
     createToggle("search_trim", "Trim Spaces", -170, 25);
 }
