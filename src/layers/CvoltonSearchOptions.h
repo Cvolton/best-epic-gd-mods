@@ -12,4 +12,7 @@ public:
     void destroyToggles();
     void drawToggles();
     void CvoltonSearchOptions::createToggle(const char* option, const char* name, float x, float y);
+    void CvoltonSearchOptions::onCompletedPrev(cocos2d::CCObject* sender);
+    void CvoltonSearchOptions::onCompletedNext(cocos2d::CCObject* sender);
+    static std::string CvoltonSearchOptions::getCompletedString();
 };

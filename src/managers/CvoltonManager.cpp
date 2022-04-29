@@ -137,6 +137,15 @@ void CvoltonManager::toggleOption(std::string option){
     this->save();
 }
 
+int CvoltonManager::getOptionInt(std::string option){
+    return settingsDict->valueForKey(option)->intValue();
+}
+void CvoltonManager::setOptionInt(std::string option, int value){
+    settingsDict->setObject(CCString::createWithFormat("%i", value), option);
+
+    this->save();
+}
+
 void CvoltonManager::loadTextures(){
     CCTextureCache::sharedTextureCache()->addImage("BI_GameSheet.png", 0);
     CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("BI_GameSheet.plist");

@@ -7,6 +7,8 @@
 using namespace cocos2d;
 using namespace gd;
 
+const int completedMax = 6;
+
 CvoltonSearchOptions* CvoltonSearchOptions::create(){
     auto ret = new CvoltonSearchOptions();
     if (ret && ret->init()) {
@@ -84,6 +86,39 @@ void CvoltonSearchOptions::destroyToggles(){
 }
 
 void CvoltonSearchOptions::drawToggles(){
+    auto winSize = CCDirector::sharedDirector()->getWinSize();
+
     createToggle("search_contains", "Name Contains", -170, 75); //40 -60, 170 -60, 300 -60, 40 -110
     createToggle("search_trim", "Trim Spaces", -170, 25);
+
+    createTextLabel("Completed Mode:", {0, - (winSize.height / 2) + 65}, 0.5f, m_pButtonMenu, "goldFont.fnt");
+    createButton("edit_leftBtn_001.png", {-120, - (winSize.height / 2) + 40}, menu_selector(CvoltonSearchOptions::onCompletedPrev), 1.2f);
+    auto label = createTextLabel(getCompletedString(), {0, - (winSize.height / 2) + 40}, 1, m_pButtonMenu, "bigFont.fnt");
+    label->limitLabelWidth(200, 0.8f, 0);
+    createButton("edit_rightBtn_001.png", {120, - (winSize.height / 2) + 40}, menu_selector(CvoltonSearchOptions::onCompletedNext), 1.2f);
+}
+
+void CvoltonSearchOptions::onCompletedPrev(cocos2d::CCObject* sender)
+{
+    auto CM = CvoltonManager::sharedState();
+    int value = CM->getOptionInt("search_completed") - 1;
+    if(value < 0) value = completedMax - 1;
+    CM->setOptionInt("search_completed", value);
+    destroyToggles();
+    drawToggles();
+}
+
+void CvoltonSearchOptions::onCompletedNext(cocos2d::CCObject* sender)
+{
+    auto CM = CvoltonManager::sharedState();
+    CM->setOptionInt("search_completed", (CM->getOptionInt("search_completed") + 1) % completedMax);
+    destroyToggles();
+    drawToggles();
+}
+
+std::string CvoltonSearchOptions::getCompletedString(){
+    auto CM = CvoltonManager::sharedState();
+    int type = CM->getOptionInt("search_completed");
+    const char* types[] = {"Default", "Completed Levels", "Completed Orbs", "Completed Leaderboard", "Completed With Coins", "Completed Without Coins"};
+    return std::to_string(type) + ": " + types[type % completedMax];
 }

@@ -37,6 +37,8 @@ public:
 	bool isUpToDate();
 	bool getOption(std::string option);
 	void toggleOption(std::string option);
+	int getOptionInt(std::string option);
+	void setOptionInt(std::string option, int value);
 	const char* getUserName(int id);
 	void loadTextures();
 	int randomNumber(int start, int end);
