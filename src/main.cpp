@@ -966,8 +966,13 @@ GJSearchObject* __fastcall LevelSearchLayer_getSearchObject(LevelSearchLayer* se
     //std::ostringstream query;
     //query << "%" << self->input->getString();
     auto CM = CvoltonManager::sharedState();
+
+    if(CM->getOption("search_trim")) {
+        str.erase(0, str.find_first_not_of(' '));
+        str.erase(str.find_last_not_of(' ') + 1);
+    }
     
-    if(CM->getOption("search_contains")) str.insert(str.begin(), '%');
+    if(CM->getOption("search_contains") && type == SearchType::kSearchTypeSearch) str.insert(str.begin(), '%');
     //FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, str)->show();
 
 
