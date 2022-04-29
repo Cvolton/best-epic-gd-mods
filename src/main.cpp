@@ -16,6 +16,7 @@
 #include "layers/ExtendedLevelInfo.h"
 #include "layers/CustomCreatorLayer.h"
 #include "layers/DailyViewLayer.h"
+#include "layers/CvoltonSearchOptions.h"
 #include "managers/CvoltonManager.h"
 
 using namespace cocos2d;
@@ -341,6 +342,13 @@ public:
         auto scene = CCScene::create();
         scene->addChild(layer);
         CCDirector::sharedDirector()->replaceScene(scene);
+    }
+
+    void onMoreSearchNext(CCObject* sender){
+        auto self = cast<FLAlertLayer*>(this);
+        auto layer = CvoltonSearchOptions::create();
+        CCDirector::sharedDirector()->getRunningScene()->addChild(layer);
+        self->onClose(sender);
     }
 
 };
@@ -954,6 +962,39 @@ bool __fastcall LeaderboardsLayer_init(ProfilePage* self, void* a, int state){
     return true;
 }
 
+GJSearchObject* __fastcall LevelSearchLayer_getSearchObject(LevelSearchLayer* self, void* a, SearchType type, std::string str) {
+    //std::ostringstream query;
+    //query << "%" << self->input->getString();
+    auto CM = CvoltonManager::sharedState();
+    
+    if(CM->getOption("search_contains")) str.insert(str.begin(), '%');
+    //FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, str)->show();
+
+
+
+    return MHook::getOriginal(LevelSearchLayer_getSearchObject)(self, a, type, str);
+}
+
+bool __fastcall MoreSearchLayer_init(MoreSearchLayer* self){
+    if(!MHook::getOriginal(MoreSearchLayer_init)(self)) return false;
+
+    auto winSize = CCDirector::sharedDirector()->getWinSize();
+    auto menu = self->m_pButtonMenu;
+
+    auto sprite = CCSprite::createWithSpriteFrameName("GJ_arrow_03_001.png");
+    sprite->setFlipX(true);
+
+    auto nextBtn = gd::CCMenuItemSpriteExtra::create(
+        sprite,
+        self,
+        menu_selector(GamingButton::onMoreSearchNext)
+    );
+    nextBtn->setPosition({winSize.width - 100, - (winSize.height / 2) + 25});
+    menu->addChild(nextBtn);
+
+    return true;
+}
+
 /*void __fastcall GameStatsManager_incrementChallenge(void* self, void* a, int challengeType, int count){
     MHook::getOriginal(GameStatsManager_incrementChallenge)(self, a, challengeType, count);
 
@@ -1030,6 +1071,9 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x6A900, DailyLevelPage_init);
     MHook::registerHook(base + 0x17C4F0, LevelLeaderboard_init); //0x17D090 onChangeType
     MHook::registerHook(base + 0x1587B0, LeaderboardsLayer_init);
+    MHook::registerHook(base + 0x1805F0, LevelSearchLayer_getSearchObject); //17F500 onMoreOptions
+    MHook::registerHook(base + 0x1825C0, MoreSearchLayer_init); 
+    //MHook::registerHook(base + 0x180FC0, LevelSearchLayer_onSearch);
     //MHook::registerHook(base + 0xF9AE0, GameStatsManager_incrementChallenge);
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
 
