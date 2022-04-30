@@ -2,6 +2,15 @@
 #include <gd.h>
 #include "../layers/CvoltonUpdateLayer.h"
 
+enum CompleteMode {
+	modeDefault,
+	completed,
+	completed21,
+	completed211,
+	allCoins,
+	noCoins
+};
+
 class CvoltonManager : gd::GManager {
 	inline static CvoltonManager* cvoltonManager = nullptr;
 	CvoltonManager();

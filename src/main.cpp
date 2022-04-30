@@ -1016,6 +1016,45 @@ bool __fastcall MoreSearchLayer_init(MoreSearchLayer* self){
     showQuestExclamationMark(CM->getActiveCreator());
 }*/
 
+CCArray* __fastcall GameLevelManager_getCompletedLevels(GameLevelManager* self, void* a, bool newFilter){
+    auto CM = CvoltonManager::sharedState();
+    CompleteMode mode = static_cast<CompleteMode>(CM->getOptionInt("search_completed"));
+    if(mode == modeDefault) return MHook::getOriginal(GameLevelManager_getCompletedLevels)(self, a, newFilter);
+
+    CCArray* pRet = CCArray::create();
+
+    auto levels = self->m_onlineLevels;
+    CCDictElement* obj;
+    CCDICT_FOREACH(levels, obj){
+        auto currentLvl = static_cast<GJGameLevel*>(obj->getObject());
+        switch(mode){
+            case completed:
+                if(currentLvl->normalPercent == 100) pRet->addObject(currentLvl);
+                break;
+            case completed21:
+                if(currentLvl->orbCompletion == 100) pRet->addObject(currentLvl);
+                break;
+            case completed211:
+                if(currentLvl->newNormalPercent2 == 100) pRet->addObject(currentLvl);
+                break;
+            case allCoins:
+            case noCoins: //TODO: this doesnt work yet
+                bool completed = false;
+                auto coinDict = GameStatsManager::sharedState()->m_verifiedUserCoins;
+                auto coinDict2 = GameStatsManager::sharedState()->m_pendingUserCoins;
+                for(int i = 0; i < currentLvl->coins; i++){
+                    bool hasntCoin = coinDict->objectForKey(currentLvl->getCoinKey(i + 1)) == nullptr && coinDict2->objectForKey(currentLvl->getCoinKey(i + 1)) == nullptr;
+                    if(hasntCoin) completed = false; else completed = completed && true;
+                }
+                //if(((mode == noCoins) ^ completed) && currentLvl->coins > 0) pRet->addObject(currentLvl);
+                if(currentLvl->coins > 0) pRet->addObject(currentLvl);
+                break;
+        }
+    }
+
+    return pRet;
+}
+
 void setupPageLimitBypass(){
     auto proc = GetCurrentProcess();
     auto winapiBase = reinterpret_cast<char*>(base);
@@ -1087,6 +1126,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x1587B0, LeaderboardsLayer_init);
     MHook::registerHook(base + 0x1805F0, LevelSearchLayer_getSearchObject); //17F500 onMoreOptions
     MHook::registerHook(base + 0x1825C0, MoreSearchLayer_init); 
+    MHook::registerHook(base + 0xA2D20, GameLevelManager_getCompletedLevels); 
     //MHook::registerHook(base + 0x180FC0, LevelSearchLayer_onSearch);
     //MHook::registerHook(base + 0xF9AE0, GameStatsManager_incrementChallenge);
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
