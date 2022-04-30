@@ -963,6 +963,11 @@ bool __fastcall LeaderboardsLayer_init(ProfilePage* self, void* a, int state){
 }
 
 GJSearchObject* __fastcall LevelSearchLayer_getSearchObject(LevelSearchLayer* self, void* a, SearchType type, std::string str) {
+
+    std::string::const_iterator it = str.begin();
+    while (it != str.end() && std::isdigit(*it)) ++it;
+    bool isID = !str.empty() && it == str.end();
+
     //std::ostringstream query;
     //query << "%" << self->input->getString();
     auto CM = CvoltonManager::sharedState();
@@ -971,8 +976,12 @@ GJSearchObject* __fastcall LevelSearchLayer_getSearchObject(LevelSearchLayer* se
         str.erase(0, str.find_first_not_of(' '));
         str.erase(str.find_last_not_of(' ') + 1);
     }
+
+    if(CM->getOption("search_no_id") && isID) str = str + "%25";
+
+    if(CM->getOption("search_surround_percent") && !isID) str = str + "%25%25";
     
-    if(CM->getOption("search_contains") && type == SearchType::kSearchTypeSearch) str = "%25" + str;
+    if(CM->getOption("search_contains") && type == SearchType::kSearchTypeSearch && !isID) str = "%25" + str;
     //FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, str)->show();
 
 

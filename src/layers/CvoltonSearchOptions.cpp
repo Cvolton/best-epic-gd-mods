@@ -69,6 +69,7 @@ void CvoltonSearchOptions::createToggle(const char* option, const char* name, fl
 
     auto label = createTextLabel(name, {x + 20, y}, 0.5f, m_pButtonMenu);
     label->setAnchorPoint({0,0.5f});
+    label->limitLabelWidth(80, 0.5f, 0);
 }
 
 void CvoltonSearchOptions::destroyToggles(){
@@ -89,6 +90,8 @@ void CvoltonSearchOptions::drawToggles(){
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
     createToggle("search_contains", "Name Contains", -170, 75); //40 -60, 170 -60, 300 -60, 40 -110
+    createToggle("search_no_id", "No ID Search", -40, 75);
+    createToggle("search_surround_percent", "No Forced Star", 90, 75);
     createToggle("search_trim", "Trim Spaces", -170, 25);
 
     createTextLabel("Completed Mode:", {0, - (winSize.height / 2) + 65}, 0.5f, m_pButtonMenu, "goldFont.fnt");
