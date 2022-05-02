@@ -1038,16 +1038,16 @@ CCArray* __fastcall GameLevelManager_getCompletedLevels(GameLevelManager* self, 
                 if(currentLvl->newNormalPercent2 == 100) pRet->addObject(currentLvl);
                 break;
             case allCoins:
-            case noCoins: //TODO: this doesnt work yet
-                bool completed = false;
+            case noCoins:
+                bool completed = true;
                 auto coinDict = GameStatsManager::sharedState()->m_verifiedUserCoins;
                 auto coinDict2 = GameStatsManager::sharedState()->m_pendingUserCoins;
                 for(int i = 0; i < currentLvl->coins; i++){
                     bool hasntCoin = coinDict->objectForKey(currentLvl->getCoinKey(i + 1)) == nullptr && coinDict2->objectForKey(currentLvl->getCoinKey(i + 1)) == nullptr;
                     if(hasntCoin) completed = false; else completed = completed && true;
                 }
-                //if(((mode == noCoins) ^ completed) && currentLvl->coins > 0) pRet->addObject(currentLvl);
-                if(currentLvl->coins > 0) pRet->addObject(currentLvl);
+                if(((mode == noCoins) != completed) && (currentLvl->coins > 0)) pRet->addObject(currentLvl);
+                //if(currentLvl->coins > 0) pRet->addObject(currentLvl);
                 break;
         }
     }
