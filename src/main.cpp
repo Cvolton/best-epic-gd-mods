@@ -17,6 +17,8 @@
 #include "layers/CustomCreatorLayer.h"
 #include "layers/DailyViewLayer.h"
 #include "layers/CvoltonSearchOptions.h"
+#include "layers/LevelBrowserEndLayer.h"
+
 #include "managers/CvoltonManager.h"
 
 using namespace cocos2d;
@@ -311,7 +313,7 @@ public:
         auto layer = cast<LevelBrowserLayer*>(this);
 
         if(layer->searchObject == nullptr) return;
-        bool isLocal = layer->searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels || layer->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels;
+        bool isLocal = layer->searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels || layer->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || layer->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite;
 
         int pageMax = layer->total / ((isLocal && gd::GameManager::sharedState()->getGameVariable("0093")) ? 20 : 10);
         //int pageToLoad = std::rand() % pageMax;
@@ -320,6 +322,12 @@ public:
 
         layer->searchObject->m_nPage = pageToLoad;
         layer->loadPage(layer->searchObject);
+    }
+
+    void onLevelBrowserLast(CCObject* sender){
+        auto layer = cast<LevelBrowserLayer*>(this);
+
+        LevelBrowserEndLayer::create(layer)->show();
     }
 
     void onDailyHistory(CCObject* sender){
@@ -777,7 +785,7 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
     CvoltonManager::sharedState()->loadTextures();
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
-    bool isLocal = self->searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels;
+    bool isLocal = self->searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite;
 
     auto randomSprite = CCSprite::createWithSpriteFrameName("BI_randomBtn_001.png");
     randomSprite->setScale(0.9f);
@@ -791,6 +799,25 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
     if(isLocal) randomBtn->setPosition({(winSize.width / 2) - 58, (winSize.height / 2) - 38.5f});
 
     menu->addChild(randomBtn);
+
+    if(!isLocal){
+        auto doubleArrow = CCSprite::createWithSpriteFrameName("GJ_arrow_02_001.png");
+        auto arrow = CCSprite::createWithSpriteFrameName("GJ_arrow_02_001.png");
+        arrow->setPosition({31.5,20});
+        doubleArrow->addChild(arrow);
+        doubleArrow->setScale(0.5f);
+        doubleArrow->setFlipX(true);
+        arrow->setFlipX(true);
+        auto lastBtn = gd::CCMenuItemSpriteExtra::create(
+            doubleArrow,
+            self,
+            menu_selector(GamingButton::onLevelBrowserLast)
+        );
+        //259 60
+        lastBtn->setPosition({ (winSize.width / 2) - 26, (winSize.height / 2) - 100});
+        menu->addChild(lastBtn);
+        //lastBtn->setTag(randomBtnTag);
+    }
 }
 
 /*bool __fastcall LevelBrowserLayer_init(LevelBrowserLayer* self, void* a, GJSearchObject* searchObject) {
@@ -1054,6 +1081,15 @@ CCArray* __fastcall GameLevelManager_getCompletedLevels(GameLevelManager* self, 
 
     return pRet;
 }
+
+/*void LevelBrowserLayer_loadLevelsFinished(LevelBrowserLayer* self, void* a, CCArray* levels, const char* a2){
+    MHook::getOriginal(GameLevelManager_getCompletedLevels)(self, a, levels, a2);
+
+    auto CM = CvoltonManager::sharedState();
+    if(CM->searchInProgress){
+        
+    }
+}*/
 
 void setupPageLimitBypass(){
     auto proc = GetCurrentProcess();
