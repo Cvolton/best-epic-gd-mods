@@ -8,7 +8,7 @@ public:
 	cocos2d::CCPoint alertSize;
 	gd::CCMenuItemSpriteExtra* closeBtn;
 
-	bool createBasics(cocos2d::CCPoint contentSize, cocos2d::SEL_MenuHandler onClose, float closeBtnScale = 1);
+	bool createBasics(cocos2d::CCPoint contentSize, cocos2d::SEL_MenuHandler onClose, float closeBtnScale = 1, const cocos2d::ccColor4B& color = {0x00, 0x00, 0x00, 0x4B});
 	void createTitle(std::string text);
 	gd::CCMenuItemSpriteExtra* CvoltonAlertLayerStub::createButton(const char* texture, cocos2d::CCPoint position, cocos2d::SEL_MenuHandler callback, float textureScale = 1.0f, float sizeMult = 1.2f);
 };

@@ -3,8 +3,8 @@
 using namespace cocos2d;
 using namespace gd;
 
-bool CvoltonAlertLayerStub::createBasics(CCPoint contentSize, cocos2d::SEL_MenuHandler onClose, float closeBtnScale){
-	bool init = cocos2d::CCLayerColor::initWithColor({0x00, 0x00, 0x00, 0x4B});
+bool CvoltonAlertLayerStub::createBasics(CCPoint contentSize, cocos2d::SEL_MenuHandler onClose, float closeBtnScale, const ccColor4B &color){
+	bool init = cocos2d::CCLayerColor::initWithColor(color);
     if(!init) return false;
 
     alertSize = contentSize;
