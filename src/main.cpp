@@ -29,6 +29,9 @@ const int commentPageBtnTag = 863390891;
 const int questBtnExMarkTag = 863390892;
 const int randomBtnTag = 863390893;
 
+const int levelsPerPage = 10;
+const int levelsPerPageHigh = 20;
+
 class CustomLevelSearchLayer : public gd::FLAlertLayer {
     gd::GJGameLevel* level;
 public:
@@ -315,7 +318,7 @@ public:
         if(layer->searchObject == nullptr) return;
         bool isLocal = layer->searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels || layer->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || layer->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite;
 
-        int pageMax = layer->total / ((isLocal && gd::GameManager::sharedState()->getGameVariable("0093")) ? 20 : 10);
+        int pageMax = layer->total / ((isLocal && gd::GameManager::sharedState()->getGameVariable("0093")) ? levelsPerPageHigh : levelsPerPage);
         //int pageToLoad = std::rand() % pageMax;
 
         int pageToLoad = CvoltonManager::sharedState()->randomNumber(0, pageMax);
@@ -327,7 +330,15 @@ public:
     void onLevelBrowserLast(CCObject* sender){
         auto layer = cast<LevelBrowserLayer*>(this);
 
-        LevelBrowserEndLayer::create(layer)->show();
+        if(layer->total == 9999) {
+            LevelBrowserEndLayer::create(layer)->show();
+            return;
+        }
+
+        bool isLocal = layer->searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels || layer->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || layer->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite;
+
+        layer->searchObject->m_nPage = layer->total / ((isLocal && gd::GameManager::sharedState()->getGameVariable("0093")) ? levelsPerPageHigh : levelsPerPage);
+        layer->loadPage(layer->searchObject);
     }
 
     void onDailyHistory(CCObject* sender){
