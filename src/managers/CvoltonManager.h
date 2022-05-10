@@ -11,7 +11,7 @@ enum CompleteMode {
 	noCoins
 };
 
-class CvoltonManager : gd::GManager {
+class CvoltonManager : public gd::GManager {
 	inline static CvoltonManager* cvoltonManager = nullptr;
 	CvoltonManager();
 

@@ -21,7 +21,9 @@ CvoltonOptionsLayer* CvoltonOptionsLayer::create(){
 }
 
 void CvoltonOptionsLayer::onClose(cocos2d::CCObject* sender)
-{
+{   
+    auto CM = CvoltonManager::sharedState();
+    CM->save();
     destroyToggles();
     setKeypadEnabled(false);
     removeFromParentAndCleanup(true);
@@ -50,13 +52,14 @@ CCLabelBMFont* CvoltonOptionsLayer::createTextLabel(const std::string text, cons
 
 void CvoltonOptionsLayer::onToggle(cocos2d::CCObject* sender)
 {
+    sender->retain();
     auto button = static_cast<CCMenuItemSpriteExtra*>(sender);
     auto CM = CvoltonManager::sharedState();
     CM->toggleOption(static_cast<CCString*>(button->getUserData())->getCString());
 
     destroyToggles();
     drawToggles();
-    
+    sender->release();
 }
 
 void CvoltonOptionsLayer::createToggle(const char* option, const char* name){

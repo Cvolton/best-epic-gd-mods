@@ -133,8 +133,6 @@ bool CvoltonManager::getOption(std::string option){
 }
 void CvoltonManager::toggleOption(std::string option){
     settingsDict->setObject(CCString::createWithFormat("%i", !getOption(option)), option);
-
-    this->save();
 }
 
 int CvoltonManager::getOptionInt(std::string option){
@@ -142,8 +140,6 @@ int CvoltonManager::getOptionInt(std::string option){
 }
 void CvoltonManager::setOptionInt(std::string option, int value){
     settingsDict->setObject(CCString::createWithFormat("%i", value), option);
-
-    this->save();
 }
 
 void CvoltonManager::loadTextures(){
@@ -201,7 +197,7 @@ CCDictionary* CvoltonManager::responseToDict(std::string response){
 
     unsigned int i = 0;
     while(getline(responseStream, currentKey, ':')){
-        
+
         if(i % 2 == 0) keyID = currentKey;
         else dict->setObject(CCString::create(currentKey.c_str()),keyID);
 

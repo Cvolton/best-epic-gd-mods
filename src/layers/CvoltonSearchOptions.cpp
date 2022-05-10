@@ -24,6 +24,8 @@ CvoltonSearchOptions* CvoltonSearchOptions::create(){
 
 void CvoltonSearchOptions::onClose(cocos2d::CCObject* sender)
 {
+    auto CM = CvoltonManager::sharedState();
+    CM->save();
     destroyToggles();
     setKeypadEnabled(false);
     removeFromParentAndCleanup(true);
