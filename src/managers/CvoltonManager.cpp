@@ -186,3 +186,27 @@ int CvoltonManager::completedLevelsForStars(int stars){
 
     return res;
 }
+
+/*
+    This is a reimplementation of GameLevelManager::responseToDict
+    because I couldn't get it to work. It's not 1:1 with the original
+    so that's why it's here, even though it achieves the same purpose.
+*/
+CCDictionary* CvoltonManager::responseToDict(std::string response){
+    auto dict = CCDictionary::create();
+
+    std::stringstream responseStream(response);
+    std::string currentKey;
+    std::string keyID;
+
+    unsigned int i = 0;
+    while(getline(responseStream, currentKey, ':')){
+        
+        if(i % 2 == 0) keyID = currentKey;
+        else dict->setObject(CCString::create(currentKey.c_str()),keyID);
+
+        i++;
+    }
+
+    return dict;
+}

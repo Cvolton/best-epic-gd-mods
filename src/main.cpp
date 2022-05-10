@@ -18,6 +18,7 @@
 #include "layers/DailyViewLayer.h"
 #include "layers/CvoltonSearchOptions.h"
 #include "layers/LevelBrowserEndLayer.h"
+#include "layers/LeaderboardViewLayer.h"
 
 #include "managers/CvoltonManager.h"
 
@@ -235,6 +236,16 @@ public:
         //if(score->getUserID() == cvoltonID) contentStream << "\n\nThis user is epic!";
 
         gd::FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, contentStream.str())->show();
+    }
+
+    void onProfilePageLeaderboard(CCObject* sender){
+        auto layer = cast<ProfilePage*>(this);
+
+        auto score = layer->score;
+
+        auto scene = LeaderboardViewLayer::scene(score->getAccountID());
+        auto transitionFade = CCTransitionFade::create(0.5, scene);
+        CCDirector::sharedDirector()->pushScene(transitionFade);
     }
 
     void onProfilePageReload(CCObject* sender){
@@ -537,6 +548,19 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
     self->objectsInMenu->addObject(infoButton);
 
     if(a2->getUserID() != GameManager::sharedState()->m_nPlayerUserID){
+        auto leaderboardSprite = CCSprite::createWithSpriteFrameName("GJ_achBtn_001.png");
+        leaderboardSprite->setScale(0.65f);
+        auto leaderboardButton = gd::CCMenuItemSpriteExtra::create(
+            leaderboardSprite,
+            self,
+            menu_selector(GamingButton::onProfilePageLeaderboard)
+        );
+        menu->addChild(leaderboardButton);
+        leaderboardButton->setPosition({16, -175});
+        //leaderboardButton->setScale(0.8f);
+        leaderboardButton->setSizeMult(1.2f);
+
+
         auto refreshSprite = CCSprite::createWithSpriteFrameName("GJ_updateBtn_001.png");
         //refreshSprite->setScale(0.7f);
         auto refreshButton = gd::CCMenuItemSpriteExtra::create(

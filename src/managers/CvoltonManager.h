@@ -52,4 +52,5 @@ public:
 	void loadTextures();
 	int randomNumber(int start, int end);
 	int completedLevelsForStars(int stars);
+	cocos2d::CCDictionary* CvoltonManager::responseToDict(std::string response);
 };
