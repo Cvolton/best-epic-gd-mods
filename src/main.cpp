@@ -526,8 +526,23 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
     }
 }
 
+//this would ideally only be called from init but there are hook conflicts
+void fixProfilePagePositions(ProfilePage* self){
+    auto layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(0));
+
+    for(unsigned int i = 0; i < self->m_pButtonMenu->getChildrenCount(); i++){
+        CCNode* node = dynamic_cast<CCNode*>(self->m_pButtonMenu->getChildren()->objectAtIndex(i));
+        if(node != nullptr && node->getPositionX() == 12 && node->getPositionY() == -258) node->setPosition(16, -224); //node->setPosition({52, -258}); // //
+    }
+
+    CCNode* followTxt = dynamic_cast<CCNode*>(layer->getChildren()->objectAtIndex(6));
+    if(followTxt->getPositionY() == 35) followTxt->setVisible(false); //followTxt->setPositionX(followTxt->getPositionX() + 40);
+}
+
 void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd::GJUserScore* a2){
     MHook::getOriginal(ProfilePage_loadPageFromUserInfo)(self, a, a2);
+
+    fixProfilePagePositions(self);
 
     auto layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(0));
 
@@ -600,31 +615,7 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
 bool __fastcall ProfilePage_init(ProfilePage* self, void* a, int id, bool a2){
     if(!MHook::getOriginal(ProfilePage_init)(self, a, id, a2)) return false;
 
-    auto layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(0));
-
-    //auto menu = self->m_pButtonMenu;
-
-    for(unsigned int i = 0; i < self->m_pButtonMenu->getChildrenCount(); i++){
-        CCNode* node = dynamic_cast<CCNode*>(self->m_pButtonMenu->getChildren()->objectAtIndex(i));
-        if(node != nullptr && node->getPositionX() == 12 && node->getPositionY() == -258) node->setPosition(16, -224); //node->setPosition({52, -258}); // //
-    }
-
-    CCNode* followTxt = dynamic_cast<CCNode*>(layer->getChildren()->objectAtIndex(6));
-    if(followTxt->getPositionY() == 35) followTxt->setVisible(false); //followTxt->setPositionX(followTxt->getPositionX() + 40);
-
-    /*auto menu = CCMenu::create();
-    menu->setPosition({ 0, 0 });
-    menu->setZOrder(1000);
-    for (int i = 0; i < layer->getChildrenCount(); i++) {
-        auto text = CCLabelBMFont::create(std::to_string(i).c_str(), "bigFont.fnt");
-        auto node = (CCNode*)layer->getChildren()->objectAtIndex(i);
-        text->setAnchorPoint(node->getAnchorPoint());
-        text->setScale(0.5f);
-        text->setPosition(node->getPosition());
-        text->setZOrder(1000);
-        menu->addChild(text);
-    }
-    layer->addChild(menu);*/
+    fixProfilePagePositions(self);
 
     return true;
 }
