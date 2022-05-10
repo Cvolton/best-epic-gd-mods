@@ -143,12 +143,16 @@ void ProfileSearchOptions::drawToggles(){
         );
     }
     createButtonToggle("user_search_diff_auto", CCSprite::createWithSpriteFrameName("difficulty_auto_btn_001.png"), 187, -70, .9f);
-    /*createToggle("user_search_uncompleted", "Uncompleted", -170, 75); //40 -60, 170 -60, 300 -60, 40 -110
-    createToggle("user_search_completed", "Completed", -40, 75);
-    createToggle("user_search_featured", "Featured", 90, 75);
-    createToggle("user_search_original", "Original", -170, 25);
-    createToggle("user_search_epic", "Epic", -40, 25);
-    createToggle("user_search_song", "Song", 90, 25);*/
+
+    createToggle("user_search_uncompleted", "Uncompleted", -170, 80); //40 -60, 170 -60, 300 -60, 40 -110
+    createToggle("user_search_completed", "Completed", -40, 80);
+    createToggle("user_search_featured", "Featured", 90, 80);
+    createToggle("user_search_original", "Original", -170, 35);
+    createToggle("user_search_epic", "Epic", -40, 35);
+    createToggle("user_search_song", "Song", 90, 35);
+    createToggle("user_search_nostar", "No Star", -170, -10);
+    createToggle("user_search_coins", "Coins", -40, -10);
+    createToggle("user_search_twoplayer", "2-Player", 90, -10);
 
     //createToggle("user_search_advanced", "Enable Advanced Options", -170, 75);
 
