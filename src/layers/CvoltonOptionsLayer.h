@@ -3,6 +3,7 @@
 #include "CvoltonAlertLayerStub.h"
 
 class CvoltonOptionsLayer : public CvoltonAlertLayerStub {
+protected:
     int toggleCount = 0;
 public:
     static CvoltonOptionsLayer* create();

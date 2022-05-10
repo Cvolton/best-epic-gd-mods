@@ -19,6 +19,7 @@
 #include "layers/CvoltonSearchOptions.h"
 #include "layers/LevelBrowserEndLayer.h"
 #include "layers/LeaderboardViewLayer.h"
+#include "layers/ProfileSearchOptions.h"
 
 #include "managers/CvoltonManager.h"
 
@@ -259,6 +260,10 @@ public:
         GLM->resetAccountComments(score->getAccountID());
 
         GLM->getGJUserInfo(self->something);
+    }
+
+    void onProfilePageFilter(CCObject* sender){
+        ProfileSearchOptions::create()->show();
     }
 
     void onCustomSearch(CCObject* sender){
@@ -574,6 +579,19 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         leaderboardButton->setPosition({16, -175});
         //leaderboardButton->setScale(0.8f);
         leaderboardButton->setSizeMult(1.2f);
+
+
+        auto filterSprite = CCSprite::createWithSpriteFrameName("GJ_plusBtn_001.png");
+        filterSprite->setScale(0.7f);
+        auto filterButton = gd::CCMenuItemSpriteExtra::create(
+            filterSprite,
+            self,
+            menu_selector(GamingButton::onProfilePageFilter)
+        );
+        menu->addChild(filterButton);
+        filterButton->setPosition({408,-218});
+        //filterButton->setScale(0.8f);
+        filterButton->setSizeMult(1.2f);
 
 
         auto refreshSprite = CCSprite::createWithSpriteFrameName("GJ_updateBtn_001.png");
