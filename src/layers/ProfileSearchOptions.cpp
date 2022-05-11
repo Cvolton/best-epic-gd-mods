@@ -126,11 +126,11 @@ void ProfileSearchOptions::drawToggles(){
     auto timeIcon = CCSprite::createWithSpriteFrameName("GJ_timeIcon_001.png");
     m_pButtonMenu->addChild(timeIcon);
     timeIcon->setPosition({-193, -120});
-    createButtonToggle("user_search_len_01", CCLabelBMFont::create("Tiny", "bigFont.fnt"), -142, -119, 0.6f);
-    createButtonToggle("user_search_len_02", CCLabelBMFont::create("Short", "bigFont.fnt"), -69, -119, 0.6f);
-    createButtonToggle("user_search_len_03", CCLabelBMFont::create("Medium", "bigFont.fnt"), 16, -119, 0.6f);
-    createButtonToggle("user_search_len_04", CCLabelBMFont::create("Long", "bigFont.fnt"), 93.5f, -119, 0.6f);
-    createButtonToggle("user_search_len_05", CCLabelBMFont::create("XL", "bigFont.fnt"), 150, -119, 0.6f);
+    createButtonToggle("user_search_len_00", CCLabelBMFont::create("Tiny", "bigFont.fnt"), -142, -119, 0.6f);
+    createButtonToggle("user_search_len_01", CCLabelBMFont::create("Short", "bigFont.fnt"), -69, -119, 0.6f);
+    createButtonToggle("user_search_len_02", CCLabelBMFont::create("Medium", "bigFont.fnt"), 16, -119, 0.6f);
+    createButtonToggle("user_search_len_03", CCLabelBMFont::create("Long", "bigFont.fnt"), 93.5f, -119, 0.6f);
+    createButtonToggle("user_search_len_04", CCLabelBMFont::create("XL", "bigFont.fnt"), 150, -119, 0.6f);
     createButtonToggle("user_search_star", CCSprite::createWithSpriteFrameName("GJ_starsIcon_001.png"), 193, -120);
 
     for(unsigned int i = 0; i <= 6; i++){

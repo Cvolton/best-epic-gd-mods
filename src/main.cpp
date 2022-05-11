@@ -638,6 +638,53 @@ bool __fastcall ProfilePage_init(ProfilePage* self, void* a, int id, bool a2){
     return true;
 }
 
+void __fastcall ProfilePage_onMyLevels(ProfilePage* self, void* a, CCObject* sender) {
+    //gd::FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, "aaegeg")->show();
+    //self->m_pLevel->retain();
+    auto searchObj = GJSearchObject::create(SearchType::kSearchTypeUsersLevels, std::to_string(self->score->getUserID()));
+
+    auto CM = CvoltonManager::sharedState();
+
+    std::string len;
+    for(unsigned int i = 0; i <= 4; i++){
+        if(
+            CM->getOption(
+                CCString::createWithFormat("user_search_len_%02i", i)->getCString()
+            )
+        ) len += CCString::createWithFormat("%i,", i)->getCString();
+    }
+    if(len.empty()) len = "-";
+    searchObj->m_sLength = len;
+
+    searchObj->m_bStarFilter = CM->getOption("user_search_star");
+
+    std::string diff;
+    if(CM->getOption("user_search_diff_00")) diff = "-1";
+    if(CM->getOption("user_search_diff_06")) diff = "-2";
+    if(CM->getOption("user_search_diff_auto")) diff = "-3";
+
+    for(unsigned int i = 1; i <= 5; i++){
+        if(!(CM->getOption(CCString::createWithFormat("user_search_diff_%02d")->getCString()))) continue;
+
+        if(!(diff.empty())) diff += ",";
+        diff += std::to_string(i);
+    }
+
+    searchObj->m_bUncompletedFilter = CM->getOption("user_search_uncompleted");
+    searchObj->m_bCompletedFilter = CM->getOption("user_search_completed");
+    searchObj->m_bFeaturedFilter = CM->getOption("user_search_featured");
+    searchObj->m_bOriginalFilter = CM->getOption("user_search_original");
+    searchObj->m_bEpicFilter = CM->getOption("user_search_epic");
+    searchObj->m_bSongFilter = CM->getOption("user_search_song");
+    searchObj->m_bNoStarFilter = CM->getOption("user_search_nostar");
+    searchObj->m_bCoinsFilter = CM->getOption("user_search_coins");
+    searchObj->m_bTwoPlayerFilter = CM->getOption("user_search_twoplayer");
+
+    auto browserLayer = LevelBrowserLayer::scene(searchObj);
+    auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
+    CCDirector::sharedDirector()->pushScene(transitionFade);
+}
+
 /*void* __fastcall ProfilePage_getUserInfoFailed(ProfilePage* self, void* a, gd::GJUserScore* a2){
     void* returnValue = MHook::getOriginal(ProfilePage_getUserInfoFailed)(self, a, a2);
     gd::GJUserScore* score = gd::GJUserScore::create();
@@ -1195,6 +1242,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x5F3D0, CommentCell_loadFromComment);
     MHook::registerHook(base + 0x210040, ProfilePage_loadPageFromUserInfo);
     MHook::registerHook(base + 0x20EF00, ProfilePage_init);
+    MHook::registerHook(base + 0x211BB0, ProfilePage_onMyLevels);
     MHook::registerHook(base + 0xA1C20, GameLevelManager_userNameForUserID);
     MHook::registerHook(base + 0x4DE40, CreatorLayer_init);
     MHook::registerHook(base + 0x4F1B0, CreatorLayer_onChallenge);
