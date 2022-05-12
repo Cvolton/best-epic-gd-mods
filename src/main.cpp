@@ -262,7 +262,7 @@ public:
         GLM->getGJUserInfo(self->something);
     }
 
-    void onProfilePageFilter(CCObject* sender){
+    void onLevelBrowserSavedFilter(CCObject* sender){
         ProfileSearchOptions::create()->show();
     }
 
@@ -581,19 +581,6 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         leaderboardButton->setSizeMult(1.2f);
 
 
-        auto filterSprite = CCSprite::createWithSpriteFrameName("GJ_plusBtn_001.png");
-        filterSprite->setScale(0.7f);
-        auto filterButton = gd::CCMenuItemSpriteExtra::create(
-            filterSprite,
-            self,
-            menu_selector(GamingButton::onProfilePageFilter)
-        );
-        menu->addChild(filterButton);
-        filterButton->setPosition({408,-218});
-        //filterButton->setScale(0.8f);
-        filterButton->setSizeMult(1.2f);
-
-
         auto refreshSprite = CCSprite::createWithSpriteFrameName("GJ_updateBtn_001.png");
         //refreshSprite->setScale(0.7f);
         auto refreshButton = gd::CCMenuItemSpriteExtra::create(
@@ -909,6 +896,20 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
         menu->addChild(lastBtn);
         //lastBtn->setTag(randomBtnTag);
     }
+
+    if(self->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite){
+        auto filterSprite = CCSprite::createWithSpriteFrameName("GJ_plusBtn_001.png");
+        filterSprite->setScale(0.7f);
+        auto filterButton = gd::CCMenuItemSpriteExtra::create(
+            filterSprite,
+            self,
+            menu_selector(GamingButton::onLevelBrowserSavedFilter)
+        );
+        menu->addChild(filterButton);
+        filterButton->setPosition({- (winSize.width / 2) + 64, (winSize.height / 2) - 35.f - 32.f});
+        //filterButton->setScale(0.8f);
+        filterButton->setSizeMult(1.2f);
+    }
 }
 
 /*bool __fastcall LevelBrowserLayer_init(LevelBrowserLayer* self, void* a, GJSearchObject* searchObject) {
@@ -1173,6 +1174,64 @@ CCArray* __fastcall GameLevelManager_getCompletedLevels(GameLevelManager* self, 
     return pRet;
 }
 
+CCArray* __fastcall GameLevelManager_getSavedLevels(GameLevelManager* self, void* a, bool filter, int folderID){
+    auto CM = CvoltonManager::sharedState();
+    CCArray* original = MHook::getOriginal(GameLevelManager_getSavedLevels)(self, a, filter, folderID);
+
+    CCArray* pRet = CCArray::create();
+
+    //getting config
+    std::vector<unsigned int> len;
+    for(unsigned int i = 0; i <= 4; i++){
+        if(
+            CM->getOption(
+                CCString::createWithFormat("user_search_len_%02u", i)->getCString()
+            )
+        ) len.push_back(i);
+    }
+
+    std::vector<int> diff;
+
+    if(CM->getOption("user_search_diff_auto")) diff.push_back(-1);
+    for(int i = 0; i <= 6; i++){
+        if(
+            CM->getOption(
+                CCString::createWithFormat("user_search_diff_%02i", i)->getCString()
+            )
+        ) diff.push_back(i);
+    }
+    
+    //calculating levels
+    auto levels = self->m_onlineLevels;
+    CCObject* obj;
+    CCARRAY_FOREACH(original, obj){
+        auto level = static_cast<GJGameLevel*>(obj);
+
+        int difficulty = (level->ratings == 0) ? 0 : (level->ratingsSum / level->ratings);
+        if(level->demon != 0) difficulty = 6;
+        if(level->autoLevel) difficulty = -1;
+        if(!(diff.empty()) && std::find(diff.begin(), diff.end(), difficulty) == diff.end()) continue;
+
+        if(!(len.empty()) && std::find(len.begin(), len.end(), level->levelLength) == len.end()) continue;
+
+        if(CM->getOption("user_search_star") && level->stars == 0) continue;
+        //TODO: respect completed mode
+        if(CM->getOption("user_search_uncompleted") && level->normalPercent == 100) continue;
+        if(CM->getOption("user_search_completed") && level->normalPercent != 100) continue;
+        if(CM->getOption("user_search_featured") && level->featured == 0) continue;
+        if(CM->getOption("user_search_original") && level->originalLevel != 0) continue;
+        if(CM->getOption("user_search_epic") && !(level->isEpic)) continue;
+        //searchObj->m_bSongFilter = CM->getOption("user_search_song");
+        if(CM->getOption("user_search_nostar") && level->stars != 0) continue;
+        if(CM->getOption("user_search_coins") && (level->coins == 0 || level->coinsVerified == 0)) continue;
+        if(CM->getOption("user_search_twoplayer") && !(level->twoPlayerMode)) continue;
+
+        pRet->addObject(level);
+    }
+
+    return pRet;
+}
+
 /*void LevelBrowserLayer_loadLevelsFinished(LevelBrowserLayer* self, void* a, CCArray* levels, const char* a2){
     MHook::getOriginal(GameLevelManager_getCompletedLevels)(self, a, levels, a2);
 
@@ -1255,6 +1314,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x1805F0, LevelSearchLayer_getSearchObject); //17F500 onMoreOptions
     MHook::registerHook(base + 0x1825C0, MoreSearchLayer_init); 
     MHook::registerHook(base + 0xA2D20, GameLevelManager_getCompletedLevels); 
+    MHook::registerHook(base + 0xA2960, GameLevelManager_getSavedLevels); 
     //MHook::registerHook(base + 0x180FC0, LevelSearchLayer_onSearch);
     //MHook::registerHook(base + 0xF9AE0, GameStatsManager_incrementChallenge);
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);

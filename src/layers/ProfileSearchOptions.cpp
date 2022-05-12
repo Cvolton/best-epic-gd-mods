@@ -42,7 +42,7 @@ bool ProfileSearchOptions::init(){
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
-    createTextLabel("User Level Filters", {(winSize.width / 2), winSize.height - 35}, 1.f, m_pLayer, "bigFont.fnt");
+    createTextLabel("Saved Level Filters", {(winSize.width / 2), winSize.height - 35}, 1.f, m_pLayer, "bigFont.fnt");
     //createButton("GJ_arrow_03_001.png", {- (winSize.width / 2) + 30, 0}, menu_selector(ProfileSearchOptions::onPrev));
 
     cocos2d::extension::CCScale9Sprite* lengthBg = cocos2d::extension::CCScale9Sprite::create("square02b_001.png", { 0.0f, 0.0f, 80.0f, 80.0f });
@@ -135,8 +135,8 @@ void ProfileSearchOptions::drawToggles(){
 
     for(unsigned int i = 0; i <= 6; i++){
         createButtonToggle(
-            CCString::createWithFormat("user_search_diff_%02d")->getCString(),
-            CCSprite::createWithSpriteFrameName(CCString::createWithFormat("difficulty_%02d_btn_001.png", i)->getCString()),
+            CCString::createWithFormat("user_search_diff_%02u", i)->getCString(),
+            CCSprite::createWithSpriteFrameName(CCString::createWithFormat("difficulty_%02u_btn_001.png", i)->getCString()),
             -187 + (i * 53.5f),
             -70,
             .9f
