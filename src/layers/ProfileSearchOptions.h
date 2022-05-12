@@ -3,8 +3,9 @@
 #include "CvoltonOptionsLayer.h"
 
 class ProfileSearchOptions : public CvoltonOptionsLayer {
+    gd::LevelBrowserLayer* levelBrowserLayer = nullptr;
 public:
-    static ProfileSearchOptions* create();
+    static ProfileSearchOptions* create(gd::LevelBrowserLayer* levelBrowserLayer = nullptr);
     void onClose(cocos2d::CCObject* sender);
     void onPrev(cocos2d::CCObject* sender);
     bool init();

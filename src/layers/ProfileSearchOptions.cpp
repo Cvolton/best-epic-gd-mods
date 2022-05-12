@@ -7,8 +7,10 @@
 using namespace cocos2d;
 using namespace gd;
 
-ProfileSearchOptions* ProfileSearchOptions::create(){
+ProfileSearchOptions* ProfileSearchOptions::create(gd::LevelBrowserLayer* levelBrowserLayer){
     auto ret = new ProfileSearchOptions();
+    ret->levelBrowserLayer = levelBrowserLayer;
+    if(levelBrowserLayer != nullptr) levelBrowserLayer->retain();
     if (ret && ret->init()) {
         //robert 1 :D
         ret->autorelease();
@@ -25,6 +27,8 @@ void ProfileSearchOptions::onClose(cocos2d::CCObject* sender)
     auto CM = CvoltonManager::sharedState();
     CM->save();
     destroyToggles();
+    if(levelBrowserLayer != nullptr) levelBrowserLayer->loadPage(levelBrowserLayer->searchObject);
+    if(levelBrowserLayer != nullptr) levelBrowserLayer->release();
     setKeypadEnabled(false);
     removeFromParentAndCleanup(true);
 }
@@ -153,6 +157,8 @@ void ProfileSearchOptions::drawToggles(){
     createToggle("user_search_nostar", "No Star", -170, -10);
     createToggle("user_search_coins", "Coins", -40, -10);
     createToggle("user_search_twoplayer", "2-Player", 90, -10);
+
+    if(levelBrowserLayer != nullptr) levelBrowserLayer->loadPage(levelBrowserLayer->searchObject);
 
     //createToggle("user_search_advanced", "Enable Advanced Options", -170, 75);
 
