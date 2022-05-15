@@ -217,8 +217,8 @@ CCDictionary* CvoltonManager::responseToDict(std::string response){
     return dict;
 }
 
-void CvoltonManager::missingResourcesError() {
-    if(hasDoneHealthCheck) return;
+FLAlertLayer* CvoltonManager::missingResourcesError() {
+    if(hasDoneHealthCheck) return nullptr;
 
     auto FU = CCFileUtils::sharedFileUtils();
     std::ostringstream stream;
@@ -237,7 +237,11 @@ void CvoltonManager::missingResourcesError() {
     }
 
     std::string file_list(stream.str());
-    if(!(file_list.empty())) FLAlertLayer::create(nullptr, modName, "OK", nullptr, 350, "<cr>Error: Missing resources!</c>\n\nUnable to find:<cl>"+file_list+"</c>\n\nPlease refer to the <cg>installation instructions</c>.")->show();
+    if(file_list.empty()) return nullptr;
+
+    auto layer = FLAlertLayer::create(nullptr, modName, "OK", nullptr, 400, true, 300, "<cr>Error: Missing resources!</c>\n\nUnable to find:<cl>"+file_list+"</c>\n\nPlease refer to the <cg>installation instructions</c>.");
 
     hasDoneHealthCheck = true;
+
+    return layer;
 }

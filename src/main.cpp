@@ -617,9 +617,6 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         self->objectsInMenu->addObject(accountIDNode);
     }
 
-    auto CM = CvoltonManager::sharedState();
-    CM->missingResourcesError();
-
 }
 
 bool __fastcall ProfilePage_init(ProfilePage* self, void* a, int id, bool a2){
@@ -977,6 +974,12 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
     menu->addChild(buttonButton);
 
     //showQuestExclamationMark(self);
+    CM = CvoltonManager::sharedState();
+    auto alert = CM->missingResourcesError();
+    if(alert) {
+        alert->setZOrder(100);
+        self->addChild(alert);
+    }
 
     return true;
 }
