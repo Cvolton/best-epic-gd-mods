@@ -1220,7 +1220,7 @@ CCArray* __fastcall GameLevelManager_getSavedLevels(GameLevelManager* self, void
         //TODO: respect completed mode
         if(CM->getOption("user_search_uncompleted") && level->normalPercent == 100) continue;
         if(CM->getOption("user_search_completed") && level->normalPercent != 100) continue;
-        if(CM->getOption("user_search_featured") && level->featured == 0) continue;
+        if(CM->getOption("user_search_featured") && level->featured < 1) continue;
         if(CM->getOption("user_search_original") && level->originalLevel != 0) continue;
         if(CM->getOption("user_search_epic") && !(level->isEpic)) continue;
         //searchObj->m_bSongFilter = CM->getOption("user_search_song");
