@@ -2,6 +2,7 @@
 #include "DailyListView.h"
 #include "JumpToPageLayer.h"
 #include "../managers/CvoltonManager.h"
+#include "../utils.hpp"
 
 using namespace gd;
 using namespace cocos2d;
@@ -125,7 +126,7 @@ bool DailyViewLayer::init(bool isWeekly) {
     pageBtn->setPosition({+ (winSize.width / 2) - 23, (winSize.height / 2) - 37});
     menu->addChild(pageBtn);
 
-    auto randomSprite = CCSprite::createWithSpriteFrameName("BI_randomBtn_001.png");
+    auto randomSprite = BetterInfo::createWithBISpriteFrameName("BI_randomBtn_001.png");
     randomSprite->setScale(0.9f);
     auto randomBtn = gd::CCMenuItemSpriteExtra::create(
         randomSprite,

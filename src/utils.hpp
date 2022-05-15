@@ -16,3 +16,9 @@ T union_cast(U value) {
     u.b = value;
     return u.a;
 }
+
+namespace BetterInfo {
+
+    cocos2d::CCSprite* createWithBISpriteFrameName(const char* name);
+
+}

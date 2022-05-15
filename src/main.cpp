@@ -870,7 +870,7 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
     auto winSize = CCDirector::sharedDirector()->getWinSize();
     bool isLocal = self->searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite;
 
-    auto randomSprite = CCSprite::createWithSpriteFrameName("BI_randomBtn_001.png");
+    auto randomSprite = BetterInfo::createWithBISpriteFrameName("BI_randomBtn_001.png");
     randomSprite->setScale(0.9f);
     auto randomBtn = gd::CCMenuItemSpriteExtra::create(
         randomSprite,
@@ -1029,7 +1029,7 @@ bool __fastcall DailyLevelPage_init(DailyLevelPage* self, void* a, bool isWeekly
 
     CCMenu* menu = self->m_pButtonMenu;
 
-    auto historySprite = CCSprite::createWithSpriteFrameName("BI_historyBtn_001.png");
+    auto historySprite = BetterInfo::createWithBISpriteFrameName("BI_historyBtn_001.png");
     historySprite->setScale(0.8f);
     auto historyBtn = gd::CCMenuItemSpriteExtra::create(
         historySprite,

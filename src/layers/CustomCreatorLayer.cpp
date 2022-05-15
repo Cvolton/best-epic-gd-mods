@@ -4,6 +4,7 @@
 #include "LevelIDLayer.h"
 #include "MoreStatsListView.h"
 #include "../managers/CvoltonManager.h"
+#include "../utils.hpp"
 
 using namespace gd;
 using namespace cocos2d;
@@ -76,7 +77,7 @@ bool CustomCreatorLayer::init() {
     addChild(label);
 
     auto featuredBtn = gd::CCMenuItemSpriteExtra::create(
-        CCSprite::createWithSpriteFrameName("BI_featuredBtn_001.png"),
+        BetterInfo::createWithBISpriteFrameName("BI_featuredBtn_001.png"),
         this,
         menu_selector(CustomCreatorLayer::onFeatured)
     );
@@ -87,7 +88,7 @@ bool CustomCreatorLayer::init() {
     //CCTextureCache::sharedTextureCache()->addImage("mostliked.png", 0);
 
     auto mostLikedBtn = gd::CCMenuItemSpriteExtra::create(
-        CCSprite::createWithSpriteFrameName("BI_mostLikedBtn_001.png"),
+        BetterInfo::createWithBISpriteFrameName("BI_mostLikedBtn_001.png"),
         this,
         menu_selector(CustomCreatorLayer::onMostLiked)
     );
