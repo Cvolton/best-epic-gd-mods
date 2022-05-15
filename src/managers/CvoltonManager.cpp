@@ -1,6 +1,7 @@
 #include "CvoltonManager.h"
 #include <gd.h>
 #include <random>
+#include <filesystem>
 
 using namespace cocos2d;
 using namespace cocos2d::extension;
@@ -12,7 +13,16 @@ bool CvoltonManager::init(){
 
     this->m_sFileName = "CCBetterInfo.dat";
 
-    nameDict = CCDictionary::createWithContentsOfFile("BI_destroyedUsers.plist");
+    auto FU = CCFileUtils::sharedFileUtils();
+
+    std::string plistPath(FU->getWritablePath2() + "Resources/BI_destroyedUsers.plist");
+    if(FU->isFileExist(plistPath)) {
+        nameDict = CCDictionary::createWithContentsOfFile("BI_destroyedUsers.plist");
+        plistLoaded = true;
+    }
+    else {
+        nameDict = CCDictionary::create();
+    }
     nameDict->retain();
 
     settingsDict = CCDictionary::create();
@@ -205,4 +215,26 @@ CCDictionary* CvoltonManager::responseToDict(std::string response){
     }
 
     return dict;
+}
+
+void CvoltonManager::missingResourcesError() {
+    if(hasDoneHealthCheck) return;
+
+    auto FU = CCFileUtils::sharedFileUtils();
+    std::ostringstream stream;
+    if(!plistLoaded) stream << "\nBI_destroyedUsers.plist";
+    for(auto texture : textures){
+        constexpr char* extensions[] = {"", "-hd", "-uhd"};
+        for(auto extension : extensions){
+            std::string plistPath(FU->getWritablePath2() + "Resources/" + texture + extension + ".plist");
+            std::string pngPath(FU->getWritablePath2() + "Resources/" + texture + extension + ".png");
+            if(!(FU->isFileExist(plistPath))) stream << "\n" << texture << extension << ".plist";
+            if(!(FU->isFileExist(plistPath))) stream << "\n" << texture << extension << ".png";
+        }
+    }
+
+    std::string file_list(stream.str());
+    if(!(file_list.empty())) FLAlertLayer::create(nullptr, modName, "OK", nullptr, 350, "<cr>Error: Missing resources!</c>\n\nUnable to find:<cl>"+file_list+"</c>\n\nPlease refer to the <cg>installation instructions</c>.")->show();
+
+    hasDoneHealthCheck = true;
 }

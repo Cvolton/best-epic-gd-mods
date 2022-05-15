@@ -617,6 +617,9 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         self->objectsInMenu->addObject(accountIDNode);
     }
 
+    auto CM = CvoltonManager::sharedState();
+    CM->missingResourcesError();
+
 }
 
 bool __fastcall ProfilePage_init(ProfilePage* self, void* a, int id, bool a2){
@@ -958,7 +961,6 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
     //update check
     auto CM = CvoltonManager::sharedState();
     CM->doUpdateCheck();
-
     //betterinfo btn
     auto menu = cast<CCMenu*>(self->getChildren()->objectAtIndex(1));
 

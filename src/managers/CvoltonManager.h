@@ -17,13 +17,16 @@ class CvoltonManager : public gd::GManager {
 
 
 public:
-	inline static const char* version = "v2.1.1\n";
-	inline static const char* modName = "BetterInfo";
+	inline static constexpr char* version = "v2.1.1\n";
+	inline static constexpr char* modName = "BetterInfo";
+	inline static constexpr char* textures[1] = {"BI_GameSheet"};
 	std::string latestVer;
 	std::string changelog;
 	cocos2d::CCDictionary* nameDict;
 	cocos2d::CCDictionary* settingsDict;
 	bool hasDoneUpdateCheck = false;
+	bool plistLoaded = false;
+	bool hasDoneHealthCheck = false;
 
 	bool init();
 	void encodeDataTo(DS_Dictionary* data) override;
@@ -53,4 +56,5 @@ public:
 	int randomNumber(int start, int end);
 	int completedLevelsForStars(int stars);
 	cocos2d::CCDictionary* CvoltonManager::responseToDict(std::string response);
+	void missingResourcesError();
 };
