@@ -153,7 +153,7 @@ void ProfileSearchOptions::drawToggles(){
     createToggle("user_search_featured", "Featured", 90, 80);
     createToggle("user_search_original", "Original", -170, 35);
     createToggle("user_search_epic", "Epic", -40, 35);
-    createToggle("user_search_song", "Song", 90, 35);
+    //createToggle("user_search_song", "Song", 90, 35);
     createToggle("user_search_nostar", "No Star", -170, -10);
     createToggle("user_search_coins", "Coins", -40, -10);
     createToggle("user_search_twoplayer", "2-Player", 90, -10);
