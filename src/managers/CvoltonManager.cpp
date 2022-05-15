@@ -228,8 +228,11 @@ void CvoltonManager::missingResourcesError() {
         for(auto extension : extensions){
             std::string plistPath(FU->getWritablePath2() + "Resources/" + texture + extension + ".plist");
             std::string pngPath(FU->getWritablePath2() + "Resources/" + texture + extension + ".png");
-            if(!(FU->isFileExist(plistPath))) stream << "\n" << texture << extension << ".plist";
-            if(!(FU->isFileExist(plistPath))) stream << "\n" << texture << extension << ".png";
+            //Geometry Dash also accepts resources from the path with the exe, in this case we don't want to bother the user about it
+            std::string plistPath2(FU->getWritablePath2() + texture + extension + ".plist");
+            std::string pngPath2(FU->getWritablePath2() + texture + extension + ".png");
+            if(!(FU->isFileExist(plistPath) || FU->isFileExist(plistPath2))) stream << "\n" << texture << extension << ".plist";
+            if(!(FU->isFileExist(pngPath) || FU->isFileExist(pngPath2))) stream << "\n" << texture << extension << ".png";
         }
     }
 
