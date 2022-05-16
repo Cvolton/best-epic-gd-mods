@@ -1185,6 +1185,8 @@ CCArray* __fastcall GameLevelManager_getSavedLevels(GameLevelManager* self, void
     auto CM = CvoltonManager::sharedState();
     CCArray* original = MHook::getOriginal(GameLevelManager_getSavedLevels)(self, a, filter, folderID);
 
+    if(CM->skipSavedFilter) return original;
+
     CCArray* pRet = CCArray::create();
 
     //getting config
@@ -1237,6 +1239,15 @@ CCArray* __fastcall GameLevelManager_getSavedLevels(GameLevelManager* self, void
     }
 
     return pRet;
+}
+
+void __fastcall GameLevelManager_limitSavedLevels(GameLevelManager* self){
+    auto CM = CvoltonManager::sharedState();
+    CM->skipSavedFilter = true;
+
+    MHook::getOriginal(GameLevelManager_limitSavedLevels)(self);
+
+    CM->skipSavedFilter = false;
 }
 
 /*void LevelBrowserLayer_loadLevelsFinished(LevelBrowserLayer* self, void* a, CCArray* levels, const char* a2){
@@ -1322,6 +1333,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x1825C0, MoreSearchLayer_init); 
     MHook::registerHook(base + 0xA2D20, GameLevelManager_getCompletedLevels); 
     MHook::registerHook(base + 0xA2960, GameLevelManager_getSavedLevels); 
+    MHook::registerHook(base + 0xA43B0, GameLevelManager_limitSavedLevels);  //TODO: fix this it crashes for some reason idk its dumb
     //MHook::registerHook(base + 0x180FC0, LevelSearchLayer_onSearch);
     //MHook::registerHook(base + 0xF9AE0, GameStatsManager_incrementChallenge);
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);

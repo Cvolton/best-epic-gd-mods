@@ -27,6 +27,7 @@ public:
 	bool hasDoneUpdateCheck = false;
 	bool plistLoaded = false;
 	bool hasDoneHealthCheck = false;
+	bool skipSavedFilter = false;
 
 	bool init();
 	void encodeDataTo(DS_Dictionary* data) override;
