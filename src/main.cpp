@@ -866,8 +866,11 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
 
     CCMenu* menu = cast<CCMenu*>(self->nextBtn->getParent());
     for(unsigned int i = 0; i < menu->getChildrenCount(); i++){
-        if(menu->getChildren()->objectAtIndex(i) != nullptr && menu->getChildren()->objectAtIndex(i)->getTag() == firstBtnTag) {
-            if(self->searchObject->m_nPage == 0) static_cast<CCNode*>(menu->getChildren()->objectAtIndex(i))->removeFromParent();
+        CCObject* currentObj = menu->getChildren()->objectAtIndex(i);
+        if(currentObj != nullptr && currentObj->getTag() == firstBtnTag) {
+            CCNode* currentNode = static_cast<CCNode*>(currentObj);
+            if(self->searchObject->m_nPage == 0) currentNode->setVisible(false);
+            else currentNode->setVisible(true);
             return;
         }
     }
