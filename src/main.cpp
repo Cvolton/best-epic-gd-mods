@@ -30,6 +30,7 @@ const int cvoltonID = 6330800;
 const int commentPageBtnTag = 863390891;
 const int questBtnExMarkTag = 863390892;
 const int randomBtnTag = 863390893;
+const int firstBtnTag = 863390894;
 
 const int levelsPerPage = 10;
 const int levelsPerPageHigh = 20;
@@ -342,6 +343,12 @@ public:
         int pageToLoad = CvoltonManager::sharedState()->randomNumber(0, pageMax);
 
         layer->searchObject->m_nPage = pageToLoad;
+        layer->loadPage(layer->searchObject);
+    }
+
+    void onLevelBrowserFirst(CCObject* sender){
+        auto layer = cast<LevelBrowserLayer*>(this);
+        layer->searchObject->m_nPage = 0;
         layer->loadPage(layer->searchObject);
     }
 
@@ -859,13 +866,38 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
 
     CCMenu* menu = cast<CCMenu*>(self->nextBtn->getParent());
     for(unsigned int i = 0; i < menu->getChildrenCount(); i++){
+        if(menu->getChildren()->objectAtIndex(i) != nullptr && menu->getChildren()->objectAtIndex(i)->getTag() == firstBtnTag) {
+            if(self->searchObject->m_nPage == 0) static_cast<CCNode*>(menu->getChildren()->objectAtIndex(i))->removeFromParent();
+            return;
+        }
+    }
+
+    auto winSize = CCDirector::sharedDirector()->getWinSize();
+    bool isLocal = self->searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite;
+
+    auto doubleArrowLeft = CCSprite::createWithSpriteFrameName("GJ_arrow_02_001.png");
+    auto arrowLeft = CCSprite::createWithSpriteFrameName("GJ_arrow_02_001.png");
+    arrowLeft->setPosition({0,20});
+    doubleArrowLeft->addChild(arrowLeft);
+    doubleArrowLeft->setScale(0.5f);
+    //doubleArrowLeft->setFlipX(true);
+    //arrowLeft->setFlipX(true);
+    auto firstBtn = gd::CCMenuItemSpriteExtra::create(
+        doubleArrowLeft,
+        self,
+        menu_selector(GamingButton::onLevelBrowserFirst)
+    );
+    firstBtn->setTag(firstBtnTag);
+    //259 60
+    firstBtn->setPosition({ - (winSize.width / 2) + 26, (winSize.height / 2) - 100});
+    if(isLocal) firstBtn->setPosition({ - (winSize.width / 2) + 67, (winSize.height / 2) - 100});
+    if(self->searchObject->m_nPage > 0) menu->addChild(firstBtn);
+
+    for(unsigned int i = 0; i < menu->getChildrenCount(); i++){
         if(menu->getChildren()->objectAtIndex(i) != nullptr && menu->getChildren()->objectAtIndex(i)->getTag() == randomBtnTag) return;
     }
 
     CvoltonManager::sharedState()->loadTextures();
-
-    auto winSize = CCDirector::sharedDirector()->getWinSize();
-    bool isLocal = self->searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite;
 
     auto randomSprite = BetterInfo::createWithBISpriteFrameName("BI_randomBtn_001.png");
     randomSprite->setScale(0.9f);
@@ -965,13 +997,14 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
 
     //auto buttonSprite = gd::ButtonSprite::create("Better\nInfo", (int)(100*0.45), true, "bigFont.fnt", "GJ_button_01.png", 120*0.45f, 0.45f);
     auto buttonSprite = BetterInfo::createBISprite("BI_mainButton_001.png");
+    buttonSprite->setScale(.9f);
     auto buttonButton = gd::CCMenuItemSpriteExtra::create(
         buttonSprite,
         self,
         menu_selector(GamingButton::onCustomCreatorLayer)
     );
     buttonButton->setSizeMult(1.2f);
-    buttonButton->setPosition({door->getPositionX() - 2,0});
+    buttonButton->setPosition({door->getPositionX() - 1,0});
     menu->addChild(buttonButton);
 
     //showQuestExclamationMark(self);
