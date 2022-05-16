@@ -20,5 +20,7 @@ T union_cast(U value) {
 namespace BetterInfo {
 
     cocos2d::CCSprite* createWithBISpriteFrameName(const char* name);
+    cocos2d::CCSprite* createBISprite(const char* name);
+    cocos2d::CCSprite* createPlaceholder();
 
 }

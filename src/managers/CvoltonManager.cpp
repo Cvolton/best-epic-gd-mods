@@ -7,6 +7,9 @@ using namespace cocos2d;
 using namespace cocos2d::extension;
 using namespace gd;
 
+inline static constexpr char* sheets[1] = {"BI_GameSheet"};
+inline static constexpr char* textures[1] = {"BI_mainButton_001"};
+
 bool CvoltonManager::init(){
     bool init = CCNode::init();
     if(!init) return false;
@@ -223,15 +226,25 @@ FLAlertLayer* CvoltonManager::missingResourcesError() {
     auto FU = CCFileUtils::sharedFileUtils();
     std::ostringstream stream;
     if(!plistLoaded) stream << "\nBI_destroyedUsers.plist";
+    for(auto sheet : sheets){
+        constexpr char* extensions[] = {"", "-hd", "-uhd"};
+        for(auto extension : extensions){
+            std::string plistPath(FU->getWritablePath2() + "Resources/" + sheet + extension + ".plist");
+            std::string pngPath(FU->getWritablePath2() + "Resources/" + sheet + extension + ".png");
+            //Geometry Dash also accepts resources from the path with the exe, in this case we don't want to bother the user about it
+            std::string plistPath2(FU->getWritablePath2() + sheet + extension + ".plist");
+            std::string pngPath2(FU->getWritablePath2() + sheet + extension + ".png");
+            if(!(FU->isFileExist(plistPath) || FU->isFileExist(plistPath2))) stream << "\n" << sheet << extension << ".plist";
+            if(!(FU->isFileExist(pngPath) || FU->isFileExist(pngPath2))) stream << "\n" << sheet << extension << ".png";
+        }
+    }
+
     for(auto texture : textures){
         constexpr char* extensions[] = {"", "-hd", "-uhd"};
         for(auto extension : extensions){
-            std::string plistPath(FU->getWritablePath2() + "Resources/" + texture + extension + ".plist");
             std::string pngPath(FU->getWritablePath2() + "Resources/" + texture + extension + ".png");
             //Geometry Dash also accepts resources from the path with the exe, in this case we don't want to bother the user about it
-            std::string plistPath2(FU->getWritablePath2() + texture + extension + ".plist");
             std::string pngPath2(FU->getWritablePath2() + texture + extension + ".png");
-            if(!(FU->isFileExist(plistPath) || FU->isFileExist(plistPath2))) stream << "\n" << texture << extension << ".plist";
             if(!(FU->isFileExist(pngPath) || FU->isFileExist(pngPath2))) stream << "\n" << texture << extension << ".png";
         }
     }

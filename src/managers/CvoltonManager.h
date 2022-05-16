@@ -19,7 +19,6 @@ class CvoltonManager : public gd::GManager {
 public:
 	inline static constexpr char* version = "v2.1.1\n";
 	inline static constexpr char* modName = "BetterInfo";
-	inline static constexpr char* textures[1] = {"BI_GameSheet"};
 	std::string latestVer;
 	std::string changelog;
 	cocos2d::CCDictionary* nameDict;
