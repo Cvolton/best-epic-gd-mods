@@ -789,6 +789,8 @@ std::string* __fastcall GameLevelManager_userNameForUserID(void* a, void* b, std
     if(!CM->getOption("no_green_user") && (*userName == "" || *userName == "-")){
         auto CM = CvoltonManager::sharedState();
         *userName = CM->getUserName(userID);
+        
+        if(userID == 32471) *userName = "PixelCube"; //previous dataset had an error
     }
     //std::cout << userID << " " << newString << std::endl;
 
