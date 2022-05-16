@@ -23,4 +23,7 @@ namespace BetterInfo {
     cocos2d::CCSprite* createBISprite(const char* name);
     cocos2d::CCSprite* createPlaceholder();
 
+    bool isLocal(gd::GJSearchObject* searchObj);
+    int levelsPerPage(gd::GJSearchObject* searchObj);
+
 }

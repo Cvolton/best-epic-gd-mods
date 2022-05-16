@@ -32,9 +32,6 @@ const int questBtnExMarkTag = 863390892;
 const int randomBtnTag = 863390893;
 const int firstBtnTag = 863390894;
 
-const int levelsPerPage = 10;
-const int levelsPerPageHigh = 20;
-
 class CustomLevelSearchLayer : public gd::FLAlertLayer {
     gd::GJGameLevel* level;
 public:
@@ -335,9 +332,7 @@ public:
         auto layer = cast<LevelBrowserLayer*>(this);
 
         if(layer->searchObject == nullptr) return;
-        bool isLocal = layer->searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels || layer->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || layer->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite;
-
-        int pageMax = layer->total / ((isLocal && gd::GameManager::sharedState()->getGameVariable("0093")) ? levelsPerPageHigh : levelsPerPage);
+        int pageMax = layer->total / BetterInfo::levelsPerPage(layer->searchObject);
         //int pageToLoad = std::rand() % pageMax;
 
         int pageToLoad = CvoltonManager::sharedState()->randomNumber(0, pageMax);
@@ -360,9 +355,7 @@ public:
             return;
         }
 
-        bool isLocal = layer->searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels || layer->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || layer->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite;
-
-        layer->searchObject->m_nPage = layer->total / ((isLocal && gd::GameManager::sharedState()->getGameVariable("0093")) ? levelsPerPageHigh : levelsPerPage);
+        layer->searchObject->m_nPage = layer->total / BetterInfo::levelsPerPage(layer->searchObject);
         layer->loadPage(layer->searchObject);
     }
 
@@ -876,7 +869,7 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
     }
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
-    bool isLocal = self->searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite;
+    bool isLocal = BetterInfo::isLocal(self->searchObject);
 
     auto doubleArrowLeft = CCSprite::createWithSpriteFrameName("GJ_arrow_02_001.png");
     auto arrowLeft = CCSprite::createWithSpriteFrameName("GJ_arrow_02_001.png");

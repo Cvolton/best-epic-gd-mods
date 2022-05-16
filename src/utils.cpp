@@ -7,6 +7,9 @@
 using namespace cocos2d;
 using namespace gd;
 
+constexpr int levelsPerPageLow = 10;
+constexpr int levelsPerPageHigh = 20;
+
 CCSprite* BetterInfo::createWithBISpriteFrameName(const char* name){
         auto sprite = CCSprite::createWithSpriteFrameName(name);
         if(sprite) return sprite;
@@ -51,4 +54,14 @@ CCSprite* BetterInfo::createPlaceholder(){
         sprite->setContentSize(subSprite1->getContentSize());
 
         return sprite;
+}
+
+bool BetterInfo::isLocal(GJSearchObject* searchObject){
+        return searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels 
+                || searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels 
+                || searchObject->m_nScreenID == SearchType::kSearchTypeFavorite;
+}
+
+int BetterInfo::levelsPerPage(GJSearchObject* searchObject){
+        return ((isLocal(searchObject) && GameManager::sharedState()->getGameVariable("0093")) ? levelsPerPageHigh : levelsPerPageLow);
 }
