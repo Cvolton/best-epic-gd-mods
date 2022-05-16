@@ -789,7 +789,7 @@ std::string* __fastcall GameLevelManager_userNameForUserID(void* a, void* b, std
     if(!CM->getOption("no_green_user") && (*userName == "" || *userName == "-")){
         auto CM = CvoltonManager::sharedState();
         *userName = CM->getUserName(userID);
-        
+
         if(userID == 32471) *userName = "PixelCube"; //previous dataset had an error
     }
     //std::cout << userID << " " << newString << std::endl;
@@ -890,6 +890,8 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
     firstBtn->setPosition({ - (winSize.width / 2) + 26, (winSize.height / 2) - 100});
     if(isLocal) firstBtn->setPosition({ - (winSize.width / 2) + 67, (winSize.height / 2) - 100});
     if(self->searchObject->m_nPage > 0) menu->addChild(firstBtn);
+
+    if(self->total <= BetterInfo::levelsPerPage(self->searchObject)) return;
 
     for(unsigned int i = 0; i < menu->getChildrenCount(); i++){
         if(menu->getChildren()->objectAtIndex(i) != nullptr && menu->getChildren()->objectAtIndex(i)->getTag() == randomBtnTag) return;
