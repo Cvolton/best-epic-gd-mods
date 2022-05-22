@@ -144,8 +144,10 @@ void CvoltonManager::firstLoad() {
 bool CvoltonManager::getOption(std::string option){
     return settingsDict->valueForKey(option)->boolValue();
 }
-void CvoltonManager::toggleOption(std::string option){
-    settingsDict->setObject(CCString::createWithFormat("%i", !getOption(option)), option);
+bool CvoltonManager::toggleOption(std::string option){
+    bool toggled = !getOption(option);
+    settingsDict->setObject(CCString::createWithFormat("%i", toggled), option);
+    return toggled;
 }
 
 int CvoltonManager::getOptionInt(std::string option){

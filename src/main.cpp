@@ -261,6 +261,14 @@ public:
         GLM->getGJUserInfo(self->something);
     }
 
+    void onProfilePageStar(CCObject* sender){
+        auto self = cast<ProfilePage*>(this);
+        auto button = cast<CCMenuItemSpriteExtra*>(sender);
+        auto CM = CvoltonManager::sharedState();
+        if(CM->toggleOption("profile_search_star")) button->setColor({255, 255, 255});
+        else button->setColor({125,125,125});
+    }
+
     void onLevelBrowserSavedFilter(CCObject* sender){
         auto self = cast<LevelBrowserLayer*>(this);
 
@@ -636,6 +644,17 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         accountIDNode->setOpacity(220);
         menu->addChild(accountIDNode);
         self->objectsInMenu->addObject(accountIDNode);
+
+        auto CM = CvoltonManager::sharedState();
+        auto button = gd::CCMenuItemSpriteExtra::create(
+            CCSprite::createWithSpriteFrameName("GJ_starsIcon_001.png"),
+            self,
+            menu_selector(GamingButton::onProfilePageStar)
+        );
+        menu->addChild(button);
+        button->setPosition({370,-259});
+        if(!CM->getOption("profile_search_star")) button->setColor({125,125,125});
+        button->setSizeMult(1.2f);
     }
 
 }
@@ -651,44 +670,13 @@ bool __fastcall ProfilePage_init(ProfilePage* self, void* a, int id, bool a2){
 void __fastcall ProfilePage_onMyLevels(ProfilePage* self, void* a, CCObject* sender) {
     //gd::FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, "aaegeg")->show();
     //self->m_pLevel->retain();
-    auto searchObj = GJSearchObject::create(SearchType::kSearchTypeUsersLevels, std::to_string(self->score->getUserID()));
-
     auto CM = CvoltonManager::sharedState();
-
-    std::string len;
-    for(unsigned int i = 0; i <= 4; i++){
-        if(
-            CM->getOption(
-                CCString::createWithFormat("user_search_len_%02i", i)->getCString()
-            )
-        ) len += CCString::createWithFormat("%i,", i)->getCString();
-    }
-    if(len.empty()) len = "-";
-    searchObj->m_sLength = len;
-
-    searchObj->m_bStarFilter = CM->getOption("user_search_star");
-
-    std::string diff;
-    if(CM->getOption("user_search_diff_00")) diff = "-1";
-    if(CM->getOption("user_search_diff_06")) diff = "-2";
-    if(CM->getOption("user_search_diff_auto")) diff = "-3";
-
-    for(unsigned int i = 1; i <= 5; i++){
-        if(!(CM->getOption(CCString::createWithFormat("user_search_diff_%02d")->getCString()))) continue;
-
-        if(!(diff.empty())) diff += ",";
-        diff += std::to_string(i);
+    if(!CM->getOption("profile_search_star")){
+        MHook::getOriginal(ProfilePage_onMyLevels)(self, a, sender);
     }
 
-    searchObj->m_bUncompletedFilter = CM->getOption("user_search_uncompleted");
-    searchObj->m_bCompletedFilter = CM->getOption("user_search_completed");
-    searchObj->m_bFeaturedFilter = CM->getOption("user_search_featured");
-    searchObj->m_bOriginalFilter = CM->getOption("user_search_original");
-    searchObj->m_bEpicFilter = CM->getOption("user_search_epic");
-    searchObj->m_bSongFilter = CM->getOption("user_search_song");
-    searchObj->m_bNoStarFilter = CM->getOption("user_search_nostar");
-    searchObj->m_bCoinsFilter = CM->getOption("user_search_coins");
-    searchObj->m_bTwoPlayerFilter = CM->getOption("user_search_twoplayer");
+    auto searchObj = GJSearchObject::create(SearchType::kSearchTypeUsersLevels, std::to_string(self->score->getUserID()));
+    searchObj->m_bStarFilter = true;
 
     auto browserLayer = LevelBrowserLayer::scene(searchObj);
     auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
