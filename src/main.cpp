@@ -545,6 +545,7 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
 //this would ideally only be called from init but there are hook conflicts
 void fixProfilePagePositions(ProfilePage* self){
     auto layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(0));
+    auto winSize = CCDirector::sharedDirector()->getWinSize();
 
     for(unsigned int i = 0; i < self->m_pButtonMenu->getChildrenCount(); i++){
         CCNode* node = dynamic_cast<CCNode*>(self->m_pButtonMenu->getChildren()->objectAtIndex(i));
@@ -552,7 +553,7 @@ void fixProfilePagePositions(ProfilePage* self){
     }
 
     CCNode* followTxt = dynamic_cast<CCNode*>(layer->getChildren()->objectAtIndex(6));
-    if(followTxt->getPositionY() == 35) followTxt->setVisible(false); //followTxt->setPositionX(followTxt->getPositionX() + 40);
+    if(followTxt->getPositionY() == (winSize.height / 2) - 125) followTxt->setVisible(false); //followTxt->setPositionX(followTxt->getPositionX() + 40);
 }
 
 void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd::GJUserScore* a2){
@@ -561,6 +562,7 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
     fixProfilePagePositions(self);
 
     auto layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(0));
+    auto winSize = CCDirector::sharedDirector()->getWinSize();
 
     auto menu = self->m_pButtonMenu;
 
@@ -581,7 +583,8 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
     if(a2->getUserID() != GameManager::sharedState()->m_nPlayerUserID){
         for(unsigned int i = 0; i < layer->getChildrenCount(); i++){
             CCNode* node = dynamic_cast<CCNode*>(layer->getChildren()->objectAtIndex(i));
-            if(node != nullptr && node->getPositionX() == 121.5f && node->getPositionY() == 283) node->setVisible(false); //node->setPosition({52, -258}); // //
+            if(node != nullptr && node->getPositionX() == (winSize.width / 2) - 164 && node->getPositionY() == (winSize.height / 2) + 123) node->setVisible(false);
+            if(node != nullptr && node->getPositionX() == (winSize.width / 2) + 138 && node->getPositionY() == (winSize.height / 2) - 123) node->setVisible(false);
         }
 
         auto leaderboardSprite = CCSprite::createWithSpriteFrameName(BetterInfo::rankIcon(a2->getGlobalRank()));
