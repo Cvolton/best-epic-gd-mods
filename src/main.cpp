@@ -31,6 +31,7 @@ const int commentPageBtnTag = 863390891;
 const int questBtnExMarkTag = 863390892;
 const int randomBtnTag = 863390893;
 const int firstBtnTag = 863390894;
+const int filterBtnTag = 863390895;
 
 class CustomLevelSearchLayer : public gd::FLAlertLayer {
     gd::GJGameLevel* level;
@@ -878,6 +879,24 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
     if(self->total == 9999) self->nextBtn->setVisible(true);
 
     CCMenu* menu = cast<CCMenu*>(self->nextBtn->getParent());
+    auto winSize = CCDirector::sharedDirector()->getWinSize();
+    bool isLocal = BetterInfo::isLocal(self->searchObject);
+
+    if((self->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite) && menu->getChildByTag(filterBtnTag) == nullptr){
+        auto filterSprite = CCSprite::createWithSpriteFrameName("GJ_plusBtn_001.png");
+        filterSprite->setScale(0.7f);
+        auto filterButton = gd::CCMenuItemSpriteExtra::create(
+            filterSprite,
+            self,
+            menu_selector(GamingButton::onLevelBrowserSavedFilter)
+        );
+        menu->addChild(filterButton);
+        filterButton->setPosition({- (winSize.width / 2) + 64, (winSize.height / 2) - 35.f - 32.f});
+        //filterButton->setScale(0.8f);
+        filterButton->setSizeMult(1.2f);
+        filterButton->setTag(filterBtnTag);
+    }
+
     for(unsigned int i = 0; i < menu->getChildrenCount(); i++){
         CCObject* currentObj = menu->getChildren()->objectAtIndex(i);
         if(currentObj != nullptr && currentObj->getTag() == firstBtnTag) {
@@ -887,9 +906,6 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
             return;
         }
     }
-
-    auto winSize = CCDirector::sharedDirector()->getWinSize();
-    bool isLocal = BetterInfo::isLocal(self->searchObject);
 
     auto doubleArrowLeft = CCSprite::createWithSpriteFrameName("GJ_arrow_02_001.png");
     auto arrowLeft = CCSprite::createWithSpriteFrameName("GJ_arrow_02_001.png");
@@ -947,20 +963,6 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
         lastBtn->setPosition({ (winSize.width / 2) - 26, (winSize.height / 2) - 100});
         menu->addChild(lastBtn);
         //lastBtn->setTag(randomBtnTag);
-    }
-
-    if(self->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite){
-        auto filterSprite = CCSprite::createWithSpriteFrameName("GJ_plusBtn_001.png");
-        filterSprite->setScale(0.7f);
-        auto filterButton = gd::CCMenuItemSpriteExtra::create(
-            filterSprite,
-            self,
-            menu_selector(GamingButton::onLevelBrowserSavedFilter)
-        );
-        menu->addChild(filterButton);
-        filterButton->setPosition({- (winSize.width / 2) + 64, (winSize.height / 2) - 35.f - 32.f});
-        //filterButton->setScale(0.8f);
-        filterButton->setSizeMult(1.2f);
     }
 }
 
