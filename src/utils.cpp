@@ -65,3 +65,14 @@ bool BetterInfo::isLocal(GJSearchObject* searchObject){
 int BetterInfo::levelsPerPage(GJSearchObject* searchObject){
         return ((isLocal(searchObject) && GameManager::sharedState()->getGameVariable("0093")) ? levelsPerPageHigh : levelsPerPageLow);
 }
+
+const char* BetterInfo::rankIcon(int position){
+        if (position == 1) return "rankIcon_1_001.png";
+        else if (position <= 10) return "rankIcon_top10_001.png";
+        else if (position <= 50) return "rankIcon_top50_001.png";
+        else if (position <= 100) return "rankIcon_top100_001.png";
+        else if (position <= 200) return "rankIcon_top200_001.png";
+        else if (position <= 500) return "rankIcon_top500_001.png";
+        else if (position > 1000) return "rankIcon_all_001.png";
+        return "rankIcon_top1000_001.png";
+}

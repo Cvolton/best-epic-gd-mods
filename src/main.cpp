@@ -570,17 +570,35 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
     self->objectsInMenu->addObject(infoButton);
 
     if(a2->getUserID() != GameManager::sharedState()->m_nPlayerUserID){
-        auto leaderboardSprite = CCSprite::createWithSpriteFrameName("GJ_achBtn_001.png");
-        leaderboardSprite->setScale(0.65f);
+        for(unsigned int i = 0; i < layer->getChildrenCount(); i++){
+            CCNode* node = dynamic_cast<CCNode*>(layer->getChildren()->objectAtIndex(i));
+            if(node != nullptr && node->getPositionX() == 121.5f && node->getPositionY() == 283) node->setVisible(false); //node->setPosition({52, -258}); // //
+        }
+
+        auto leaderboardSprite = CCSprite::createWithSpriteFrameName(BetterInfo::rankIcon(a2->getGlobalRank()));
         auto leaderboardButton = gd::CCMenuItemSpriteExtra::create(
             leaderboardSprite,
             self,
             menu_selector(GamingButton::onProfilePageLeaderboard)
         );
         menu->addChild(leaderboardButton);
-        leaderboardButton->setPosition({16, -175});
+        leaderboardButton->setPosition({46, -12});
         //leaderboardButton->setScale(0.8f);
         leaderboardButton->setSizeMult(1.2f);
+
+        //auto leaderboardArrow = BetterInfo::createBISprite("BI_viewLeaderboard_001.png");
+        //menu->addChild(leaderboardArrow);
+
+        auto upArrow = BetterInfo::createBISprite("BI_upArrow_001.png");
+        upArrow->setScale(0.8f);
+        upArrow->setPosition({30, -18});
+        menu->addChild(upArrow);
+
+        //set comment to 408 -148
+        /*for(unsigned int i = 0; i < self->m_pButtonMenu->getChildrenCount(); i++){
+            CCNode* node = dynamic_cast<CCNode*>(self->m_pButtonMenu->getChildren()->objectAtIndex(i));
+            if(node != nullptr && node->getPositionX() == 408 && node->getPositionY() == -135) node->setPosition(408, -148); //node->setPosition({52, -258}); // //
+        }*/
 
 
         auto refreshSprite = CCSprite::createWithSpriteFrameName("GJ_updateBtn_001.png");

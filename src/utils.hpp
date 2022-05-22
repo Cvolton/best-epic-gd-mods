@@ -25,5 +25,6 @@ namespace BetterInfo {
 
     bool isLocal(gd::GJSearchObject* searchObj);
     int levelsPerPage(gd::GJSearchObject* searchObj);
+    const char* rankIcon(int position);
 
 }
