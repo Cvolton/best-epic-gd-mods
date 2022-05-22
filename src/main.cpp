@@ -586,6 +586,7 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         leaderboardButton->setPosition({46, -12});
         //leaderboardButton->setScale(0.8f);
         leaderboardButton->setSizeMult(1.2f);
+        self->objectsInMenu->addObject(leaderboardButton);
 
         //auto leaderboardArrow = BetterInfo::createBISprite("BI_viewLeaderboard_001.png");
         //menu->addChild(leaderboardArrow);
@@ -594,6 +595,7 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         upArrow->setScale(0.8f);
         upArrow->setPosition({30, -18});
         menu->addChild(upArrow);
+        self->objectsInMenu->addObject(upArrow);
 
         //set comment to 408 -148
         /*for(unsigned int i = 0; i < self->m_pButtonMenu->getChildrenCount(); i++){
