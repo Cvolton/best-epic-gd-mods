@@ -351,7 +351,7 @@ public:
     void onLevelBrowserLast(CCObject* sender){
         auto layer = cast<LevelBrowserLayer*>(this);
 
-        if(layer->total == 9999) {
+        if(layer->total == 9999 || BetterInfo::isFalseTotal(layer->searchObject)) {
             LevelBrowserEndLayer::create(layer)->show();
             return;
         }
@@ -878,7 +878,7 @@ void __fastcall InfoLayer_loadPage(InfoLayer* self, void* a, int page, bool relo
 void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, void* a) {
     MHook::getOriginal(LevelBrowserLayer_updateLevelsLabel)(self, a);
 
-    if(self->total == 9999) self->nextBtn->setVisible(true);
+    if(self->total == 9999 || BetterInfo::isFalseTotal(self->searchObject)) self->nextBtn->setVisible(true);
 
     CCMenu* menu = cast<CCMenu*>(self->nextBtn->getParent());
     auto winSize = CCDirector::sharedDirector()->getWinSize();

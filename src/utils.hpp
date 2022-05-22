@@ -24,6 +24,7 @@ namespace BetterInfo {
     cocos2d::CCSprite* createPlaceholder();
 
     bool isLocal(gd::GJSearchObject* searchObj);
+    bool isFalseTotal(gd::GJSearchObject* searchObj);
     int levelsPerPage(gd::GJSearchObject* searchObj);
     const char* rankIcon(int position);
 

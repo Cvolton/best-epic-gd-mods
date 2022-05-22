@@ -62,6 +62,12 @@ bool BetterInfo::isLocal(GJSearchObject* searchObject){
                 || searchObject->m_nScreenID == SearchType::kSearchTypeFavorite;
 }
 
+bool BetterInfo::isFalseTotal(GJSearchObject* searchObject){
+        return searchObject->m_nScreenID == SearchType::kSearchType19
+                || searchObject->m_nScreenID == SearchType::kSearchTypeFeatured
+                || searchObject->m_nScreenID == SearchType::kSearchTypeHallOfFame;
+}
+
 int BetterInfo::levelsPerPage(GJSearchObject* searchObject){
         return ((isLocal(searchObject) && GameManager::sharedState()->getGameVariable("0093")) ? levelsPerPageHigh : levelsPerPageLow);
 }
