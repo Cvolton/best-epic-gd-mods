@@ -57,7 +57,7 @@ void CvoltonManager::onUpdateHttpResponse(CCHttpClient* client, CCHttpResponse* 
     if(isUpToDate()) return;
 
     std::ostringstream stream;
-    stream << modName << " " << responseString;
+    stream << modNameColored << " " << responseString;
 
 
     AchievementNotifier::sharedState()->notifyAchievement("Update available", stream.str().c_str(), "", false);
