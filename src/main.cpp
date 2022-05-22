@@ -364,7 +364,7 @@ public:
             return;
         }
 
-        layer->searchObject->m_nPage = layer->total / BetterInfo::levelsPerPage(layer->searchObject);
+        layer->searchObject->m_nPage = (layer->total - 1) / BetterInfo::levelsPerPage(layer->searchObject);
         layer->loadPage(layer->searchObject);
     }
 
