@@ -18,6 +18,9 @@ T union_cast(U value) {
 }
 
 namespace BetterInfo {
+    
+    const int mainBtnTag = 863390896;
+    const int mainBtnExMarkTag = 863390897;
 
     cocos2d::CCSprite* createWithBISpriteFrameName(const char* name);
     cocos2d::CCSprite* createBISprite(const char* name);
@@ -27,5 +30,6 @@ namespace BetterInfo {
     bool isFalseTotal(gd::GJSearchObject* searchObj);
     int levelsPerPage(gd::GJSearchObject* searchObj);
     const char* rankIcon(int position);
+    void showBIExclamationMark(cocos2d::CCLayer* creator);
 
 }

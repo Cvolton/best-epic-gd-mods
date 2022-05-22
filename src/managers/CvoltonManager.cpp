@@ -2,6 +2,7 @@
 #include <gd.h>
 #include <random>
 #include <filesystem>
+#include "../utils.hpp"
 
 using namespace cocos2d;
 using namespace cocos2d::extension;
@@ -62,6 +63,8 @@ void CvoltonManager::onUpdateHttpResponse(CCHttpClient* client, CCHttpResponse* 
 
     AchievementNotifier::sharedState()->notifyAchievement("Update available", stream.str().c_str(), "", false);
     //FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, 300, stream.str().c_str())->show();
+    BetterInfo::showBIExclamationMark(reinterpret_cast<CCLayer*>(CCDirector::sharedDirector()->getRunningScene()->getChildren()->objectAtIndex(0)));
+
 }
 
 void CvoltonManager::onChangelogHttpResponse(CCHttpClient* client, CCHttpResponse* response){

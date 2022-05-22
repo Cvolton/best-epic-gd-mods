@@ -1,6 +1,7 @@
 #include <cocos2d.h>
 #include <gd.h>
 #include "utils.hpp"
+#include "managers/CvoltonManager.h"
 
 #include <array>
 
@@ -81,4 +82,33 @@ const char* BetterInfo::rankIcon(int position){
         else if (position <= 200) return "rankIcon_top200_001.png";
         else if (position <= 500) return "rankIcon_top500_001.png";
         return "rankIcon_top1000_001.png";
+}
+
+void BetterInfo::showBIExclamationMark(CCLayer* creator){
+    //auto menu = dynamic_cast<CCMenu*>(creator->getChildren()->objectAtIndex(1));
+    //if(menu == nullptr) dynamic_cast<CCMenu*>(creator->getChildren()->objectAtIndex(5));
+    auto CM = CvoltonManager::sharedState();
+    CCMenu* menu = nullptr;
+
+    for(unsigned int i = 0; i < creator->getChildrenCount(); i++){
+        menu = dynamic_cast<CCMenu*>(creator->getChildren()->objectAtIndex(i));
+        if(menu != nullptr && menu->getChildrenCount() > 5) break;
+    }
+
+    if(menu == nullptr || CM->isUpToDate()) return;
+
+    auto mainBtn = reinterpret_cast<CCMenuItemSpriteExtra*>(menu->getChildByTag(mainBtnTag));
+    if(mainBtn == nullptr) return;
+
+    auto existingNode = mainBtn->getChildByTag(mainBtnExMarkTag);
+    if(existingNode != nullptr){
+        existingNode->setVisible(true);
+        return;
+    }
+
+    auto exMark = CCSprite::createWithSpriteFrameName("exMark_001.png");
+    exMark->setPosition({14,40});
+    exMark->setScale(0.5f);
+    exMark->setTag(mainBtnExMarkTag);
+    mainBtn->addChild(exMark);
 }

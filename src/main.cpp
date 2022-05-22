@@ -1018,6 +1018,7 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
     );
     buttonButton->setSizeMult(1.2f);
     buttonButton->setPosition({door->getPositionX() - 1,0});
+    buttonButton->setTag(BetterInfo::mainBtnTag);
     menu->addChild(buttonButton);
 
     //showQuestExclamationMark(self);
@@ -1049,6 +1050,7 @@ void _fastcall CreatorLayer_sceneWillResume(uint8_t* self){
     MHook::getOriginal(CreatorLayer_sceneWillResume)(self);
 
     showQuestExclamationMark(reinterpret_cast<CCLayer*>(self - sizeof(CCLayer)));
+    BetterInfo::showBIExclamationMark(reinterpret_cast<CCLayer*>(self - sizeof(CCLayer)));
 }
 
 void __fastcall DailyLevelPage_updateTimers(DailyLevelPage* self, void* a, float something) {
@@ -1072,7 +1074,7 @@ void __fastcall DailyLevelPage_updateTimers(DailyLevelPage* self, void* a, float
     layer->addChild(currentDailyNode);
 }
 
-bool __fastcall DailyLevelPage_init(DailyLevelPage* self, void* a, bool isWeekly) { //type is usually an enum but i dont have that rn
+bool __fastcall DailyLevelPage_init(DailyLevelPage* self, void* a, bool isWeekly) {
     if(!MHook::getOriginal(DailyLevelPage_init)(self, a, isWeekly)) return false;
 
     CvoltonManager::sharedState()->loadTextures();
