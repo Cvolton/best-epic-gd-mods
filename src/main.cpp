@@ -893,7 +893,7 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
             menu_selector(GamingButton::onLevelBrowserSavedFilter)
         );
         menu->addChild(filterButton);
-        filterButton->setPosition({- (winSize.width / 2) + 64, (winSize.height / 2) - 35.f - 32.f});
+        filterButton->setPosition({- (winSize.width / 2) + 64, 92});
         //filterButton->setScale(0.8f);
         filterButton->setSizeMult(1.2f);
         filterButton->setTag(filterBtnTag);
@@ -923,8 +923,8 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
     );
     firstBtn->setTag(firstBtnTag);
     //259 60
-    firstBtn->setPosition({ - (winSize.width / 2) + 26, (winSize.height / 2) - 100});
-    if(isLocal) firstBtn->setPosition({ - (winSize.width / 2) + 67, (winSize.height / 2) - 100});
+    firstBtn->setPosition({ - (winSize.width / 2) + 26, 60});
+    if(isLocal) firstBtn->setPosition({ - (winSize.width / 2) + 67, 60});
     if(self->searchObject->m_nPage > 0) menu->addChild(firstBtn);
 
     if(self->total <= BetterInfo::levelsPerPage(self->searchObject)) return;
@@ -942,9 +942,9 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
         self,
         menu_selector(GamingButton::onLevelBrowserRandom)
     );
-    randomBtn->setPosition({ (winSize.width / 2) - 23, (winSize.height / 2) - 72});
+    randomBtn->setPosition({ (winSize.width / 2) - 23, 88});
     randomBtn->setTag(randomBtnTag);
-    if(isLocal) randomBtn->setPosition({(winSize.width / 2) - 58, (winSize.height / 2) - 38.5f});
+    if(isLocal) randomBtn->setPosition({(winSize.width / 2) - 58, 122});
 
     menu->addChild(randomBtn);
 
@@ -962,7 +962,7 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
             menu_selector(GamingButton::onLevelBrowserLast)
         );
         //259 60
-        lastBtn->setPosition({ (winSize.width / 2) - 26, (winSize.height / 2) - 100});
+        lastBtn->setPosition({ (winSize.width / 2) - 26, 60});
         menu->addChild(lastBtn);
         //lastBtn->setTag(randomBtnTag);
     }
