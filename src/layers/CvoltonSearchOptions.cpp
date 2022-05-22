@@ -44,7 +44,7 @@ bool CvoltonSearchOptions::init(){
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
-    createTextLabel("Advanced Options", {(winSize.width / 2), winSize.height - 35}, 1.f, m_pLayer, "bigFont.fnt");
+    createTextLabel("Advanced Options", {(winSize.width / 2), (winSize.height / 2) + 125}, 1.f, m_pLayer, "bigFont.fnt");
     createButton("GJ_arrow_03_001.png", {- (winSize.width / 2) + 30, 0}, menu_selector(CvoltonSearchOptions::onPrev));
 
     drawToggles();
@@ -96,11 +96,11 @@ void CvoltonSearchOptions::drawToggles(){
     createToggle("search_surround_percent", "No Forced Star", 90, 75);
     createToggle("search_trim", "Trim Spaces", -170, 25);
 
-    createTextLabel("Completed Mode:", {0, - (winSize.height / 2) + 65}, 0.5f, m_pButtonMenu, "goldFont.fnt");
-    createButton("edit_leftBtn_001.png", {-120, - (winSize.height / 2) + 40}, menu_selector(CvoltonSearchOptions::onCompletedPrev), 1.2f);
-    auto label = createTextLabel(getCompletedString(), {0, - (winSize.height / 2) + 40}, 1, m_pButtonMenu, "bigFont.fnt");
+    createTextLabel("Completed Mode:", {0, -95}, 0.5f, m_pButtonMenu, "goldFont.fnt");
+    createButton("edit_leftBtn_001.png", {-120, -120}, menu_selector(CvoltonSearchOptions::onCompletedPrev), 1.2f);
+    auto label = createTextLabel(getCompletedString(), {0, -120}, 1, m_pButtonMenu, "bigFont.fnt");
     label->limitLabelWidth(200, 0.8f, 0);
-    createButton("edit_rightBtn_001.png", {120, - (winSize.height / 2) + 40}, menu_selector(CvoltonSearchOptions::onCompletedNext), 1.2f);
+    createButton("edit_rightBtn_001.png", {120, -120}, menu_selector(CvoltonSearchOptions::onCompletedNext), 1.2f);
 }
 
 void CvoltonSearchOptions::onCompletedPrev(cocos2d::CCObject* sender)

@@ -1177,7 +1177,7 @@ bool __fastcall MoreSearchLayer_init(MoreSearchLayer* self){
         self,
         menu_selector(GamingButton::onMoreSearchNext)
     );
-    nextBtn->setPosition({winSize.width - 100, - (winSize.height / 2) + 25});
+    nextBtn->setPosition({(winSize.width / 2) + 185, - (winSize.height / 2) + 25});
     menu->addChild(nextBtn);
 
     return true;
