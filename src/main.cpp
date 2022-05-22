@@ -1150,9 +1150,10 @@ GJSearchObject* __fastcall LevelSearchLayer_getSearchObject(LevelSearchLayer* se
         str.erase(str.find_last_not_of(' ') + 1);
     }
 
-    if(CM->getOption("search_no_id") && isID) str = str + "%20";
+    if(CM->getOption("search_no_id") && isID && type == SearchType::kSearchTypeSearch) str = str + "%25";
+    if(CM->getOption("search_no_id") && isID && type == SearchType::kSearchTypeFindUsers) str = str + "%20";
 
-    if(CM->getOption("search_surround_percent") && !isID) str = str + "%20%20";
+    if(CM->getOption("search_surround_percent") && !isID && type == SearchType::kSearchTypeSearch) str = str + "%25%25";
     
     if(CM->getOption("search_contains") && type == SearchType::kSearchTypeSearch && !isID) str = "%25" + str;
     //FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, str)->show();
