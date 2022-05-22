@@ -563,6 +563,7 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
 
     auto layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(0));
     auto winSize = CCDirector::sharedDirector()->getWinSize();
+    auto CM = CvoltonManager::sharedState();
 
     auto menu = self->m_pButtonMenu;
 
@@ -605,6 +606,7 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         auto upArrow = BetterInfo::createBISprite("BI_upArrow_001.png");
         upArrow->setScale(0.8f);
         upArrow->setPosition({30, -18});
+        upArrow->setVisible(!(CM->getOption("has_viewed_as")));
         menu->addChild(upArrow);
         self->objectsInMenu->addObject(upArrow);
 

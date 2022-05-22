@@ -22,6 +22,7 @@ bool LeaderboardViewLayer::init(int accountID) {
 
     auto CM = CvoltonManager::sharedState();
     CM->loadTextures();
+    CM->setOption("has_viewed_as", true);
     this->accountID = accountID;
 
     auto GLM = gd::GameLevelManager::sharedState();

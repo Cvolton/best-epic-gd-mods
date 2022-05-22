@@ -152,6 +152,10 @@ bool CvoltonManager::toggleOption(std::string option){
     settingsDict->setObject(CCString::createWithFormat("%i", toggled), option);
     return toggled;
 }
+bool CvoltonManager::setOption(std::string option, bool value){
+    settingsDict->setObject(CCString::createWithFormat("%i", value), option);
+    return value;
+}
 
 int CvoltonManager::getOptionInt(std::string option){
     return settingsDict->valueForKey(option)->intValue();
