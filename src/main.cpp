@@ -651,15 +651,16 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         self->objectsInMenu->addObject(accountIDNode);
 
         auto CM = CvoltonManager::sharedState();
-        auto button = gd::CCMenuItemSpriteExtra::create(
+        auto starButton = gd::CCMenuItemSpriteExtra::create(
             CCSprite::createWithSpriteFrameName("GJ_starsIcon_001.png"),
             self,
             menu_selector(GamingButton::onProfilePageStar)
         );
-        menu->addChild(button);
-        button->setPosition({370,-259});
-        if(!CM->getOption("profile_search_star")) button->setColor({125,125,125});
-        button->setSizeMult(1.2f);
+        menu->addChild(starButton);
+        starButton->setPosition({370,-259});
+        if(!CM->getOption("profile_search_star")) starButton->setColor({125,125,125});
+        starButton->setSizeMult(1.2f);
+        self->objectsInMenu->addObject(starButton);
     }
 
 }
