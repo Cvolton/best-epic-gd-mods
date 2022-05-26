@@ -32,11 +32,15 @@ jobs:
 
     - name: Build
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target ALL_BUILD
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target betterinfo
+      
+    - name: Copy dll before upload
+      run: cp build/release/*.dll resources/
+      shell: bash
       
     - name: Upload built dlls
       uses: actions/upload-artifact@v2
       with:
-        name: mods
-        path: build/release/*.dll
+        name: betterinfo
+        path: resources/
       
