@@ -588,9 +588,18 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
             if(node != nullptr && node->getPositionX() == (winSize.width / 2) + 138 && node->getPositionY() == (winSize.height / 2) - 123) node->setVisible(false);
         }
 
+        auto leaderboardButtonSprite = BetterInfo::createBISprite("BI_blankBtn_001.png");
         auto leaderboardSprite = CCSprite::createWithSpriteFrameName(BetterInfo::rankIcon(a2->getGlobalRank()));
+        leaderboardSprite->setZOrder(1);
+        leaderboardSprite->setScale(1 / 0.7f);
+        if(a2->getGlobalRank() <= 200) leaderboardSprite->setScale(1.3f);
+        if(a2->getGlobalRank() <= 50) leaderboardSprite->setScale(1.25f);
+        if(a2->getGlobalRank() <= 10) leaderboardSprite->setScale(1.1f);
+        leaderboardSprite->setPosition({22.5f, 23});
+        leaderboardButtonSprite->addChild(leaderboardSprite);
+        leaderboardButtonSprite->setScale(0.7f);
         auto leaderboardButton = gd::CCMenuItemSpriteExtra::create(
-            leaderboardSprite,
+            leaderboardButtonSprite,
             self,
             menu_selector(GamingButton::onProfilePageLeaderboard)
         );
@@ -603,12 +612,12 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         //auto leaderboardArrow = BetterInfo::createBISprite("BI_viewLeaderboard_001.png");
         //menu->addChild(leaderboardArrow);
 
-        auto upArrow = BetterInfo::createBISprite("BI_upArrow_001.png");
+        /*auto upArrow = BetterInfo::createBISprite("BI_upArrow_001.png");
         upArrow->setScale(0.8f);
         upArrow->setPosition({30, -18});
         upArrow->setVisible(!(CM->getOption("has_viewed_as")));
         menu->addChild(upArrow);
-        self->objectsInMenu->addObject(upArrow);
+        self->objectsInMenu->addObject(upArrow);*/
 
         //set comment to 408 -148
         /*for(unsigned int i = 0; i < self->m_pButtonMenu->getChildrenCount(); i++){
