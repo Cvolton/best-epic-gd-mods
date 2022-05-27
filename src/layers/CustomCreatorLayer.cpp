@@ -82,7 +82,7 @@ bool CustomCreatorLayer::init() {
         menu_selector(CustomCreatorLayer::onFeatured)
     );
     menu->addChild(featuredBtn);
-    featuredBtn->setPosition({-120,0});
+    featuredBtn->setPosition({-120,55});
     featuredBtn->setSizeMult(1.2f);
 
     //CCTextureCache::sharedTextureCache()->addImage("mostliked.png", 0);
@@ -93,7 +93,7 @@ bool CustomCreatorLayer::init() {
         menu_selector(CustomCreatorLayer::onMostLiked)
     );
     menu->addChild(mostLikedBtn);
-    mostLikedBtn->setPosition({0,0}); //i have no idea why the texture is misaligned theyre the same res
+    mostLikedBtn->setPosition({0,55});
     mostLikedBtn->setSizeMult(1.2f);
 
     auto searchBtn = gd::CCMenuItemSpriteExtra::create(
@@ -102,8 +102,28 @@ bool CustomCreatorLayer::init() {
         menu_selector(CustomCreatorLayer::onSearch)
     );
     menu->addChild(searchBtn);
-    searchBtn->setPosition({120,2.5f}); //i have no idea why the texture is misaligned theyre the same res
+    searchBtn->setPosition({120,57.5f}); //i have no idea why the texture is misaligned theyre the same res
     searchBtn->setSizeMult(1.2f);
+
+    auto dailyBtn = gd::CCMenuItemSpriteExtra::create(
+        CCSprite::createWithSpriteFrameName("GJ_dailyBtn_001.png"),
+        this,
+        menu_selector(CustomCreatorLayer::onDaily)
+    );
+    menu->addChild(dailyBtn);
+    dailyBtn->setPosition({-122.5,-55});
+    dailyBtn->setSizeMult(1.2f);
+
+    //CCTextureCache::sharedTextureCache()->addImage("mostliked.png", 0);
+
+    auto weeklyBtn = gd::CCMenuItemSpriteExtra::create(
+        CCSprite::createWithSpriteFrameName("GJ_weeklyBtn_001.png"),
+        this,
+        menu_selector(CustomCreatorLayer::onWeekly)
+    );
+    menu->addChild(weeklyBtn);
+    weeklyBtn->setPosition({-2.5,-55});
+    weeklyBtn->setSizeMult(1.2f);
 
     auto updateBtn = gd::CCMenuItemSpriteExtra::create(
         CCSprite::createWithSpriteFrameName(CM->isUpToDate() ? "GJ_getSongInfoBtn_001.png" : "GJ_downloadBtn_001.png"),
@@ -209,6 +229,24 @@ void CustomCreatorLayer::onFeatured(CCObject* object) {
 
 void CustomCreatorLayer::onMostLiked(CCObject* object) {
     auto searchObject = gd::GJSearchObject::create(gd::SearchType::kGJSearchTypeLikedGDW);
+    auto browserLayer = LevelBrowserLayer::scene(searchObject);
+
+    auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
+
+    CCDirector::sharedDirector()->pushScene(transitionFade);
+}
+
+void CustomCreatorLayer::onDaily(CCObject* object) {
+    auto searchObject = gd::GJSearchObject::create(gd::SearchType::kSearchTypeDaily);
+    auto browserLayer = LevelBrowserLayer::scene(searchObject);
+
+    auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
+
+    CCDirector::sharedDirector()->pushScene(transitionFade);
+}
+
+void CustomCreatorLayer::onWeekly(CCObject* object) {
+    auto searchObject = gd::GJSearchObject::create(gd::SearchType::kSearchTypeWeekly);
     auto browserLayer = LevelBrowserLayer::scene(searchObject);
 
     auto transitionFade = CCTransitionFade::create(0.5, browserLayer);

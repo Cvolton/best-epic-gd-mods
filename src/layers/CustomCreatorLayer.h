@@ -9,6 +9,8 @@ protected:
     void onBack(cocos2d::CCObject*);
     void onFeatured(cocos2d::CCObject*);
     void onMostLiked(cocos2d::CCObject*);
+    void onDaily(cocos2d::CCObject*);
+    void onWeekly(cocos2d::CCObject*);
     void onUpdate(cocos2d::CCObject*);
     void onInfo(cocos2d::CCObject*);
     void onSearch(cocos2d::CCObject*);
