@@ -21,6 +21,7 @@ protected:
     void onNext(cocos2d::CCObject*);
     void onJumpToPageLayer(cocos2d::CCObject*);
     void onRandom(cocos2d::CCObject*);
+    void onMore(cocos2d::CCObject*);
     int levelsPerPage() const;
 public:
     void loadPage(unsigned int page);

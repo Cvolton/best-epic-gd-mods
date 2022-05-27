@@ -136,6 +136,17 @@ bool DailyViewLayer::init(bool isWeekly) {
     randomBtn->setPosition({ (winSize.width / 2) - 23, (winSize.height / 2) - 72});
     menu->addChild(randomBtn);
 
+    auto buttonSprite = gd::ButtonSprite::create("More", (int)(90*0.5), true, "bigFont.fnt", "GJ_button_01.png", 44*0.5f, 0.5f);
+    auto buttonButton = gd::CCMenuItemSpriteExtra::create(
+        buttonSprite,
+        this,
+        menu_selector(DailyViewLayer::onMore)
+    );
+    buttonButton->setSizeMult(1.2f);
+    buttonButton->setPosition({- winSize.width / 2, - winSize.height / 2});
+    buttonButton->setAnchorPoint({0,0});
+    menu->addChild(buttonButton);
+
     loadPage(0);
     return true;
 }
@@ -202,6 +213,15 @@ void DailyViewLayer::onJumpToPageLayer(CCObject* sender){
 
 void DailyViewLayer::onRandom(CCObject* sender){
     loadPage(CvoltonManager::sharedState()->randomNumber(0, sortedLevels->count() / levelsPerPage()));
+}
+
+void DailyViewLayer::onMore(CCObject* object) {
+    auto searchObject = gd::GJSearchObject::create(isWeekly ? SearchType::kSearchTypeWeekly : SearchType::kSearchTypeDaily);
+    auto browserLayer = LevelBrowserLayer::scene(searchObject);
+
+    auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
+
+    CCDirector::sharedDirector()->pushScene(transitionFade);
 }
 
 CCScene* DailyViewLayer::scene(bool isWeekly) {
