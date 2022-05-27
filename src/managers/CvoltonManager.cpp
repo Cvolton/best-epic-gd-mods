@@ -9,7 +9,7 @@ using namespace cocos2d::extension;
 using namespace gd;
 
 inline static constexpr char* sheets[1] = {"BI_GameSheet"};
-inline static constexpr char* textures[1] = {"BI_mainButton_001"};
+inline static constexpr char* textures[3] = {"BI_mainButton_001", "BI_blankBtn_001", "BI_updateArrow_001"};
 
 bool CvoltonManager::init(){
     bool init = CCNode::init();
@@ -19,7 +19,7 @@ bool CvoltonManager::init(){
 
     auto FU = CCFileUtils::sharedFileUtils();
 
-    std::string plistPath(FU->getWritablePath2() + "Resources/BI_destroyedUsers.plist");
+    std::string plistPath(CCFileUtils::sharedFileUtils()->fullPathForFilename("BI_destroyedUsers.plist", false));
     if(FU->isFileExist(plistPath)) {
         nameDict = CCDictionary::createWithContentsOfFile("BI_destroyedUsers.plist");
         plistLoaded = true;
@@ -238,23 +238,30 @@ FLAlertLayer* CvoltonManager::missingResourcesError() {
     for(auto sheet : sheets){
         constexpr char* extensions[] = {"", "-hd", "-uhd"};
         for(auto extension : extensions){
-            std::string plistPath(FU->getWritablePath2() + "Resources/" + sheet + extension + ".plist");
-            std::string pngPath(FU->getWritablePath2() + "Resources/" + sheet + extension + ".png");
-            //Geometry Dash also accepts resources from the path with the exe, in this case we don't want to bother the user about it
-            std::string plistPath2(FU->getWritablePath2() + sheet + extension + ".plist");
-            std::string pngPath2(FU->getWritablePath2() + sheet + extension + ".png");
-            if(!(FU->isFileExist(plistPath) || FU->isFileExist(plistPath2))) stream << "\n" << sheet << extension << ".plist";
-            if(!(FU->isFileExist(pngPath) || FU->isFileExist(pngPath2))) stream << "\n" << sheet << extension << ".png";
+            std::string plistPath(
+                CCFileUtils::sharedFileUtils()->fullPathForFilename(
+                    CCString::createWithFormat("%s%s.plist", sheet, extension)->getCString(), false
+                )
+            );
+            std::string pngPath(
+                CCFileUtils::sharedFileUtils()->fullPathForFilename(
+                    CCString::createWithFormat("%s%s.png", sheet, extension)->getCString(), false
+                )
+            );
+            if(!(FU->isFileExist(plistPath))) stream << "\n" << sheet << extension << ".plist";
+            if(!(FU->isFileExist(pngPath))) stream << "\n" << sheet << extension << ".png";
         }
     }
 
     for(auto texture : textures){
         constexpr char* extensions[] = {"", "-hd", "-uhd"};
         for(auto extension : extensions){
-            std::string pngPath(FU->getWritablePath2() + "Resources/" + texture + extension + ".png");
-            //Geometry Dash also accepts resources from the path with the exe, in this case we don't want to bother the user about it
-            std::string pngPath2(FU->getWritablePath2() + texture + extension + ".png");
-            if(!(FU->isFileExist(pngPath) || FU->isFileExist(pngPath2))) stream << "\n" << texture << extension << ".png";
+            std::string pngPath(
+                CCFileUtils::sharedFileUtils()->fullPathForFilename(
+                    CCString::createWithFormat("%s%s.png", texture, extension)->getCString(), false
+                )
+            );
+            if(!(FU->isFileExist(pngPath))) stream << "\n" << texture << extension << ".png";
         }
     }
 
