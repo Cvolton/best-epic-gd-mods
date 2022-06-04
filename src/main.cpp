@@ -32,6 +32,7 @@ const int questBtnExMarkTag = 863390892;
 const int randomBtnTag = 863390893;
 const int firstBtnTag = 863390894;
 const int filterBtnTag = 863390895;
+const int starBtnTag = 863390896;
 
 class CustomLevelSearchLayer : public gd::FLAlertLayer {
     gd::GJGameLevel* level;
@@ -261,13 +262,13 @@ public:
         GLM->getGJUserInfo(self->something);
     }
 
-    void onProfilePageStar(CCObject* sender){
+    /*void onProfilePageStar(CCObject* sender){
         auto self = cast<ProfilePage*>(this);
         auto button = cast<CCMenuItemSpriteExtra*>(sender);
         auto CM = CvoltonManager::sharedState();
         if(CM->toggleOption("profile_search_star")) button->setColor({255, 255, 255});
         else button->setColor({125,125,125});
-    }
+    }*/
 
     void onLevelBrowserSavedFilter(CCObject* sender){
         auto self = cast<LevelBrowserLayer*>(this);
@@ -366,6 +367,19 @@ public:
 
         layer->searchObject->m_nPage = (layer->total - 1) / BetterInfo::levelsPerPage(layer->searchObject);
         layer->loadPage(layer->searchObject);
+    }
+
+    void onLevelBrowserStar(CCObject* sender){
+        auto layer = cast<LevelBrowserLayer*>(this);
+
+        if(layer->searchObject == nullptr) return;
+
+        layer->searchObject->m_bStarFilter = !(layer->searchObject->m_bStarFilter);
+        layer->loadPage(layer->searchObject);
+
+        auto button = cast<CCMenuItemSpriteExtra*>(sender);
+        if(layer->searchObject->m_bStarFilter) button->setColor({255, 255, 255});
+        else button->setColor({125,125,125});
     }
 
     void onDailyHistory(CCObject* sender){
@@ -585,7 +599,7 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         for(unsigned int i = 0; i < layer->getChildrenCount(); i++){
             CCNode* node = dynamic_cast<CCNode*>(layer->getChildren()->objectAtIndex(i));
             if(node != nullptr && node->getPositionX() == (winSize.width / 2) - 164 && node->getPositionY() == (winSize.height / 2) + 123) node->setVisible(false);
-            if(node != nullptr && node->getPositionX() == (winSize.width / 2) + 138 && node->getPositionY() == (winSize.height / 2) - 123) node->setVisible(false);
+            //if(node != nullptr && node->getPositionX() == (winSize.width / 2) + 138 && node->getPositionY() == (winSize.height / 2) - 123) node->setVisible(false);
         }
 
         auto leaderboardButtonSprite = BetterInfo::createBISprite("BI_blankBtn_001.png");
@@ -660,7 +674,7 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         menu->addChild(accountIDNode);
         self->objectsInMenu->addObject(accountIDNode);
 
-        auto CM = CvoltonManager::sharedState();
+        /*auto CM = CvoltonManager::sharedState();
         auto starButton = gd::CCMenuItemSpriteExtra::create(
             CCSprite::createWithSpriteFrameName("GJ_starsIcon_001.png"),
             self,
@@ -670,7 +684,7 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         starButton->setPosition({370,-259});
         if(!CM->getOption("profile_search_star")) starButton->setColor({125,125,125});
         starButton->setSizeMult(1.2f);
-        self->objectsInMenu->addObject(starButton);
+        self->objectsInMenu->addObject(starButton);*/
     }
 
 }
@@ -683,7 +697,7 @@ bool __fastcall ProfilePage_init(ProfilePage* self, void* a, int id, bool a2){
     return true;
 }
 
-void __fastcall ProfilePage_onMyLevels(ProfilePage* self, void* a, CCObject* sender) {
+/*void __fastcall ProfilePage_onMyLevels(ProfilePage* self, void* a, CCObject* sender) {
     //gd::FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, "aaegeg")->show();
     //self->m_pLevel->retain();
     auto CM = CvoltonManager::sharedState();
@@ -697,7 +711,7 @@ void __fastcall ProfilePage_onMyLevels(ProfilePage* self, void* a, CCObject* sen
     auto browserLayer = LevelBrowserLayer::scene(searchObj);
     auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
     CCDirector::sharedDirector()->pushScene(transitionFade);
-}
+}*/
 
 /*void* __fastcall ProfilePage_getUserInfoFailed(ProfilePage* self, void* a, gd::GJUserScore* a2){
     void* returnValue = MHook::getOriginal(ProfilePage_getUserInfoFailed)(self, a, a2);
@@ -901,6 +915,21 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
         //filterButton->setScale(0.8f);
         filterButton->setSizeMult(1.2f);
         filterButton->setTag(filterBtnTag);
+    }
+
+    if(menu->getChildByTag(starBtnTag)) return;
+
+    if(!isLocal) {
+        auto starButton = gd::CCMenuItemSpriteExtra::create(
+            CCSprite::createWithSpriteFrameName("GJ_starsIcon_001.png"),
+            self,
+            menu_selector(GamingButton::onLevelBrowserStar)
+        );
+        menu->addChild(starButton);
+        starButton->setPosition({- (winSize.width / 2) + 30, - (winSize.height / 2) + 58});
+        if(!(self->searchObject->m_bStarFilter)) starButton->setColor({125,125,125});
+        starButton->setSizeMult(1.2f);
+        starButton->setTag(starBtnTag);
     }
 
     for(unsigned int i = 0; i < menu->getChildrenCount(); i++){
@@ -1382,7 +1411,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x5F3D0, CommentCell_loadFromComment);
     MHook::registerHook(base + 0x210040, ProfilePage_loadPageFromUserInfo);
     MHook::registerHook(base + 0x20EF00, ProfilePage_init);
-    MHook::registerHook(base + 0x211BB0, ProfilePage_onMyLevels);
+    //MHook::registerHook(base + 0x211BB0, ProfilePage_onMyLevels);
     MHook::registerHook(base + 0xA1C20, GameLevelManager_userNameForUserID);
     MHook::registerHook(base + 0x4DE40, CreatorLayer_init);
     MHook::registerHook(base + 0x4F1B0, CreatorLayer_onChallenge);
