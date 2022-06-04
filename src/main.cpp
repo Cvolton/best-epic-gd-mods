@@ -606,13 +606,15 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         auto leaderboardSprite = CCSprite::createWithSpriteFrameName(BetterInfo::rankIcon(a2->getGlobalRank()));
         leaderboardSprite->setZOrder(1);
         leaderboardSprite->setScale(1 / 0.6f);
-        if(a2->getGlobalRank() <= 10) leaderboardSprite->setScale(1.1f);
-        else if(a2->getGlobalRank() <= 50) leaderboardSprite->setScale(1.25f);
-        else if(a2->getGlobalRank() <= 200) leaderboardSprite->setScale(1.3f);
-        else if(a2->getGlobalRank() <= 1000) leaderboardSprite->setScale(1 / 0.7f);
+        if(a2->getGlobalRank() > 0) {
+            if(a2->getGlobalRank() <= 10) leaderboardSprite->setScale(1.1f);
+            else if(a2->getGlobalRank() <= 50) leaderboardSprite->setScale(1.25f);
+            else if(a2->getGlobalRank() <= 200) leaderboardSprite->setScale(1.3f);
+            else if(a2->getGlobalRank() <= 1000) leaderboardSprite->setScale(1 / 0.7f);
+        }
         leaderboardSprite->setPosition({22.5f, 23});
         leaderboardButtonSprite->addChild(leaderboardSprite);
-        leaderboardButtonSprite->setScale(a2->getGlobalRank() <= 1000 ? 0.7f : 0.6f);
+        leaderboardButtonSprite->setScale( (a2->getGlobalRank() <= 1000 && a2->getGlobalRank() > 0) ? 0.7f : 0.6f);
         auto leaderboardButton = gd::CCMenuItemSpriteExtra::create(
             leaderboardButtonSprite,
             self,
