@@ -250,7 +250,6 @@ public:
     }
 
     void onProfilePageReload(CCObject* sender){
-        //TODO: improve this™️
         auto self = cast<ProfilePage*>(this);
 
         auto GLM = GameLevelManager::sharedState();
@@ -260,6 +259,21 @@ public:
         GLM->resetAccountComments(score->getAccountID());
 
         GLM->getGJUserInfo(self->something);
+    }
+
+    void onProfilePageCopyUserID(CCObject* sender){
+        auto self = cast<ProfilePage*>(this);
+        BetterInfo::copyToClipboard(std::to_string(self->score->getUserID()).c_str(), self);
+    }
+
+    void onProfilePageCopyAccountID(CCObject* sender){
+        auto self = cast<ProfilePage*>(this);
+        BetterInfo::copyToClipboard(std::to_string(self->score->getAccountID()).c_str(), self);
+    }
+
+    void onProfilePageCopyPlayerName(CCObject* sender){
+        auto self = cast<ProfilePage*>(this);
+        BetterInfo::copyToClipboard(self->score->getPlayerName().c_str(), self);
     }
 
     /*void onProfilePageStar(CCObject* sender){
@@ -599,6 +613,7 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         for(unsigned int i = 0; i < layer->getChildrenCount(); i++){
             CCNode* node = dynamic_cast<CCNode*>(layer->getChildren()->objectAtIndex(i));
             if(node != nullptr && node->getPositionX() == (winSize.width / 2) - 164 && node->getPositionY() == (winSize.height / 2) + 123) node->setVisible(false);
+            if(node != nullptr && node->getPositionX() == (winSize.width / 2) && node->getPositionY() == (winSize.height / 2) + 125) node->setVisible(false);
             //if(node != nullptr && node->getPositionX() == (winSize.width / 2) + 138 && node->getPositionY() == (winSize.height / 2) - 123) node->setVisible(false);
         }
 
@@ -659,22 +674,43 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         self->objectsInMenu->addObject(refreshButton);
 
         auto userIDNode = CCLabelBMFont::create(CCString::createWithFormat("User ID: %i", a2->getUserID())->getCString(), "chatFont.fnt");
-        userIDNode->setPosition({38,-248});
-        userIDNode->setAnchorPoint({0,1});
         userIDNode->setScale(0.6f);
         userIDNode->setColor({255,255,255});
         userIDNode->setOpacity(220);
-        menu->addChild(userIDNode);
-        self->objectsInMenu->addObject(userIDNode);
+        auto userIDBtn = gd::CCMenuItemSpriteExtra::create(
+            userIDNode,
+            self,
+            menu_selector(GamingButton::onProfilePageCopyUserID)
+        );
+        userIDBtn->setPosition({38,-248});
+        userIDBtn->setAnchorPoint({0,1});
+        menu->addChild(userIDBtn);
+        self->objectsInMenu->addObject(userIDBtn);
 
         auto accountIDNode = CCLabelBMFont::create(CCString::createWithFormat("Account ID: %i", a2->getAccountID())->getCString(), "chatFont.fnt");
-        accountIDNode->setPosition({38,-258});
-        accountIDNode->setAnchorPoint({0,1});
         accountIDNode->setScale(0.6f);
         accountIDNode->setColor({255,255,255});
         accountIDNode->setOpacity(220);
-        menu->addChild(accountIDNode);
-        self->objectsInMenu->addObject(accountIDNode);
+        auto accountIDBtn = gd::CCMenuItemSpriteExtra::create(
+            accountIDNode,
+            self,
+            menu_selector(GamingButton::onProfilePageCopyAccountID)
+        );
+        accountIDBtn->setPosition({38,-258});
+        accountIDBtn->setAnchorPoint({0,1});
+        menu->addChild(accountIDBtn);
+        self->objectsInMenu->addObject(accountIDBtn);
+
+        auto usernameNode = CCLabelBMFont::create(a2->getPlayerName().c_str(), "bigFont.fnt");
+        usernameNode->limitLabelWidth(185.0f, 0.9f, 0.0f);
+        auto usernameBtn = gd::CCMenuItemSpriteExtra::create(
+            usernameNode,
+            self,
+            menu_selector(GamingButton::onProfilePageCopyPlayerName)
+        );
+        usernameBtn->setPosition({210,-10});
+        menu->addChild(usernameBtn);
+        self->objectsInMenu->addObject(usernameBtn);
 
         /*auto CM = CvoltonManager::sharedState();
         auto starButton = gd::CCMenuItemSpriteExtra::create(
