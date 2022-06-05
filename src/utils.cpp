@@ -69,6 +69,21 @@ bool BetterInfo::isFalseTotal(GJSearchObject* searchObject){
                 || searchObject->m_nScreenID == SearchType::kSearchTypeHallOfFame;
 }
 
+bool BetterInfo::isStarUseless(GJSearchObject* searchObject){
+        return searchObject->m_nScreenID == SearchType::kSearchTypeFeatured
+                || searchObject->m_nScreenID == SearchType::kSearchTypeMagic
+                || searchObject->m_nScreenID == SearchType::kSearchTypeMapPacks
+                || searchObject->m_nScreenID == SearchType::kSearchTypeMapPackList
+                || searchObject->m_nScreenID == SearchType::kSearchTypeAwarded
+                || searchObject->m_nScreenID == SearchType::kSearchTypeFindUsers
+                || searchObject->m_nScreenID == SearchType::kSearchTypeHallOfFame
+                || searchObject->m_nScreenID == SearchType::kGJSearchTypeFeaturedGDW
+                || searchObject->m_nScreenID == SearchType::kSearchTypeSimilar
+                || searchObject->m_nScreenID == SearchType::kSearchTypeDaily
+                || searchObject->m_nScreenID == SearchType::kSearchTypeWeekly
+                || isLocal(searchObject);
+}
+
 int BetterInfo::levelsPerPage(GJSearchObject* searchObject){
         return ((isLocal(searchObject) && GameManager::sharedState()->getGameVariable("0093")) ? levelsPerPageHigh : levelsPerPageLow);
 }

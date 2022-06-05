@@ -921,7 +921,7 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
 
     if(menu->getChildByTag(starBtnTag)) return;
 
-    if(!isLocal) {
+    if(!BetterInfo::isStarUseless(self->searchObject)) {
         auto starButton = gd::CCMenuItemSpriteExtra::create(
             CCSprite::createWithSpriteFrameName("GJ_starsIcon_001.png"),
             self,

@@ -28,6 +28,7 @@ namespace BetterInfo {
 
     bool isLocal(gd::GJSearchObject* searchObj);
     bool isFalseTotal(gd::GJSearchObject* searchObj);
+    bool isStarUseless(gd::GJSearchObject* searchObj);
     int levelsPerPage(gd::GJSearchObject* searchObj);
     const char* rankIcon(int position);
     void showBIExclamationMark(cocos2d::CCLayer* creator);
