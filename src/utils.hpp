@@ -32,5 +32,7 @@ namespace BetterInfo {
     int levelsPerPage(gd::GJSearchObject* searchObj);
     const char* rankIcon(int position);
     void showBIExclamationMark(cocos2d::CCLayer* creator);
+    void copyToClipboard(const char* text);
+    void copyToClipboard(const char* text, cocos2d::CCLayer* parent);
 
 }

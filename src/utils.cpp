@@ -127,3 +127,23 @@ void BetterInfo::showBIExclamationMark(CCLayer* creator){
     exMark->setTag(mainBtnExMarkTag);
     mainBtn->addChild(exMark);
 }
+
+/*
+        Windows only code :D
+*/
+void BetterInfo::copyToClipboard(const char* text){
+        const size_t len = strlen(text) + 1;
+        HGLOBAL hMem =  GlobalAlloc(GMEM_MOVEABLE, len);
+        memcpy(GlobalLock(hMem), text, len);
+        GlobalUnlock(hMem);
+        OpenClipboard(0);
+        EmptyClipboard();
+        SetClipboardData(CF_TEXT, hMem);
+        CloseClipboard();
+}
+
+void BetterInfo::copyToClipboard(const char* text, CCLayer* parent){
+        copyToClipboard(text);
+
+        parent->addChild(TextAlertPopup::create("Copied", 0.5f, 0.6f), 100);
+}

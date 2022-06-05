@@ -7,6 +7,9 @@ class ExtendedLevelInfo : public CvoltonAlertLayerStub {
 public:
     static ExtendedLevelInfo* create(gd::GJGameLevel* level);
     void onClose(cocos2d::CCObject* sender);
+    void onCopyName(cocos2d::CCObject* sender);
+    void onCopyAuthor(cocos2d::CCObject* sender);
+    void onCopyDesc(cocos2d::CCObject* sender);
     static std::string getGameVersionName(int version);
     static std::string stringDate(std::string date);
     static const char* getDifficultyIcon(int stars);

@@ -1,5 +1,6 @@
 #include "ExtendedLevelInfo.h"
 #include "UnregisteredProfileLayer.h"
+#include "../utils.hpp"
 
 #include <cocos2d.h>
 #include <gd.h>
@@ -28,6 +29,21 @@ void ExtendedLevelInfo::onClose(cocos2d::CCObject* sender)
     level->release();
     setKeypadEnabled(false);
     removeFromParentAndCleanup(true);
+}
+
+void ExtendedLevelInfo::onCopyName(cocos2d::CCObject* sender)
+{
+    BetterInfo::copyToClipboard(level->levelName.c_str(), this);
+}
+
+void ExtendedLevelInfo::onCopyAuthor(cocos2d::CCObject* sender)
+{
+    BetterInfo::copyToClipboard(level->userName.c_str(), this);
+}
+
+void ExtendedLevelInfo::onCopyDesc(cocos2d::CCObject* sender)
+{
+    BetterInfo::copyToClipboard(level->getUnpackedLevelDescription().c_str(), this);
 }
 
 std::string ExtendedLevelInfo::getGameVersionName(int version){
@@ -136,15 +152,25 @@ bool ExtendedLevelInfo::init(){
     if(!init) return false;
 
     auto levelName = CCLabelBMFont::create(level->levelName.c_str(), "bigFont.fnt");
-    levelName->setPosition({0,125});
-    m_pButtonMenu->addChild(levelName);
+    auto levelNameBtn = gd::CCMenuItemSpriteExtra::create(
+        levelName,
+        this,
+        menu_selector(ExtendedLevelInfo::onCopyName)
+    );
+    m_pButtonMenu->addChild(levelNameBtn);
+    levelNameBtn->setPosition({0,125});
 
     std::ostringstream userNameText;
     userNameText << "By " << level->userName;
     auto userName = CCLabelBMFont::create(userNameText.str().c_str(), "goldFont.fnt");
-    userName->setPosition({0,99});
     userName->setScale(0.8f);
-    m_pButtonMenu->addChild(userName);
+    auto userNameBtn = gd::CCMenuItemSpriteExtra::create(
+        userName,
+        this,
+        menu_selector(ExtendedLevelInfo::onCopyAuthor)
+    );
+    userNameBtn->setPosition({0,99});
+    m_pButtonMenu->addChild(userNameBtn);
 
     cocos2d::extension::CCScale9Sprite* descBg = cocos2d::extension::CCScale9Sprite::create("square02b_001.png", { 0.0f, 0.0f, 80.0f, 80.0f });
     descBg->setContentSize({340,55});
@@ -159,8 +185,18 @@ bool ExtendedLevelInfo::init(){
     if(descLength > 70) descDelimiter = ((((140 - descLength) / 140) * 0.3f) + 0.7f);
     auto description = gd::TextArea::create("chatFont.fnt", false, descText, 1, 295 / descDelimiter, 20, {0.5f,0.5f});
     description->setScale(descDelimiter);
-    description->setPosition({0,52});
-    m_pButtonMenu->addChild(description);
+    description->setAnchorPoint({1,0});
+    description->setPosition( (description->getContentSize() / 2 ) + (CCPoint(340,55) / 2) );
+    auto descSprite = CCSprite::create();
+    descSprite->addChild(description);
+    descSprite->setContentSize({340,55});
+    auto descBtn = gd::CCMenuItemSpriteExtra::create(
+        descSprite,
+        this,
+        menu_selector(ExtendedLevelInfo::onCopyDesc)
+    );
+    descBtn->setPosition({0,52});
+    m_pButtonMenu->addChild(descBtn);
 
     cocos2d::extension::CCScale9Sprite* infoBg = cocos2d::extension::CCScale9Sprite::create("square02b_001.png", { 0.0f, 0.0f, 80.0f, 80.0f });
     infoBg->setContentSize({340,148});
