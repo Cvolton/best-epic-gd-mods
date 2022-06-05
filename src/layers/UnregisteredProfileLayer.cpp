@@ -1,4 +1,5 @@
 #include "UnregisteredProfileLayer.h"
+#include "../utils.hpp"
 
 #include <cocos2d.h>
 #include <gd.h>
@@ -29,6 +30,16 @@ void UnregisteredProfileLayer::onClose(cocos2d::CCObject* sender)
     if(invoker != nullptr) invoker->release();
     setKeypadEnabled(false);
     removeFromParentAndCleanup(true);
+}
+
+void UnregisteredProfileLayer::onCopyUserID(cocos2d::CCObject* sender)
+{
+    BetterInfo::copyToClipboard(std::to_string(score->getUserID()).c_str());
+}
+
+void UnregisteredProfileLayer::onCopyPlayerName(cocos2d::CCObject* sender)
+{
+    BetterInfo::copyToClipboard(score->getPlayerName().c_str());
 }
 
 void UnregisteredProfileLayer::displayProfile(int userID, std::string userName, CCNode* invoker){
@@ -64,7 +75,16 @@ bool UnregisteredProfileLayer::init(){
     bool init = createBasics({360,180}, menu_selector(UnregisteredProfileLayer::onClose));
     if(!init) return false;
 
-    createTitle(score->getPlayerName());
+    createTitle("");
+
+    auto userNameText = CCLabelBMFont::create(score->getPlayerName().c_str(), "bigFont.fnt");
+    auto userNameBtn = gd::CCMenuItemSpriteExtra::create(
+        userNameText,
+        this,
+        menu_selector(UnregisteredProfileLayer::onCopyPlayerName)
+    );
+    userNameBtn->setPosition({0, (alertSize.y/2) - 22});
+    m_pButtonMenu->addChild(userNameBtn);
 
     auto GM = gd::GameManager::sharedState();
 
@@ -101,10 +121,16 @@ bool UnregisteredProfileLayer::init(){
     userIDText << "User ID: " << score->getUserID() << "\nAccount ID: None";
 
     auto userIDTextNode = CCLabelBMFont::create(userIDText.str().c_str(), "bigFont.fnt");
-    userIDTextNode->setPosition({-168, -75.5f});
     userIDTextNode->setAnchorPoint({0,0});
     userIDTextNode->setScale(0.45f);
-    m_pButtonMenu->addChild(userIDTextNode);
+    auto userIDBtn = gd::CCMenuItemSpriteExtra::create(
+        userIDTextNode,
+        this,
+        menu_selector(UnregisteredProfileLayer::onCopyUserID)
+    );
+    userIDBtn->setPosition({-104, -66.5f});
+    //userIDBtn->setPosition({-168, -75.5f});
+    m_pButtonMenu->addChild(userIDBtn);
 
     return true;
 }

@@ -13,5 +13,7 @@ public:
     static void doSearch(int userID);
     void onMyLevels(CCObject* sender);
     void onCommentHistory(CCObject* sender);
+    void onCopyUserID(CCObject* sender);
+    void onCopyPlayerName(CCObject* sender);
     bool init();
 };
