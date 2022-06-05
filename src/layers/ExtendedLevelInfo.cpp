@@ -185,7 +185,7 @@ bool ExtendedLevelInfo::init(){
     if(descLength > 70) descDelimiter = ((((140 - descLength) / 140) * 0.3f) + 0.7f);
     auto description = gd::TextArea::create("chatFont.fnt", false, descText, 1, 295 / descDelimiter, 20, {0.5f,0.5f});
     description->setScale(descDelimiter);
-    description->setAnchorPoint({1,0});
+    description->setAnchorPoint({1,1});
     description->setPosition( (description->getContentSize() / 2 ) + (CCPoint(340,55) / 2) );
     auto descSprite = CCSprite::create();
     descSprite->addChild(description);
