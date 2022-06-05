@@ -585,6 +585,9 @@ void fixProfilePagePositions(ProfilePage* self){
 }
 
 void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd::GJUserScore* a2){
+    //TODO: fix mod badge positioning for empty profiles
+    GameLevelManager::sharedState()->storeUserName(a2->getUserID(), a2->getAccountID(), a2->getPlayerName());
+
     MHook::getOriginal(ProfilePage_loadPageFromUserInfo)(self, a, a2);
 
     fixProfilePagePositions(self);
