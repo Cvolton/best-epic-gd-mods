@@ -199,7 +199,7 @@ void DailyCell::draw() {
 }
 
 DailyCell::DailyCell(const char* name, CCSize size) :
-    TableViewCell(name, 356.f, size.height) {} //356 should be size.width but its getting 220 for some reason and i cant be bothered to troubleshoot this rn //TODO: fix this properly
+    TableViewCell(name, size.width, size.height) {}
 
 DailyCell* DailyCell::create(const char* key, CCSize size) {
     auto ret = new DailyCell(key, size);
