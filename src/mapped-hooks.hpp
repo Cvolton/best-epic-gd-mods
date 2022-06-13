@@ -12,6 +12,7 @@ namespace MHook {
         auto status = MH_CreateHook(reinterpret_cast<void**>(address), hook, &trampoline);
         if (status == MH_OK)
             hooks[hook] = trampoline;
+        else MessageBoxA(nullptr, "BetterInfo", "Error while hooking", MB_ICONERROR | MB_OK);
         return status;
     }
 

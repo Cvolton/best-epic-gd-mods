@@ -9,6 +9,7 @@
 #include <typeinfo>
 #include <cstring>
 #include <deque>
+#include <random>
 #include "utils.hpp"
 
 #include "layers/UnregisteredProfileLayer.h"
@@ -1045,9 +1046,6 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
 /*bool __fastcall LevelBrowserLayer_init(LevelBrowserLayer* self, void* a, GJSearchObject* searchObject) {
     if(!MHook::getOriginal(LevelBrowserLayer_init)(self, a, searchObject)) return false;
 
-    //TODO: load the textures in a proper place
-    
-
     return true;
 }*/
 
@@ -1123,11 +1121,11 @@ void __fastcall CreatorLayer_onChallenge(CCLayer* self, void* a, CCMenuItemSprit
     MHook::getOriginal(CreatorLayer_onChallenge)(self, a, sender);
 }
 
-void __fastcall CreatorLayer_onBack(CCLayer* self, void* a, CCMenuItemSpriteExtra* sender) {
+/*void __fastcall CreatorLayer_onBack(CCLayer* self, void* a, CCMenuItemSpriteExtra* sender) {
     auto CM = CvoltonManager::sharedState();
 
     MHook::getOriginal(CreatorLayer_onBack)(self, a, sender);
-}
+}*/
 
 void _fastcall CreatorLayer_sceneWillResume(uint8_t* self){
     MHook::getOriginal(CreatorLayer_sceneWillResume)(self);
@@ -1422,11 +1420,31 @@ DWORD WINAPI my_thread(void* hModule) {
 
     MH_Initialize();
 
-    /*auto gdshare = reinterpret_cast<uintptr_t>(GetModuleHandle("GDShare-v0.3.4.dll"));
-    auto betteredit = reinterpret_cast<uintptr_t>(GetModuleHandle("BetterEdit-v4.0.5.dll"));*/
+    /*
+        OK so this sleep might seem random and that is because it is.
+        The reality is that when you are loading multiple mods at once,
+        they all register hooks in their own threads, which leads to
+        a race condition where a mod ends up overwriting the hook
+        of a different mod instead of adding onto it. This should basically
+        make sure that we do not hook at the same time a different mod is
+        already attempting to hook.
 
-    //base = reinterpret_cast<uintptr_t>(GetModuleHandle(0));
+        The random number generator is added on top of it just as a meme
+        and also because I kinda suspect that someone is going to rip off
+        my solution and if I were to use a static value, it wouldn't work
+        with their mod then.
+    */
+    std::random_device os_seed;
+    const unsigned int seed = os_seed();
+
+    std::mt19937 generator(seed);
+    std::uniform_int_distribution<int> distribute(1000, 5000);
+    int sleepMs = distribute(generator);
+    Sleep(sleepMs);
     
+    /*
+        Hook initialization
+    */
     MHook::registerHook(base + 0x14F5A0, InfoLayer_init);
     MHook::registerHook(base + 0x151500, InfoLayer_onMore);
     MHook::registerHook(base + 0x151850, InfoLayer_onLevelInfo);
@@ -1434,14 +1452,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x151E70, InfoLayer_loadPage);
     //setupProgressBars = very bad workaround for interoperability with gdshare lol (help how do i hook something thats already hooked)
     MHook::registerHook(base + 0x15C350, LevelBrowserLayer_updateLevelsLabel);
-
-    /*bool LevelBrowserLayer_hook = false;
-    if(!MHook::registerHook(base + 0x15A040, LevelBrowserLayer_init)){
-        //gdshare conflict
-        if(gdshare != 0) LevelBrowserLayer_hook = MHook::registerHook(gdshare + 0xFBD0, LevelBrowserLayer_init);
-        //betteredit conflict
-        if(!LevelBrowserLayer_hook && betteredit != 0) MHook::registerHook(betteredit + 0x3FF50, LevelBrowserLayer_init);
-    }*/
+    //MHook::registerHook(base + 0x15A040, LevelBrowserLayer_init);
     MHook::registerHook(base + 0x177FC0, LevelInfoLayer_setupProgressBars);
     MHook::registerHook(base + 0x17AC90, LevelInfoLayer_onViewProfile);
     MHook::registerHook(base + 0x17ACF0, LevelInfoLayer_onLevelInfo);
@@ -1456,7 +1467,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0xA1C20, GameLevelManager_userNameForUserID);
     MHook::registerHook(base + 0x4DE40, CreatorLayer_init);
     MHook::registerHook(base + 0x4F1B0, CreatorLayer_onChallenge);
-    MHook::registerHook(base + 0x4FAE0, CreatorLayer_onBack);
+    //MHook::registerHook(base + 0x4FAE0, CreatorLayer_onBack);
     MHook::registerHook(base + 0x4FB50, CreatorLayer_sceneWillResume); //onLeaderboards 0x4ED20
     MHook::registerHook(base + 0x6BEF0, DailyLevelPage_updateTimers);
     MHook::registerHook(base + 0x6A900, DailyLevelPage_init);
@@ -1471,6 +1482,9 @@ DWORD WINAPI my_thread(void* hModule) {
     //MHook::registerHook(base + 0xF9AE0, GameStatsManager_incrementChallenge);
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
 
+    /*
+        Byte patches
+    */
     setupPageLimitBypass();
     setupDailyNew();
 
