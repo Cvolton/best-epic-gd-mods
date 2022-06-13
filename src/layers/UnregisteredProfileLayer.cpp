@@ -34,12 +34,12 @@ void UnregisteredProfileLayer::onClose(cocos2d::CCObject* sender)
 
 void UnregisteredProfileLayer::onCopyUserID(cocos2d::CCObject* sender)
 {
-    BetterInfo::copyToClipboard(std::to_string(score->getUserID()).c_str());
+    BetterInfo::copyToClipboard(std::to_string(score->getUserID()).c_str(), this);
 }
 
 void UnregisteredProfileLayer::onCopyPlayerName(cocos2d::CCObject* sender)
 {
-    BetterInfo::copyToClipboard(score->getPlayerName().c_str());
+    BetterInfo::copyToClipboard(score->getPlayerName().c_str(), this);
 }
 
 void UnregisteredProfileLayer::displayProfile(int userID, std::string userName, CCNode* invoker){
