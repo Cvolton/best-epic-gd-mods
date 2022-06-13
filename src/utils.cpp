@@ -145,7 +145,5 @@ void BetterInfo::copyToClipboard(const char* text){
 void BetterInfo::copyToClipboard(const char* text, CCLayer* parent){
         copyToClipboard(text);
 
-        FLAlertLayer::create(nullptr, CvoltonManager::modName, "OK", nullptr, "Copied to clipboard")->show();
-        //TODO: fix textalertpopup here, it looks nicer
-        //parent->addChild(TextAlertPopup::create("Copied", 0.5f, 0.6f), 100);
+        parent->addChild(TextAlertPopup::create("Copied to clipboard", 0.5f, 0.6f), 100);
 }
