@@ -2,6 +2,7 @@
 #include "CvoltonUpdateLayer.h"
 #include "CvoltonOptionsLayer.h"
 #include "LevelIDLayer.h"
+#include "RewardViewLayer.h"
 #include "MoreStatsListView.h"
 #include "../managers/CvoltonManager.h"
 #include "../utils.hpp"
@@ -219,8 +220,9 @@ void CustomCreatorLayer::onSearch(CCObject* object) {
 }
 
 void CustomCreatorLayer::onFeatured(CCObject* object) {
-    auto searchObject = gd::GJSearchObject::create(gd::SearchType::kGJSearchTypeFeaturedGDW);
-    auto browserLayer = LevelBrowserLayer::scene(searchObject);
+    /*auto searchObject = gd::GJSearchObject::create(gd::SearchType::kGJSearchTypeFeaturedGDW);
+    auto browserLayer = LevelBrowserLayer::scene(searchObject);*/
+    auto browserLayer = RewardViewLayer::scene();
 
     auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
 
