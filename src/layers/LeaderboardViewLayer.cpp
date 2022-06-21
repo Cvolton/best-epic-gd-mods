@@ -112,6 +112,7 @@ void LeaderboardViewLayer::onLoadFinished(CCHttpClient* client, CCHttpResponse* 
 }
 
 void LeaderboardViewLayer::loadPage(){
+    if(!scores) return;
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
@@ -126,7 +127,8 @@ void LeaderboardViewLayer::loadPage(){
 void LeaderboardViewLayer::keyBackClicked() {
     setTouchEnabled(false);
     setKeypadEnabled(false);
-    scores->release();
+    if(scores) scores->release();
+    scores = nullptr;
     CCDirector::sharedDirector()->popSceneWithTransition(0.5f, PopTransition::kPopTransitionFade);
 }
 
@@ -143,6 +145,9 @@ CCScene* LeaderboardViewLayer::scene(int accountID) {
 }
 
 void LeaderboardViewLayer::generateScores(const std::string& response){
+    if(!scores) { scores = CCArray::create(); scores->retain(); };
+
+    if(response == "-1") return;
 
     std::stringstream responseStream(response);
     std::string current;
