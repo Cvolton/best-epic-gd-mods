@@ -21,6 +21,7 @@
 #include "layers/LevelBrowserEndLayer.h"
 #include "layers/LeaderboardViewLayer.h"
 #include "layers/ProfileSearchOptions.h"
+#include "layers/RewardViewLayer.h"
 
 #include "managers/CvoltonManager.h"
 
@@ -424,6 +425,12 @@ public:
         auto layer = CvoltonSearchOptions::create();
         CCDirector::sharedDirector()->getRunningScene()->addChild(layer);
         self->onClose(sender);
+    }
+
+    void onRewardsPageHistory(CCObject* sender){
+        auto browserLayer = RewardViewLayer::scene();
+        auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
+        CCDirector::sharedDirector()->pushScene(transitionFade);
     }
 
 };
@@ -1381,6 +1388,24 @@ void __fastcall GameLevelManager_limitSavedLevels(GameLevelManager* self){
     CM->skipSavedFilter = false;
 }
 
+bool __fastcall RewardsPage_init(FLAlertLayer* self){
+    if(!MHook::getOriginal(RewardsPage_init)(self)) return false;
+
+    CvoltonManager::sharedState()->loadTextures();
+
+    auto historySprite = BetterInfo::createWithBISpriteFrameName("BI_historyBtn_001.png");
+    historySprite->setScale(0.8f);
+    auto historyBtn = gd::CCMenuItemSpriteExtra::create(
+        historySprite,
+        self,
+        menu_selector(GamingButton::onRewardsPageHistory)
+    );
+    historyBtn->setPosition({-147,-88});
+    self->m_pButtonMenu->addChild(historyBtn);
+
+    return true;
+}
+
 /*void LevelBrowserLayer_loadLevelsFinished(LevelBrowserLayer* self, void* a, CCArray* levels, const char* a2){
     MHook::getOriginal(GameLevelManager_getCompletedLevels)(self, a, levels, a2);
 
@@ -1478,6 +1503,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0xA2D20, GameLevelManager_getCompletedLevels); 
     MHook::registerHook(base + 0xA2960, GameLevelManager_getSavedLevels); 
     MHook::registerHook(base + 0xA43B0, GameLevelManager_limitSavedLevels);
+    MHook::registerHook(base + 0x2178F0, RewardsPage_init);
     //MHook::registerHook(base + 0x180FC0, LevelSearchLayer_onSearch);
     //MHook::registerHook(base + 0xF9AE0, GameStatsManager_incrementChallenge);
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);

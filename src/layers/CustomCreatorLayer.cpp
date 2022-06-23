@@ -220,9 +220,8 @@ void CustomCreatorLayer::onSearch(CCObject* object) {
 }
 
 void CustomCreatorLayer::onFeatured(CCObject* object) {
-    /*auto searchObject = gd::GJSearchObject::create(gd::SearchType::kGJSearchTypeFeaturedGDW);
-    auto browserLayer = LevelBrowserLayer::scene(searchObject);*/
-    auto browserLayer = RewardViewLayer::scene();
+    auto searchObject = gd::GJSearchObject::create(gd::SearchType::kGJSearchTypeFeaturedGDW);
+    auto browserLayer = LevelBrowserLayer::scene(searchObject);
 
     auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
 
