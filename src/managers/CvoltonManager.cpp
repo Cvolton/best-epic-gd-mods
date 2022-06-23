@@ -57,13 +57,13 @@ void CvoltonManager::onUpdateHttpResponse(CCHttpClient* client, CCHttpResponse* 
 
     if(isUpToDate()) return;
 
-    std::ostringstream stream;
-    stream << modNameColored << " " << responseString;
+    /*std::ostringstream stream;
+    stream << modNameColored << " " << responseString;*/
 
 
-    AchievementNotifier::sharedState()->notifyAchievement("Update available", stream.str().c_str(), "", false);
+    //AchievementNotifier::sharedState()->notifyAchievement("Update available", stream.str().c_str(), "", false);
     //FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, 300, stream.str().c_str())->show();
-    BetterInfo::showBIExclamationMark(reinterpret_cast<CCLayer*>(CCDirector::sharedDirector()->getRunningScene()->getChildren()->objectAtIndex(0)));
+    //BetterInfo::showBIExclamationMark(reinterpret_cast<CCLayer*>(CCDirector::sharedDirector()->getRunningScene()->getChildren()->objectAtIndex(0)));
 
 }
 
@@ -88,11 +88,11 @@ void CvoltonManager::onChangelogHttpResponse(CCHttpClient* client, CCHttpRespons
 
 CvoltonManager::CvoltonManager(){}
 
-void CvoltonManager::doUpdateCheck(){
+/*void CvoltonManager::doUpdateCheck(){
     if(getOption("no_update_check")) return;
 
     forceUpdateCheck();
-}
+}*/
 
 void CvoltonManager::forceUpdateCheck(){
     if(hasDoneUpdateCheck) return;

@@ -1090,7 +1090,7 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
 
     //update check
     auto CM = CvoltonManager::sharedState();
-    CM->doUpdateCheck();
+    /*CM->doUpdateCheck();*/
     //betterinfo btn
     auto menu = cast<CCMenu*>(self->getChildren()->objectAtIndex(1));
 
@@ -1110,12 +1110,12 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
     menu->addChild(buttonButton);
 
     //showQuestExclamationMark(self);
-    CM = CvoltonManager::sharedState();
+    /*CM = CvoltonManager::sharedState();
     auto alert = CM->missingResourcesError();
     if(alert) {
         alert->setZOrder(100);
         self->addChild(alert);
-    }
+    }*/
 
     return true;
 }

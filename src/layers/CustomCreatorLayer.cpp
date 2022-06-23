@@ -135,10 +135,10 @@ bool CustomCreatorLayer::init() {
     updateBtn->setPosition({ 22, - ( (winSize.height / 2) - 25 ) });
     updateBtn->setSizeMult(1.2f);
 
-    auto updateArrow = BetterInfo::createBISprite("BI_updateArrow_001.png");
+    /*auto updateArrow = BetterInfo::createBISprite("BI_updateArrow_001.png");
     updateArrow->setAnchorPoint({0,0.1f});
     updateArrow->setPosition({ 33, - ( (winSize.height / 2) - 25 ) });
-    if(!CM->isUpToDate()) menu->addChild(updateArrow);
+    if(!CM->isUpToDate()) menu->addChild(updateArrow);*/
 
     auto settingsSprite = CCSprite::createWithSpriteFrameName("GJ_optionsBtn_001.png");
     settingsSprite->setScale(0.775f);
