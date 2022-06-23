@@ -61,7 +61,7 @@ bool RewardViewLayer::init() {
     setTouchEnabled(true);
     setKeypadEnabled(true);
 
-    auto dailyLevels = GSM->m_dailyChests;
+    auto dailyLevels = GSM->m_miscChests;
     sortedRewards = CCArray::create();
     sortedRewards->retain();
     CCDictElement* obj;

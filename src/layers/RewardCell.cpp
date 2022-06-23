@@ -40,11 +40,14 @@ void RewardCell::loadFromReward(GJRewardItem* reward) {
             case SpecialRewardItem::BonusKey: textureName = "GJ_bigKey_001.png"; scale = .5f; break;
             case SpecialRewardItem::Orbs: textureName = "currencyOrbIcon_001.png"; scale = .7f; break;
             case SpecialRewardItem::Diamonds: textureName = "diamond_small01_001.png"; break;
-            case SpecialRewardItem::CustomItem: textureName = "collaborationIcon_001.png"; scale = .7f; break;
+            case SpecialRewardItem::CustomItem: textureName = "collaborationIcon_001.png"; scale = .5f; break;
             default: scale = 0.7f;
         }
 
         lastSprite = BetterInfo::createWithBISpriteFrameName(textureName);
+        if(rewardObj->m_specialRewardItem == SpecialRewardItem::CustomItem) {
+            lastSprite = GJItemIcon::createBrowserIcon(rewardObj->m_unlockType, rewardObj->m_itemID);
+        }
         if(lastText == nullptr) lastSprite->setPosition({rowX + 1, rowY});
         else lastSprite->setPosition({lastText->getPositionX() + (lastText->getContentSize().width * lastText->getScaleX()) + 11.f, rowY});
         lastSprite->setAnchorPoint({0, 0.5f});
