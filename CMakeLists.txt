@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 cmake_policy(SET CMP0057 NEW)
 
-# option(BUILD_SHARED_LIBS "" ON)
+option(BUILD_SHARED_LIBS "" ON)
 
 
 macro(setup_mod project_name file_name)

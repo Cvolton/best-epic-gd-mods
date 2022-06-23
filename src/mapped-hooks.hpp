@@ -12,7 +12,7 @@ namespace MHook {
         auto status = MH_CreateHook(reinterpret_cast<void**>(address), hook, &trampoline);
         if (status == MH_OK)
             hooks[hook] = trampoline;
-        else MessageBoxA(nullptr, "BetterInfo", "Error while hooking", MB_ICONERROR | MB_OK);
+        else if(MessageBoxA(nullptr, "An error has occured while hooking a function...\n\nThis is likely caused by an outdated version of \"minhook.x86.dll\".\nWould you like to open the download", "BetterInfo - Geometry Dash", MB_ICONERROR | MB_YESNO) == IDYES) system("explorer https://github.com/HJfod/minhook/releases/latest");
         return status;
     }
 
