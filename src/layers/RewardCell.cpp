@@ -16,7 +16,7 @@ void RewardCell::loadFromReward(GJRewardItem* reward) {
     chest->setScale(0.35f);
     this->m_pLayer->addChild(chest);
 
-    auto title = CCLabelBMFont::create(CCString::createWithFormat("Daily Chest %i", reward->m_nChestID)->getCString(), "bigFont.fnt");
+    auto title = CCLabelBMFont::create(CCString::createWithFormat(reward->m_nChestID != 0 ? "%s Chest %i" : "%s Chest", CvoltonManager::sharedState()->cellTitle, reward->m_nChestID)->getCString(), "bigFont.fnt");
     title->setAnchorPoint({ 0.0f, .5f });
     title->setPosition(rowX, 31.5f);
     title->limitLabelWidth(356-rowX, .65f, .4f);

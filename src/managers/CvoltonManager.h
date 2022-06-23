@@ -24,6 +24,7 @@ public:
 	std::string changelog;
 	cocos2d::CCDictionary* nameDict;
 	cocos2d::CCDictionary* settingsDict;
+	const char* cellTitle = nullptr;
 	bool hasDoneUpdateCheck = false;
 	bool plistLoaded = false;
 	bool hasDoneHealthCheck = false;

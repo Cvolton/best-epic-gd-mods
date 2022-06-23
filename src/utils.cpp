@@ -147,3 +147,15 @@ void BetterInfo::copyToClipboard(const char* text, CCLayer* parent){
 
         parent->addChild(TextAlertPopup::create("Copied to clipboard", 0.5f, 0.6f), 100);
 }
+
+CCMenuItemSpriteExtra* BetterInfo::createTextButton(CCLayer* parent, const char* text, cocos2d::SEL_MenuHandler handler, int width, float height, float scale){
+    auto buttonSprite = gd::ButtonSprite::create(text, width, true, "bigFont.fnt", "GJ_button_01.png", height, scale);
+    auto buttonButton = gd::CCMenuItemSpriteExtra::create(
+        buttonSprite,
+        parent,
+        handler
+    );
+    buttonButton->setSizeMult(1.2f);
+
+    return buttonButton;
+}

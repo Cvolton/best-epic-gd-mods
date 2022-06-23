@@ -34,5 +34,6 @@ namespace BetterInfo {
     void showBIExclamationMark(cocos2d::CCLayer* creator);
     void copyToClipboard(const char* text);
     void copyToClipboard(const char* text, cocos2d::CCLayer* parent);
+    gd::CCMenuItemSpriteExtra* createTextButton(cocos2d::CCLayer* parent, const char* text, cocos2d::SEL_MenuHandler handler, int width, float height, float scale);
 
 }

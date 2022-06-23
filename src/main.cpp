@@ -22,6 +22,7 @@
 #include "layers/LeaderboardViewLayer.h"
 #include "layers/ProfileSearchOptions.h"
 #include "layers/RewardViewLayer.h"
+#include "layers/RewardTypeSelectLayer.h"
 
 #include "managers/CvoltonManager.h"
 
@@ -428,9 +429,7 @@ public:
     }
 
     void onRewardsPageHistory(CCObject* sender){
-        auto browserLayer = RewardViewLayer::scene();
-        auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
-        CCDirector::sharedDirector()->pushScene(transitionFade);
+        RewardTypeSelectLayer::create()->show();
     }
 
 };

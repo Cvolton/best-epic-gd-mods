@@ -7,9 +7,9 @@
 using namespace gd;
 using namespace cocos2d;
 
-RewardViewLayer* RewardViewLayer::create() {
+RewardViewLayer* RewardViewLayer::create(CCDictionary* chests, const char* title) {
     auto ret = new RewardViewLayer();
-    if (ret && ret->init()) {
+    if (ret && ret->init(chests, title)) {
         ret->autorelease();
     } else {
         delete ret;
@@ -24,8 +24,11 @@ bool RewardViewLayer::compareRewards(const void* i1, const void* i2){
     return item1->m_nChestID < item2->m_nChestID;
 }
 
-bool RewardViewLayer::init() {
+bool RewardViewLayer::init(CCDictionary* chests, const char* title) {
 
+    this->title = title;
+
+    CvoltonManager::sharedState()->cellTitle = title;
     CvoltonManager::sharedState()->loadTextures();
 
     auto GSM = GameStatsManager::sharedState();
@@ -61,11 +64,10 @@ bool RewardViewLayer::init() {
     setTouchEnabled(true);
     setKeypadEnabled(true);
 
-    auto dailyLevels = GSM->m_miscChests;
     sortedRewards = CCArray::create();
     sortedRewards->retain();
     CCDictElement* obj;
-    CCDICT_FOREACH(dailyLevels, obj){
+    CCDICT_FOREACH(chests, obj){
         auto currentReward = static_cast<GJRewardItem*>(obj->getObject());
         if(currentReward != nullptr) sortedRewards->addObject(currentReward);
     }
@@ -155,7 +157,7 @@ void RewardViewLayer::loadPage(unsigned int page){
     }
 
     rewardView = RewardListView::create(displayedLevels, 356.f, 220.f);
-    listLayer = GJListLayer::create(rewardView, "Chests", {191, 114, 62, 255}, 356.f, 220.f);
+    listLayer = GJListLayer::create(rewardView, CCString::createWithFormat("%s Chests", title)->getCString(), {191, 114, 62, 255}, 356.f, 220.f);
     listLayer->setPosition(winSize / 2 - listLayer->getScaledContentSize() / 2 - CCPoint(0,5));
     addChild(listLayer);
 
@@ -198,8 +200,8 @@ void RewardViewLayer::onRandom(CCObject* sender){
     loadPage(CvoltonManager::sharedState()->randomNumber(0, sortedRewards->count() / rewardsPerPage()));
 }
 
-CCScene* RewardViewLayer::scene() {
-    auto layer = RewardViewLayer::create();
+CCScene* RewardViewLayer::scene(CCDictionary* chests, const char* title) {
+    auto layer = RewardViewLayer::create(chests, title);
     auto scene = CCScene::create();
     scene->addChild(layer);
     return scene;
