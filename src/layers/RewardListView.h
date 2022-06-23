@@ -9,5 +9,5 @@ protected:
     void loadCell(gd::TableViewCell* cell, unsigned int index) override;
     
 public:
-    static RewardListView* create(cocos2d::CCArray* levels, float width, float height);
+    static RewardListView* create(cocos2d::CCArray* rewards, float width, float height);
 };

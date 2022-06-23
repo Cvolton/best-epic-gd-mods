@@ -18,7 +18,7 @@ RewardListView* RewardListView::create(cocos2d::CCArray* rewards, float width, f
 }
 
 void RewardListView::setupList() {
-    this->m_fItemSeparation = 43.0f;
+    this->m_fItemSeparation = 45.0f;
 
     this->m_pTableView->reloadData();
 
