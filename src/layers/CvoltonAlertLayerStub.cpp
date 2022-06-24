@@ -33,14 +33,15 @@ bool CvoltonAlertLayerStub::createBasics(CCPoint contentSize, cocos2d::SEL_MenuH
     return true;
 }
 
-void CvoltonAlertLayerStub::createTitle(std::string text){
+void CvoltonAlertLayerStub::createTitle(std::string text, float separatorScale, float usernameScale){
 	auto userName = CCLabelBMFont::create(text.c_str(), "bigFont.fnt");
     userName->setPosition({0, (alertSize.y/2) - 22});
+    userName->setScale(usernameScale);
     m_pButtonMenu->addChild(userName);
 
     auto separator = CCSprite::createWithSpriteFrameName("floorLine_001.png");
     separator->setPosition({0, (alertSize.y/2) - 46});
-    separator->setScaleX(0.75f);
+    separator->setScaleX(separatorScale);
     separator->setOpacity(100);
     m_pButtonMenu->addChild(separator);
 }

@@ -3,7 +3,6 @@
 #include "CvoltonOptionsLayer.h"
 
 class CvoltonSearchOptions : public CvoltonOptionsLayer {
-    int toggleCount = 0;
 public:
     static CvoltonSearchOptions* create();
     void onClose(cocos2d::CCObject* sender);

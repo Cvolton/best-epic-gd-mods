@@ -1,4 +1,5 @@
 #include "ProfileSearchOptions.h"
+#include "ProfileSearchOptionsSongSelect.h"
 #include "../managers/CvoltonManager.h"
 
 #include <cocos2d.h>
@@ -38,6 +39,11 @@ void ProfileSearchOptions::onPrev(cocos2d::CCObject* sender)
     auto layer = MoreSearchLayer::create();
     CCDirector::sharedDirector()->getRunningScene()->addChild(layer);
     onClose(sender);
+}
+
+void ProfileSearchOptions::onSong(cocos2d::CCObject* sender)
+{
+    ProfileSearchOptionsSongSelect::create(this)->show();
 }
 
 bool ProfileSearchOptions::init(){
@@ -124,6 +130,7 @@ void ProfileSearchOptions::createButtonToggle(const char* option, CCNode* sprite
 }
 
 void ProfileSearchOptions::drawToggles(){
+    auto CM = CvoltonManager::sharedState();
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
 
@@ -153,7 +160,8 @@ void ProfileSearchOptions::drawToggles(){
     createToggle("user_search_featured", "Featured", 90, 80);
     createToggle("user_search_original", "Original", -170, 35);
     createToggle("user_search_epic", "Epic", -40, 35);
-    //createToggle("user_search_song", "Song", 90, 35);
+    createToggle("user_search_song", "Song", 90, 35);
+    if(CM->getOption("user_search_song")) createButton("GJ_plusBtn_001.png", {175, 35}, menu_selector(ProfileSearchOptions::onSong), .65f);
     createToggle("user_search_nostar", "No Star", -170, -10);
     createToggle("user_search_coins", "Coins", -40, -10);
     createToggle("user_search_twoplayer", "2-Player", 90, -10);
@@ -167,4 +175,8 @@ void ProfileSearchOptions::drawToggles(){
     auto label = createTextLabel(getCompletedString(), {0, - (winSize.height / 2) + 40}, 1, m_pButtonMenu, "bigFont.fnt");
     label->limitLabelWidth(200, 0.8f, 0);
     createButton("edit_rightBtn_001.png", {120, - (winSize.height / 2) + 40}, menu_selector(ProfileSearchOptions::onCompletedNext), 1.2f);*/
+}
+
+void ProfileSearchOptions::onDialogClosed(){
+    if(levelBrowserLayer != nullptr) levelBrowserLayer->loadPage(levelBrowserLayer->searchObject);
 }
