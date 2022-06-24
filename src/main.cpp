@@ -554,9 +554,12 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
             idTextNode->setColor({51,51,51});
             idTextNode->setOpacity(152);
             menu->addChild(idTextNode);
-            if(self->level->dailyID > 0){
+            if(self->level->dailyID > 0 || CvoltonManager::sharedState()->getOption("white_id")){
                 idTextNode->setColor({255,255,255});
                 idTextNode->setOpacity(200);
+            }
+
+            if(self->level->dailyID > 0){
 
                 const int maxDaily = 100000;
 

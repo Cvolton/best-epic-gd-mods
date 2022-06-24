@@ -102,4 +102,5 @@ void CvoltonOptionsLayer::drawToggles(){
     //createToggle("no_update_check", "Disable Update Check");
     createToggle("no_green_user", "Disable Green Username Fix");
     createToggle("no_level_info", "Disable Extended Level Info");
+    createToggle("white_id", "White Level ID text");
 }
