@@ -44,6 +44,23 @@ void JumpToPageLayer::onClose(cocos2d::CCObject* sender)
     removeFromParentAndCleanup(true);
 }
 
+void JumpToPageLayer::onPrev(cocos2d::CCObject* sender)
+{
+    int newPage = pageNumber() - 1;
+    if(newPage < 1) newPage = 1;
+    textNode->setString(std::to_string(newPage).c_str());
+}
+
+void JumpToPageLayer::onNext(cocos2d::CCObject* sender)
+{
+    textNode->setString(std::to_string(pageNumber() + 1).c_str());
+}
+
+void JumpToPageLayer::onReset(cocos2d::CCObject* sender)
+{
+    textNode->setString("1");
+}
+
 int JumpToPageLayer::pageNumber(){
     int pageNumber = 1;
     try{
@@ -90,6 +107,10 @@ bool JumpToPageLayer::init(){
     buttonButton->setSizeMult(1.2f);
     buttonButton->setPosition({0,-50});
     m_pButtonMenu->addChild(buttonButton);
+
+    createButton("edit_leftBtn_001.png", {-50, 6}, menu_selector(JumpToPageLayer::onPrev), 1.1f);
+    createButton("edit_rightBtn_001.png", {50, 6}, menu_selector(JumpToPageLayer::onNext), 1.1f);
+    createButton("GJ_resetBtn_001.png", {93, 57}, menu_selector(JumpToPageLayer::onReset));
 
     return true;
 }
