@@ -8,6 +8,7 @@ public:
     static CvoltonSearchOptions* create();
     void onClose(cocos2d::CCObject* sender);
     void onPrev(cocos2d::CCObject* sender);
+    void onInfo(cocos2d::CCObject* sender);
     bool init();
     void destroyToggles();
     void drawToggles();

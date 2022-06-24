@@ -31,6 +31,11 @@ void CvoltonSearchOptions::onClose(cocos2d::CCObject* sender)
     removeFromParentAndCleanup(true);
 }
 
+void CvoltonSearchOptions::onInfo(cocos2d::CCObject* sender)
+{
+    FLAlertLayer::create(nullptr, "Advanced options", "OK", nullptr, 480, "<cy>Name Contains:</c> Searches entire level names, not just the beginning\n<cg>No ID search:</c> Searches level/user names for numbers instead of IDs\n<cr>No Forced Star:</c> Disables the forced Star filter when searching level names shorter than 3 characters\n<cl>Trim Spaces:</c> Removes spaces from the beginning and end of your search query\n\n<co>Completed Mode:</c> Changes which levels are sent to the completed/uncompleted filters")->show();
+}
+
 void CvoltonSearchOptions::onPrev(cocos2d::CCObject* sender)
 {
     auto layer = MoreSearchLayer::create();
@@ -46,6 +51,7 @@ bool CvoltonSearchOptions::init(){
 
     createTextLabel("Advanced Options", {(winSize.width / 2), (winSize.height / 2) + 125}, 1.f, m_pLayer, "bigFont.fnt");
     createButton("GJ_arrow_03_001.png", {- (winSize.width / 2) + 30, 0}, menu_selector(CvoltonSearchOptions::onPrev));
+    createButton("GJ_infoIcon_001.png", {203, 128}, menu_selector(CvoltonSearchOptions::onInfo));
 
     drawToggles();
 
@@ -77,7 +83,7 @@ void CvoltonSearchOptions::createToggle(const char* option, const char* name, fl
 void CvoltonSearchOptions::destroyToggles(){
     //starting at 1 because 0 is the close button and 1 is the prev button
     unsigned int totalMembers = m_pButtonMenu->getChildrenCount();
-    for(unsigned int i = 2; i < totalMembers; i++){
+    for(unsigned int i = 3; i < totalMembers; i++){
         //static index 1 because we're actively moving the elements
         auto object = static_cast<CCNode*>(m_pButtonMenu->getChildren()->objectAtIndex(2));
         auto userData = object->getUserData();
