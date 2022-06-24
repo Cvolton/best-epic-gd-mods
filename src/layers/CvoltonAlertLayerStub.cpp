@@ -59,3 +59,7 @@ CCMenuItemSpriteExtra* CvoltonAlertLayerStub::createButton(const char* texture, 
     button->setSizeMult(sizeMult);
     return button;
 }
+
+void CvoltonAlertLayerStub::keyBackClicked() {
+    onClose(nullptr);
+}
