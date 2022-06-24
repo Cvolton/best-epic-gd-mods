@@ -3,6 +3,9 @@
 #include "utils.hpp"
 #include "managers/CvoltonManager.h"
 
+#include "support/base64.h"
+#include "support/zip_support/ZipUtils.h"
+
 #include <array>
 
 using namespace cocos2d;
@@ -158,4 +161,18 @@ CCMenuItemSpriteExtra* BetterInfo::createTextButton(CCLayer* parent, const char*
     buttonButton->setSizeMult(1.2f);
 
     return buttonButton;
+}
+
+std::string BetterInfo::decodeBase64Gzip(const std::string& input) {
+        unsigned char* levelString;
+        unsigned char* levelStringFull;
+        int levelStringSize = base64Decode((unsigned char *)(input.c_str()), input.size(), &levelString);
+        int levelStringSizeDeflated = ZipUtils::ccInflateMemory(levelString, levelStringSize, &levelStringFull);
+
+        std::string levelStringFullStd((char*)levelStringFull, levelStringSizeDeflated);
+
+        delete levelString;
+        delete levelStringFull;
+
+        return levelStringFullStd;
 }

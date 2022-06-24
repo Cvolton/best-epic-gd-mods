@@ -5,6 +5,7 @@
 #include <cocos2d.h>
 #include <gd.h>
 #include <deque>
+#include <algorithm>
 
 using namespace cocos2d;
 using namespace gd;
@@ -46,6 +47,29 @@ void ExtendedLevelInfo::onCopyDesc(cocos2d::CCObject* sender)
     BetterInfo::copyToClipboard(level->getUnpackedLevelDescription().c_str(), this);
 }
 
+void ExtendedLevelInfo::onNext(cocos2d::CCObject* sender)
+{
+    loadPage(page+1);
+}
+
+void ExtendedLevelInfo::onPrev(cocos2d::CCObject* sender)
+{
+    loadPage(page-1);
+}
+
+void ExtendedLevelInfo::loadPage(int page) {
+    this->page = page;
+    if(page % 2 == 0) { 
+        info->setString(primary);
+        nextBtn->setVisible(true);
+        prevBtn->setVisible(false);
+    } else {
+        info->setString(secondary);
+        nextBtn->setVisible(false);
+        prevBtn->setVisible(true);
+    } 
+}
+
 std::string ExtendedLevelInfo::getGameVersionName(int version){
     if(version < 1 || version > 99) return std::string("NA");
 
@@ -72,6 +96,10 @@ std::string ExtendedLevelInfo::stringDate(std::string date){
     std::ostringstream stream;
     stream << date << " ago";
     return stream.str();
+}
+
+const char* ExtendedLevelInfo::boolString(bool value) {
+    return value ? "True" : "False";
 }
 
 const char* ExtendedLevelInfo::getDifficultyIcon(int stars){
@@ -206,6 +234,7 @@ bool ExtendedLevelInfo::init(){
     m_pButtonMenu->addChild(infoBg, -1);
     infoBg->setPosition({0,-57});
 
+    //std::string levelString(ZipUtils::base64URLDecode(level->levelString));
     int levelPassword = level->password_rand - level->password_seed;
     std::ostringstream infoText;
     infoText << "\n<cj>Uploaded</c>: " << stringDate(level->uploadDate)
@@ -219,6 +248,18 @@ bool ExtendedLevelInfo::init(){
         << "\n<cr>In Editor</c>: " << workingTime(level->workingTime)
         << "\n<cr>Editor (C)</c>: " << workingTime(level->workingTime2);
 
+    primary = infoText.str();
+    std::string levelString(BetterInfo::decodeBase64Gzip(level->levelString));
+    size_t objectsEstimated = std::count(levelString.begin(), levelString.end(), ';');
+    infoText.str("");
+    infoText << "\n<cj>Objects</c>: " << zeroIfNA(level->objectCount)
+        << "\n<cg>Objects (est.)</c>: " << zeroIfNA(objectsEstimated) //i have no idea what the 0 and 11 mean, i just copied them from PlayLayer::init
+        << "\n<cy>Feature Score</c>: " << zeroIfNA(level->featured)
+        << "\n<co>Two-player</c>: " << boolString(level->twoPlayerMode)
+    ;
+
+    secondary = infoText.str();
+
     /*infoText << "<cg>Total Attempts</c>: " << level->attempts
         << "\n<cl>Total Jumps</c>: " << level->jumps
         << "\n<co>Clicks (best att.)</c>: " << level->clicks // the contents of this variable make no sense to me
@@ -230,7 +271,7 @@ bool ExtendedLevelInfo::init(){
     if(level->orbCompletion != level->newNormalPercent2) infoText << "\n<cj>2.1 Normal</c>: " << level->orbCompletion << "%";
     if(level->newNormalPercent2 != level->normalPercent) infoText << "\n<cr>2.11 Normal</c>: " << level->newNormalPercent2 << "%";*/
 
-    auto info = gd::TextArea::create("chatFont.fnt", false, infoText.str(), 1, 170, 20, {0,1});
+    info = TextArea::create("chatFont.fnt", false, infoText.str(), 1, 170, 20, {0,1});
     info->setPosition({-160.5,26});
     //info->setPosition({-160.5,10});
     info->setAnchorPoint({0,1});
@@ -279,6 +320,32 @@ bool ExtendedLevelInfo::init(){
     separator->setOpacity(100);
     separator->setRotation(90);
     m_pButtonMenu->addChild(separator);
+
+    /*
+        next/prev page btn
+    */
+    auto prevSprite = CCSprite::createWithSpriteFrameName("GJ_arrow_01_001.png");
+    prevSprite->setScale(.8f);
+    prevBtn = gd::CCMenuItemSpriteExtra::create(
+        prevSprite,
+        this,
+        menu_selector(ExtendedLevelInfo::onPrev)
+    );
+    prevBtn->setPosition({-195,-53});
+    m_pButtonMenu->addChild(prevBtn);
+
+    auto nextSprite = CCSprite::createWithSpriteFrameName("GJ_arrow_01_001.png");
+    nextSprite->setFlipX(true);
+    nextSprite->setScale(.8f);
+    nextBtn = gd::CCMenuItemSpriteExtra::create(
+        nextSprite,
+        this,
+        menu_selector(ExtendedLevelInfo::onNext)
+    );
+    nextBtn->setPosition({195,-53});
+    m_pButtonMenu->addChild(nextBtn);
+
+    loadPage(0);
 
     return true;
 }

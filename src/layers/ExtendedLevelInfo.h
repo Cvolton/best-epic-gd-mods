@@ -3,15 +3,25 @@
 #include "CvoltonAlertLayerStub.h"
 
 class ExtendedLevelInfo : public CvoltonAlertLayerStub {
+    std::string primary;
+    std::string secondary;
     gd::GJGameLevel* level;
+    gd::TextArea* info;
+    gd::CCMenuItemSpriteExtra* prevBtn;
+    gd::CCMenuItemSpriteExtra* nextBtn;
+    int page = 0;
 public:
     static ExtendedLevelInfo* create(gd::GJGameLevel* level);
     void onClose(cocos2d::CCObject* sender);
     void onCopyName(cocos2d::CCObject* sender);
     void onCopyAuthor(cocos2d::CCObject* sender);
     void onCopyDesc(cocos2d::CCObject* sender);
+    void onNext(cocos2d::CCObject* sender);
+    void onPrev(cocos2d::CCObject* sender);
+    void loadPage(int page);
     static std::string getGameVersionName(int version);
     static std::string stringDate(std::string date);
+    static const char* boolString(bool value);
     static const char* getDifficultyIcon(int stars);
     static std::string passwordString(int password);
     static std::string zeroIfNA(int value);
