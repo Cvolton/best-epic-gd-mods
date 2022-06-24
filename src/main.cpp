@@ -715,7 +715,7 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         self->objectsInMenu->addObject(accountIDBtn);
 
         auto usernameNode = CCLabelBMFont::create(a2->getPlayerName().c_str(), "bigFont.fnt");
-        usernameNode->limitLabelWidth(185.0f, 0.9f, 0.0f);
+        usernameNode->limitLabelWidth(a2->modBadge_ > 0 ? 140.f : 185.0f, 0.9f, 0.0f);
         auto usernameBtn = gd::CCMenuItemSpriteExtra::create(
             usernameNode,
             self,
