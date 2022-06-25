@@ -302,6 +302,34 @@ public:
         layer->show();
     }
 
+    void onInfoLayerSchedule(CCObject* sender){
+        auto self = cast<InfoLayer*>(this);
+
+        bool prevVisible = self->m_pPrevPageBtn->isVisible();
+        bool nextVisible = self->m_pNextPageBtn->isVisible();
+
+        auto GLM = GameLevelManager::sharedState();
+        if(self->m_bCommentHistory) GLM->resetCommentTimersForLevelID(self->m_pScore->userID_, self->m_bCommentHistory);
+        else GLM->resetCommentTimersForLevelID(self->m_pLevel->levelID, self->m_bCommentHistory);
+        self->loadPage(self->m_nPageNumber, true);
+
+        self->m_pLoadingCircle->setVisible(false);
+
+        self->m_pPrevPageBtn->setVisible(prevVisible);
+        self->m_pNextPageBtn->setVisible(nextVisible);
+    }
+
+    void onInfoLayerToggleSchedule(CCObject* sender){
+        auto self = cast<InfoLayer*>(this);
+        auto senderBtn = static_cast<CCMenuItemToggler*>(sender);
+
+        bool newState = !(reinterpret_cast<int>(senderBtn->getUserData()));
+        senderBtn->setUserData(reinterpret_cast<void*>(newState));
+
+        if(newState) self->getScheduler()->scheduleSelector(schedule_selector(GamingButton::onInfoLayerSchedule), self, 2, false);
+        else self->getScheduler()->unscheduleSelector(schedule_selector(GamingButton::onInfoLayerSchedule), self);
+    }
+
     void onLevelInfoNoLoad(CCObject* sender){
         auto layer = cast<CommentCell*>(this);
 
@@ -467,6 +495,19 @@ bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, v
     searchButton->setPosition({195, 68});
     searchButton->setSizeMult(1.2f);
 
+    auto scheduleOffSprite = CCSprite::createWithSpriteFrameName("GJ_playEditorBtn_001.png");
+    scheduleOffSprite->setScale(.625f);
+    auto scheduleOnSprite = CCSprite::createWithSpriteFrameName("GJ_stopEditorBtn_001.png");
+    scheduleOnSprite->setScale(.625f);
+    auto scheduleBtn = CCMenuItemToggler::create(
+        scheduleOffSprite, 
+        scheduleOnSprite, 
+        self,
+        menu_selector(GamingButton::onInfoLayerToggleSchedule)
+    );
+    scheduleBtn->setUserData(reinterpret_cast<void*>(false));
+    scheduleBtn->setPosition({202.5, 100});
+    menu->addChild(scheduleBtn);
 
     return true;
 }
