@@ -467,24 +467,6 @@ bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, v
     searchButton->setPosition({195, 68});
     searchButton->setSizeMult(1.2f);
 
-    /*if(gd::GameManager::sharedState()->getGameVariable("0089")){
-        //createButton(self, menu, "Similar", menu_selector(GamingButton::onSimilar), -118, 97, (int)(90*0.45), 44*0.45f);
-        auto searchSprite = CCSprite::createWithSpriteFrameName("gj_findBtn_001.png");
-        searchSprite->setScale(0.65f);
-        auto searchButton = gd::CCMenuItemSpriteExtra::create(
-            searchSprite,
-            self,
-            menu_selector(GamingButton::onCustomSearch)
-        );
-        menu->addChild(searchButton);
-        searchButton->setPosition({-162, 128});
-        searchButton->setSizeMult(1.2f);
-    }else{
-        //createButton(self, menu, "Search", menu_selector(GamingButton::onCustomSearch), -143, 97, (int)(90*0.45), 44*0.45f);
-
-        
-    }*/
-
 
     return true;
 }
