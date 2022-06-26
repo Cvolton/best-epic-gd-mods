@@ -54,6 +54,17 @@ void ProfileSearchOptions::onNext(cocos2d::CCObject* sender)
     drawToggles();
 }
 
+void ProfileSearchOptions::onSecondaryInfo(cocos2d::CCObject* sender){
+    FLAlertLayer::create(
+        nullptr, 
+        "Saved Level Filters", 
+        "OK", 
+        nullptr,
+        350,
+        "<cl>Demon Difficulty</c> filters are only active if you have <cg>enabled</c> the main <cy>Demon</c> filter on the 1st page."
+    )->show();
+}
+
 bool ProfileSearchOptions::init(){
     bool init = createBasics({440.0f, 290.0f}, menu_selector(ProfileSearchOptions::onClose), 1.f, {0x00, 0x00, 0x00, 0x96});
     if(!init) return false;
@@ -234,13 +245,8 @@ void ProfileSearchOptions::drawTogglesSecondary(){
             .9f
         );
     }
-    //createToggle("user_search_advanced", "Enable Advanced Options", -170, 75);
 
-    /*createTextLabel("Completed Mode:", {0, - (winSize.height / 2) + 65}, 0.5f, m_pButtonMenu, "goldFont.fnt");
-    createButton("edit_leftBtn_001.png", {-120, - (winSize.height / 2) + 40}, menu_selector(ProfileSearchOptions::onCompletedPrev), 1.2f);
-    auto label = createTextLabel(getCompletedString(), {0, - (winSize.height / 2) + 40}, 1, m_pButtonMenu, "bigFont.fnt");
-    label->limitLabelWidth(200, 0.8f, 0);
-    createButton("edit_rightBtn_001.png", {120, - (winSize.height / 2) + 40}, menu_selector(ProfileSearchOptions::onCompletedNext), 1.2f);*/
+    createButton("GJ_infoIcon_001.png", {203, 128}, menu_selector(ProfileSearchOptions::onSecondaryInfo));
 }
 
 void ProfileSearchOptions::onDialogClosed(){
