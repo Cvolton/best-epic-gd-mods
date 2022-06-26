@@ -36,14 +36,22 @@ void ProfileSearchOptions::onClose(cocos2d::CCObject* sender)
 
 void ProfileSearchOptions::onPrev(cocos2d::CCObject* sender)
 {
-    auto layer = MoreSearchLayer::create();
-    CCDirector::sharedDirector()->getRunningScene()->addChild(layer);
-    onClose(sender);
+    page -= 1;
+    if(page < 0) page = 0;
+    destroyToggles();
+    drawToggles();
 }
 
 void ProfileSearchOptions::onSong(cocos2d::CCObject* sender)
 {
     ProfileSearchOptionsSongSelect::create(this)->show();
+}
+
+void ProfileSearchOptions::onNext(cocos2d::CCObject* sender)
+{
+    page = (page + 1) % 2;
+    destroyToggles();
+    drawToggles();
 }
 
 bool ProfileSearchOptions::init(){
@@ -53,21 +61,39 @@ bool ProfileSearchOptions::init(){
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
     createTextLabel("Saved Level Filters", {(winSize.width / 2), (winSize.height / 2) + 125}, 1.f, m_pLayer, "bigFont.fnt");
-    //createButton("GJ_arrow_03_001.png", {- (winSize.width / 2) + 30, 0}, menu_selector(ProfileSearchOptions::onPrev));
 
-    cocos2d::extension::CCScale9Sprite* lengthBg = cocos2d::extension::CCScale9Sprite::create("square02b_001.png", { 0.0f, 0.0f, 80.0f, 80.0f });
+    lengthBg = cocos2d::extension::CCScale9Sprite::create("square02b_001.png", { 0.0f, 0.0f, 80.0f, 80.0f });
     lengthBg->setContentSize({700,55});
     lengthBg->setColor({123,60,31});
     m_pButtonMenu->addChild(lengthBg, -1);
     lengthBg->setPosition({0,-120});
     lengthBg->setScale(0.6f);
 
-    cocos2d::extension::CCScale9Sprite* diffBg = cocos2d::extension::CCScale9Sprite::create("square02b_001.png", { 0.0f, 0.0f, 80.0f, 80.0f });
+    diffBg = cocos2d::extension::CCScale9Sprite::create("square02b_001.png", { 0.0f, 0.0f, 80.0f, 80.0f });
     diffBg->setContentSize({700,92});
     diffBg->setColor({123,60,31});
     m_pButtonMenu->addChild(diffBg, -1);
     diffBg->setPosition({0,-70});
     diffBg->setScale(0.6f);
+
+    demonDiffBg = cocos2d::extension::CCScale9Sprite::create("square02b_001.png", { 0.0f, 0.0f, 80.0f, 80.0f });
+    demonDiffBg->setContentSize({700,93});
+    demonDiffBg->setColor({123,60,31});
+    m_pButtonMenu->addChild(demonDiffBg, -1);
+    demonDiffBg->setPosition({0,-105.5});
+    demonDiffBg->setScale(0.6f);
+
+    auto sprite = CCSprite::createWithSpriteFrameName("GJ_arrow_01_001.png");
+    sprite->setFlipX(true);
+
+    prevBtn = createButton("GJ_arrow_03_001.png", {- (winSize.width / 2) + 30, 0}, menu_selector(ProfileSearchOptions::onPrev));
+    nextBtn = gd::CCMenuItemSpriteExtra::create(
+        sprite,
+        this,
+        menu_selector(ProfileSearchOptions::onNext)
+    );
+    nextBtn->setPosition({(winSize.width / 2) - 30, 0});
+    m_pButtonMenu->addChild(nextBtn);
 
     drawToggles();
 
@@ -99,9 +125,9 @@ void ProfileSearchOptions::createToggle(const char* option, const char* name, fl
 void ProfileSearchOptions::destroyToggles(){
     //starting at 1 because 0 is the close button and 1 is the prev button
     unsigned int totalMembers = m_pButtonMenu->getChildrenCount();
-    for(unsigned int i = 3; i < totalMembers; i++){
+    for(unsigned int i = 6; i < totalMembers; i++){
         //static index 1 because we're actively moving the elements
-        auto object = static_cast<CCNode*>(m_pButtonMenu->getChildren()->objectAtIndex(3));
+        auto object = static_cast<CCNode*>(m_pButtonMenu->getChildren()->objectAtIndex(6));
         auto userData = object->getUserData();
         if(userData != nullptr) static_cast<CCString*>(userData)->release();
         //m_pButtonMenu->removeChild(object, false);
@@ -130,6 +156,19 @@ void ProfileSearchOptions::createButtonToggle(const char* option, CCNode* sprite
 }
 
 void ProfileSearchOptions::drawToggles(){
+    if(page % 2 == 0) drawTogglesPrimary();
+    else drawTogglesSecondary();
+
+    if(levelBrowserLayer != nullptr) levelBrowserLayer->loadPage(levelBrowserLayer->searchObject);
+}
+
+void ProfileSearchOptions::drawTogglesPrimary(){
+    lengthBg->setVisible(true);
+    prevBtn->setVisible(false);
+    nextBtn->setVisible(true);
+    demonDiffBg->setVisible(false);
+    diffBg->setVisible(true);
+
     auto CM = CvoltonManager::sharedState();
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
@@ -166,8 +205,35 @@ void ProfileSearchOptions::drawToggles(){
     createToggle("user_search_coins", "Coins", -40, -10);
     createToggle("user_search_twoplayer", "2-Player", 90, -10);
 
-    if(levelBrowserLayer != nullptr) levelBrowserLayer->loadPage(levelBrowserLayer->searchObject);
+    //createToggle("user_search_advanced", "Enable Advanced Options", -170, 75);
 
+    /*createTextLabel("Completed Mode:", {0, - (winSize.height / 2) + 65}, 0.5f, m_pButtonMenu, "goldFont.fnt");
+    createButton("edit_leftBtn_001.png", {-120, - (winSize.height / 2) + 40}, menu_selector(ProfileSearchOptions::onCompletedPrev), 1.2f);
+    auto label = createTextLabel(getCompletedString(), {0, - (winSize.height / 2) + 40}, 1, m_pButtonMenu, "bigFont.fnt");
+    label->limitLabelWidth(200, 0.8f, 0);
+    createButton("edit_rightBtn_001.png", {120, - (winSize.height / 2) + 40}, menu_selector(ProfileSearchOptions::onCompletedNext), 1.2f);*/
+}
+
+void ProfileSearchOptions::drawTogglesSecondary(){
+    lengthBg->setVisible(false);
+    prevBtn->setVisible(true);
+    nextBtn->setVisible(false);
+    demonDiffBg->setVisible(true);
+    diffBg->setVisible(false);
+
+    auto winSize = CCDirector::sharedDirector()->getWinSize();
+    for(unsigned int i = 0, diffSprite = 7; i <= 4; i++, diffSprite++){
+        if(i == 2) diffSprite = 6;
+        if(i == 3) diffSprite = 9;
+
+        createButtonToggle(
+            CCString::createWithFormat("user_search_demon_%02u", i)->getCString(),
+            CCSprite::createWithSpriteFrameName(CCString::createWithFormat("difficulty_%02u_btn2_001.png", diffSprite)->getCString()),
+            -133.5f + (i * 66.875f),
+            -102,
+            .9f
+        );
+    }
     //createToggle("user_search_advanced", "Enable Advanced Options", -170, 75);
 
     /*createTextLabel("Completed Mode:", {0, - (winSize.height / 2) + 65}, 0.5f, m_pButtonMenu, "goldFont.fnt");
