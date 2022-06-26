@@ -1372,6 +1372,16 @@ CCArray* __fastcall GameLevelManager_getSavedLevels(GameLevelManager* self, void
             )
         ) diff.push_back(i);
     }
+
+    std::vector<int> demonDiff;
+
+    for(int i = 0; i <= 5; i++){
+        if(
+            CM->getOption(
+                CCString::createWithFormat("user_search_demon_%02i", i)->getCString()
+            )
+        ) demonDiff.push_back(i);
+    }
     
     //calculating levels
     auto levels = self->m_onlineLevels;
@@ -1385,6 +1395,14 @@ CCArray* __fastcall GameLevelManager_getSavedLevels(GameLevelManager* self, void
         if(!(diff.empty()) && std::find(diff.begin(), diff.end(), difficulty) == diff.end()) continue;
 
         if(!(len.empty()) && std::find(len.begin(), len.end(), level->levelLength) == len.end()) continue;
+
+        if(CM->getOption("user_search_diff_06") && level->demon != 0) {
+            int demonDifficulty = 2;
+            if(level->demonDifficulty >= 5) demonDifficulty = level->demonDifficulty - 2;
+            else if(level->demonDifficulty >= 3) demonDifficulty = level->demonDifficulty - 3;
+
+            if(!(demonDiff.empty()) && std::find(demonDiff.begin(), demonDiff.end(), demonDifficulty) == demonDiff.end()) continue;
+        }
 
         if(CM->getOption("user_search_star") && level->stars == 0) continue;
         //TODO: respect completed mode
