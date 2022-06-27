@@ -877,6 +877,40 @@ void __fastcall CommentCell_FLAlert_Clicked(uint8_t* self, void* a, FLAlertLayer
     cell->release();
 }
 
+//This function is simple enough that it's easier to rewrite it than to figure out how midhooks work
+void __fastcall CommentCell_onLike(CommentCell* self, void* a, CCObject* sender) {
+    if(!self->comment) return;
+
+    LikeItemType type = kLikeItemTypeComment;
+    int special = self->comment->m_nLevelID;
+
+    if (self->accountComment) {
+        special = self->comment->m_nAuthorAccountID;
+        type = kLikeItemTypeAccountComment;
+    }
+
+    bool liked = GameLevelManager::sharedState()->hasLikedItemFullCheck(type, self->comment->m_nCommentID, special);
+    if(liked) return;
+
+    auto GM = GameManager::sharedState();
+    if (self->comment->m_nAuthorPlayerID == GM->m_nPlayerUserID) return;
+    
+    auto AM = GJAccountManager::sharedState();
+    if (self->comment->m_nAuthorAccountID && self->comment->m_nAuthorAccountID == AM->accountID) return;
+
+    auto layer = LikeItemLayer::create(type, self->comment->m_nCommentID, special);
+    layer->m_delegate = reinterpret_cast<LikeItemDelegate*>(reinterpret_cast<uint8_t*>(self) + 376);
+    layer->show();
+    self->retain();
+}
+
+void __fastcall CommentCell_likedItem(uint8_t* self, void* a, LikeItemType* type, int id, int special) {
+    MHook::getOriginal(CommentCell_likedItem)(self, a, type, id, special);
+
+    auto cell = reinterpret_cast<CommentCell*>(self - sizeof(TableViewCell));
+    cell->release();
+}
+
 void __fastcall LevelInfoLayer_onLevelInfo(LevelInfoLayer* self, void* a, CCObject* sender) {
     ExtendedLevelInfo::showProgressDialog(self->level);
 }
@@ -1559,8 +1593,8 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x5F3D0, CommentCell_loadFromComment);
     MHook::registerHook(base + 0x61140, CommentCell_onConfirmDelete);
     MHook::registerHook(base + 0x61260, CommentCell_FLAlert_Clicked);
-    /*MHook::registerHook(base + 0x60F90, CommentCell_onLike);
-    MHook::registerHook(base + 0x61070, CommentCell_likedItem);*/
+    MHook::registerHook(base + 0x60F90, CommentCell_onLike);
+    MHook::registerHook(base + 0x61070, CommentCell_likedItem);
     MHook::registerHook(base + 0x210040, ProfilePage_loadPageFromUserInfo);
     MHook::registerHook(base + 0x20EF00, ProfilePage_init);
     //MHook::registerHook(base + 0x211BB0, ProfilePage_onMyLevels);
@@ -1591,7 +1625,6 @@ DWORD WINAPI my_thread(void* hModule) {
 
     MH_EnableHook(MH_ALL_HOOKS);
 
-    MessageBox(nullptr, "among", std::to_string(sizeof(CommentCell)).c_str(), MB_OK);
     /*std::getline(std::cin, std::string());
 
     MH_Uninitialize();
