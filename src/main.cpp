@@ -1308,7 +1308,7 @@ bool __fastcall MoreSearchLayer_init(MoreSearchLayer* self){
 CCArray* __fastcall GameLevelManager_getCompletedLevels(GameLevelManager* self, void* a, bool newFilter){
     auto CM = CvoltonManager::sharedState();
     CompleteMode mode = static_cast<CompleteMode>(CM->getOptionInt("search_completed"));
-    if(mode == modeDefault) return MHook::getOriginal(GameLevelManager_getCompletedLevels)(self, a, newFilter);
+    if(mode == CompleteMode::modeDefault) return MHook::getOriginal(GameLevelManager_getCompletedLevels)(self, a, newFilter);
 
     CCArray* pRet = CCArray::create();
 
@@ -1317,17 +1317,17 @@ CCArray* __fastcall GameLevelManager_getCompletedLevels(GameLevelManager* self, 
     CCDICT_FOREACH(levels, obj){
         auto currentLvl = static_cast<GJGameLevel*>(obj->getObject());
         switch(mode){
-            case completed:
+            case CompleteMode::completed:
                 if(currentLvl->normalPercent == 100) pRet->addObject(currentLvl);
                 break;
-            case completed21:
+            case CompleteMode::completed21:
                 if(currentLvl->orbCompletion == 100) pRet->addObject(currentLvl);
                 break;
-            case completed211:
+            case CompleteMode::completed211:
                 if(currentLvl->newNormalPercent2 == 100) pRet->addObject(currentLvl);
                 break;
-            case allCoins:
-            case noCoins:
+            case CompleteMode::allCoins:
+            case CompleteMode::noCoins:
                 bool completed = true;
                 auto coinDict = GameStatsManager::sharedState()->m_verifiedUserCoins;
                 auto coinDict2 = GameStatsManager::sharedState()->m_pendingUserCoins;
@@ -1335,7 +1335,7 @@ CCArray* __fastcall GameLevelManager_getCompletedLevels(GameLevelManager* self, 
                     bool hasntCoin = coinDict->objectForKey(currentLvl->getCoinKey(i + 1)) == nullptr && coinDict2->objectForKey(currentLvl->getCoinKey(i + 1)) == nullptr;
                     if(hasntCoin) completed = false; else completed = completed && true;
                 }
-                if(((mode == noCoins) != completed) && (currentLvl->coins > 0)) pRet->addObject(currentLvl);
+                if(((mode == CompleteMode::noCoins) != completed) && (currentLvl->coins > 0)) pRet->addObject(currentLvl);
                 //if(currentLvl->coins > 0) pRet->addObject(currentLvl);
                 break;
         }

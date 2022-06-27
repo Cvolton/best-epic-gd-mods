@@ -1,4 +1,5 @@
 #include "CvoltonSearchOptions.h"
+#include "IDRangePopup.h"
 #include "../managers/CvoltonManager.h"
 
 #include <cocos2d.h>
@@ -7,7 +8,7 @@
 using namespace cocos2d;
 using namespace gd;
 
-const int completedMax = 6;
+const int completedMax = 7;
 
 CvoltonSearchOptions* CvoltonSearchOptions::create(){
     auto ret = new CvoltonSearchOptions();
@@ -95,6 +96,7 @@ void CvoltonSearchOptions::destroyToggles(){
 }
 
 void CvoltonSearchOptions::drawToggles(){
+    auto CM = CvoltonManager::sharedState();
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
     createToggle("search_contains", "Name Contains", -170, 75); //40 -60, 170 -60, 300 -60, 40 -110
@@ -107,6 +109,9 @@ void CvoltonSearchOptions::drawToggles(){
     auto label = createTextLabel(getCompletedString(), {0, -120}, 1, m_pButtonMenu, "bigFont.fnt");
     label->limitLabelWidth(200, 0.8f, 0);
     createButton("edit_rightBtn_001.png", {120, -120}, menu_selector(CvoltonSearchOptions::onCompletedNext), 1.2f);
+    if(static_cast<CompleteMode>(CM->getOptionInt("search_completed")) == CompleteMode::percentage) {
+        createButton("GJ_plusBtn_001.png", {196, -120}, menu_selector(CvoltonSearchOptions::onPercentageRange), .75f);
+    }
 }
 
 void CvoltonSearchOptions::onCompletedPrev(cocos2d::CCObject* sender)
@@ -127,9 +132,20 @@ void CvoltonSearchOptions::onCompletedNext(cocos2d::CCObject* sender)
     drawToggles();
 }
 
+void CvoltonSearchOptions::onPercentageRange(CCObject* sender) {
+    auto CM = CvoltonManager::sharedState();
+    IDRangePopup::create(this, CM->getOptionInt("search_completed_percentage_min"), CM->getOptionInt("search_completed_percentage_max"), "Percentage")->show();
+}
+
 std::string CvoltonSearchOptions::getCompletedString(){
     auto CM = CvoltonManager::sharedState();
     int type = CM->getOptionInt("search_completed");
-    const char* types[] = {"Default", "Completed Levels", "Completed Orbs", "Completed Leaderboard", "Completed With Coins", "Completed Without Coins"};
+    const char* types[] = {"Default", "Completed Levels", "Completed Orbs", "Completed Leaderboard", "Completed With Coins", "Completed Without Coins", "Percentage"};
     return std::to_string(type) + ": " + types[type % completedMax];
+}
+
+void CvoltonSearchOptions::onIDRangeFinished(int min, int max) {
+    auto CM = CvoltonManager::sharedState();
+    CM->setOptionInt("search_completed_percentage_min", min);
+    CM->setOptionInt("search_completed_percentage_max", max);
 }

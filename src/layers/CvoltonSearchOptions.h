@@ -1,8 +1,9 @@
 #pragma once
 #include <gd.h>
 #include "CvoltonOptionsLayer.h"
+#include "../delegates/IDRangeDelegate.h"
 
-class CvoltonSearchOptions : public CvoltonOptionsLayer {
+class CvoltonSearchOptions : public CvoltonOptionsLayer, public IDRangeDelegate {
 public:
     static CvoltonSearchOptions* create();
     void onClose(cocos2d::CCObject* sender);
@@ -11,8 +12,11 @@ public:
     bool init();
     void destroyToggles();
     void drawToggles();
-    void CvoltonSearchOptions::createToggle(const char* option, const char* name, float x, float y);
-    void CvoltonSearchOptions::onCompletedPrev(cocos2d::CCObject* sender);
-    void CvoltonSearchOptions::onCompletedNext(cocos2d::CCObject* sender);
-    static std::string CvoltonSearchOptions::getCompletedString();
+    void createToggle(const char* option, const char* name, float x, float y);
+    void onCompletedPrev(cocos2d::CCObject* sender);
+    void onCompletedNext(cocos2d::CCObject* sender);
+    void onPercentageRange(cocos2d::CCObject* sender);
+    static std::string getCompletedString();
+
+    void onIDRangeFinished(int min, int max);
 };

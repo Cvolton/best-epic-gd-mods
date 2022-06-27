@@ -2,13 +2,14 @@
 #include <gd.h>
 #include "../layers/CvoltonUpdateLayer.h"
 
-enum CompleteMode {
+enum class CompleteMode {
 	modeDefault,
 	completed,
 	completed21,
 	completed211,
 	allCoins,
-	noCoins
+	noCoins,
+	percentage
 };
 
 class CvoltonManager : public gd::GManager {
