@@ -1,7 +1,5 @@
 #include "BetterInfoCache.h"
 #include <gd.h>
-#include <random>
-#include <filesystem>
 #include "../utils.hpp"
 
 using namespace cocos2d;
@@ -25,6 +23,8 @@ bool BetterInfoCache::init(){
     this->setup();
 
     std::cout << "initing cache" << std::endl;
+
+    checkDailies();
 
     return true;
 }
@@ -57,4 +57,38 @@ void BetterInfoCache::firstLoad() {
     std::cout << "firstLoad";
 
     this->save();
+}
+
+void BetterInfoCache::checkDailies() {
+    auto GLM = GameLevelManager::sharedState();
+
+    auto dailyLevels = GLM->m_dailyLevels;
+    CCDictElement* obj;
+    CCDICT_FOREACH(dailyLevels, obj){
+        auto currentLvl = static_cast<GJGameLevel*>(obj->getObject());
+        if(currentLvl == nullptr) continue;
+
+        auto idString = std::to_string(currentLvl->levelID);
+        if(m_levelNameDict->objectForKey(idString) && m_coinCountDict->objectForKey(idString)) continue;
+
+        auto levelFromSaved = static_cast<GJGameLevel*>(GLM->m_onlineLevels->objectForKey(std::to_string(currentLvl->levelID).c_str()));
+        if(levelFromSaved != nullptr) {
+            m_levelNameDict->setObject(CCString::create(levelFromSaved->levelName.c_str()), idString);
+            m_coinCountDict->setObject(CCString::createWithFormat("%i", currentLvl->coins), idString);
+        }
+    }
+
+    this->save();
+}
+
+const char* BetterInfoCache::getLevelName(int levelID) {
+    auto ret = m_levelNameDict->valueForKey(std::to_string(levelID));
+    if(std::string_view(ret->getCString()).empty()) return "Unknown";
+    return ret->getCString();
+}
+
+int BetterInfoCache::getCoinCount(int levelID) {
+    auto ret = m_coinCountDict->valueForKey(std::to_string(levelID));
+    if(std::string_view(ret->getCString()).empty()) return 3;
+    return ret->intValue();
 }

@@ -1,6 +1,7 @@
 #include "DailyCell.h"
 #include "ExtendedLevelInfo.h"
 #include "../managers/CvoltonManager.h"
+#include "../managers/BetterInfoCache.h"
 
 using namespace gd;
 using namespace cocos2d;
@@ -8,10 +9,10 @@ using namespace cocos2d;
 void DailyCell::loadFromLevel(GJGameLevel* level) {
     this->level = level;
 
+    auto biCache = BetterInfoCache::sharedState();
     auto GLM = gd::GameLevelManager::sharedState();
     auto GSM = gd::GameStatsManager::sharedState();
     auto winSize = CCDirector::sharedDirector()->getWinSize();
-    auto levelFromSaved = static_cast<GJGameLevel*>(GLM->m_onlineLevels->objectForKey(std::to_string(level->levelID).c_str()));
 
     auto diffSprite = CCSprite::createWithSpriteFrameName(ExtendedLevelInfo::getDifficultyIcon(level->stars));
     diffSprite->setPosition({22.f, 32.f});
@@ -37,7 +38,7 @@ void DailyCell::loadFromLevel(GJGameLevel* level) {
     starsSprite->setScale(0.8f);
     this->m_pLayer->addChild(starsSprite);
 
-    auto title = CCLabelBMFont::create((levelFromSaved == nullptr) ? "Unknown" : levelFromSaved->levelName.c_str(), "bigFont.fnt");
+    auto title = CCLabelBMFont::create(biCache->getLevelName(level->levelID), "bigFont.fnt");
     title->setAnchorPoint({ 0.0f, .5f });
     title->setPosition(43.0f, 42.f);
     title->limitLabelWidth(170, .7f, .4f);
@@ -138,7 +139,7 @@ void DailyCell::loadFromLevel(GJGameLevel* level) {
     auto coinDict = GameStatsManager::sharedState()->m_verifiedUserCoins;
 
     float coinX = practice->getPositionX() + ((practice->getContentSize().width) * practice->getScaleX());
-    for(int i = 1; i <= ((levelFromSaved == nullptr) ? 3 : levelFromSaved->coins); i++){
+    for(int i = 1; i <= biCache->getCoinCount(level->levelID); i++){
         bool isCollected = coinDict->objectForKey(level->getCoinKey(i)) == nullptr;
         auto coinSprite = CCSprite::createWithSpriteFrameName("usercoin_small01_001.png");
         if(isCollected) coinSprite->setColor({165, 165, 165});

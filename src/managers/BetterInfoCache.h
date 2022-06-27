@@ -23,4 +23,8 @@ public:
 	    }
 	    return m_instance;
 	}
+
+	void checkDailies();
+	const char* getLevelName(int levelID);
+	int getCoinCount(int levelID);
 };
