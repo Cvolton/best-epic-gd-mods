@@ -1419,6 +1419,7 @@ CCArray* __fastcall GameLevelManager_getSavedLevels(GameLevelManager* self, void
         if(CM->getOption("user_search_nostar") && level->stars != 0) continue;
         if(CM->getOption("user_search_coins") && (level->coins == 0 || level->coinsVerified == 0)) continue;
         if(CM->getOption("user_search_twoplayer") && !(level->twoPlayerMode)) continue;
+        if(CM->getOption("user_search_copied") && level->originalLevel == 0) continue;
 
         pRet->addObject(level);
     }

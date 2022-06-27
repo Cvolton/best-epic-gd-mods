@@ -247,6 +247,8 @@ void ProfileSearchOptions::drawTogglesSecondary(){
     }
 
     createButton("GJ_infoIcon_001.png", {203, 128}, menu_selector(ProfileSearchOptions::onSecondaryInfo));
+
+    createToggle("user_search_copied", "Copied", -170, 80);
 }
 
 void ProfileSearchOptions::onDialogClosed(){
