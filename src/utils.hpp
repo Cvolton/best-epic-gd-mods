@@ -36,5 +36,6 @@ namespace BetterInfo {
     void copyToClipboard(const char* text, cocos2d::CCLayer* parent);
     gd::CCMenuItemSpriteExtra* createTextButton(cocos2d::CCLayer* parent, const char* text, cocos2d::SEL_MenuHandler handler, int width, float height, float scale);
     std::string decodeBase64Gzip(const std::string& input);
+    std::string fileSize(size_t bytes);
 
 }

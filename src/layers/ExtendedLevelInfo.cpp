@@ -256,6 +256,7 @@ bool ExtendedLevelInfo::init(){
         << "\n<cg>Objects (est.)</c>: " << zeroIfNA(objectsEstimated) //i have no idea what the 0 and 11 mean, i just copied them from PlayLayer::init
         << "\n<cy>Feature Score</c>: " << zeroIfNA(level->featured)
         << "\n<co>Two-player</c>: " << boolString(level->twoPlayerMode)
+        << "\n<cr>Size</c>: " << BetterInfo::fileSize(level->levelString.size()) << " / " << BetterInfo::fileSize(levelString.size());
     ;
 
     secondary = infoText.str();
