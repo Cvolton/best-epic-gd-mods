@@ -60,6 +60,8 @@ void BetterInfoCache::firstLoad() {
 }
 
 void BetterInfoCache::checkDailies() {
+    std::set<int> toDownload;
+
     auto GLM = GameLevelManager::sharedState();
 
     auto dailyLevels = GLM->m_dailyLevels;
@@ -72,13 +74,35 @@ void BetterInfoCache::checkDailies() {
         if(m_levelNameDict->objectForKey(idString) && m_coinCountDict->objectForKey(idString)) continue;
 
         auto levelFromSaved = static_cast<GJGameLevel*>(GLM->m_onlineLevels->objectForKey(std::to_string(currentLvl->levelID).c_str()));
-        if(levelFromSaved != nullptr) {
-            m_levelNameDict->setObject(CCString::create(levelFromSaved->levelName.c_str()), idString);
-            m_coinCountDict->setObject(CCString::createWithFormat("%i", currentLvl->coins), idString);
-        }
+        if(levelFromSaved != nullptr) cacheLevel(levelFromSaved);
+        else toDownload.insert(currentLvl->levelID);
     }
 
+    cacheLevels(toDownload);
+
     this->save();
+}
+
+void BetterInfoCache::cacheLevel(GJGameLevel* level) {
+    auto idString = std::to_string(level->levelID);
+    m_levelNameDict->setObject(CCString::create(level->levelName.c_str()), idString);
+    m_coinCountDict->setObject(CCString::createWithFormat("%i", level->coins), idString);
+}
+
+void BetterInfoCache::cacheLevels(std::set<int> toDownload) {
+    //Search type 10 currently does not have a limit on level IDs, so we can do this all in one request
+    bool first = true;
+    std::stringstream levels;
+    for(const auto& id : toDownload) {
+        if(!first) levels << ",";
+        levels << id;
+        first = false;
+    }
+    auto searchObj = GJSearchObject::create(kSearchTypeMapPackList, levels.str());
+    auto GLM = GameLevelManager::sharedState();
+    GLM->m_pOnlineListDelegate = this;
+    GLM->getOnlineLevels(searchObj);
+
 }
 
 const char* BetterInfoCache::getLevelName(int levelID) {
@@ -92,3 +116,15 @@ int BetterInfoCache::getCoinCount(int levelID) {
     if(std::string_view(ret->getCString()).empty()) return 3;
     return ret->intValue();
 }
+
+void BetterInfoCache::loadListFinished(cocos2d::CCArray* levels, const char*) {
+    for(size_t i = 0; i < levels->count(); i++) {
+        auto level = static_cast<GJGameLevel*>(levels->objectAtIndex(i));
+        if(level == nullptr) continue;
+
+        cacheLevel(level);
+    }
+}
+
+void BetterInfoCache::loadListFailed(const char*) {}
+void BetterInfoCache::setupPageInfo(std::string, const char*) {}
