@@ -864,6 +864,19 @@ void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJCommen
 
 }
 
+//The following CommentCell functions are required as fixes for crashes caused by refreshing the layer while liking/deleting an item
+void __fastcall CommentCell_onConfirmDelete(CommentCell* self, void* a, CCObject* sender) {
+    self->retain();
+    MHook::getOriginal(CommentCell_onConfirmDelete)(self, a, sender);
+}
+
+void __fastcall CommentCell_FLAlert_Clicked(uint8_t* self, void* a, FLAlertLayer* layer, bool btn) {
+    MHook::getOriginal(CommentCell_FLAlert_Clicked)(self, a, layer, btn);
+
+    auto cell = reinterpret_cast<CommentCell*>(self - sizeof(LikeItemDelegate) - sizeof(TableViewCell));
+    cell->release();
+}
+
 void __fastcall LevelInfoLayer_onLevelInfo(LevelInfoLayer* self, void* a, CCObject* sender) {
     ExtendedLevelInfo::showProgressDialog(self->level);
 }
@@ -1544,6 +1557,10 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x5C790, LevelCell_onViewProfile);
     MHook::registerHook(base + 0x5A020, LevelCell_loadCustomLevelCell);
     MHook::registerHook(base + 0x5F3D0, CommentCell_loadFromComment);
+    MHook::registerHook(base + 0x61140, CommentCell_onConfirmDelete);
+    MHook::registerHook(base + 0x61260, CommentCell_FLAlert_Clicked);
+    /*MHook::registerHook(base + 0x60F90, CommentCell_onLike);
+    MHook::registerHook(base + 0x61070, CommentCell_likedItem);*/
     MHook::registerHook(base + 0x210040, ProfilePage_loadPageFromUserInfo);
     MHook::registerHook(base + 0x20EF00, ProfilePage_init);
     //MHook::registerHook(base + 0x211BB0, ProfilePage_onMyLevels);
@@ -1574,7 +1591,7 @@ DWORD WINAPI my_thread(void* hModule) {
 
     MH_EnableHook(MH_ALL_HOOKS);
 
-
+    MessageBox(nullptr, "among", std::to_string(sizeof(CommentCell)).c_str(), MB_OK);
     /*std::getline(std::cin, std::string());
 
     MH_Uninitialize();
