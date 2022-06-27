@@ -1310,6 +1310,12 @@ CCArray* __fastcall GameLevelManager_getCompletedLevels(GameLevelManager* self, 
     CompleteMode mode = static_cast<CompleteMode>(CM->getOptionInt("search_completed"));
     if(mode == CompleteMode::modeDefault) return MHook::getOriginal(GameLevelManager_getCompletedLevels)(self, a, newFilter);
 
+    int percentageMin = CM->getOptionInt("search_completed_percentage_min");
+    int percentageMax = CM->getOptionInt("search_completed_percentage_max");
+
+    auto coinDict = GameStatsManager::sharedState()->m_verifiedUserCoins;
+    auto coinDict2 = GameStatsManager::sharedState()->m_pendingUserCoins;
+
     CCArray* pRet = CCArray::create();
 
     auto levels = self->m_onlineLevels;
@@ -1327,16 +1333,18 @@ CCArray* __fastcall GameLevelManager_getCompletedLevels(GameLevelManager* self, 
                 if(currentLvl->newNormalPercent2 == 100) pRet->addObject(currentLvl);
                 break;
             case CompleteMode::allCoins:
-            case CompleteMode::noCoins:
+            case CompleteMode::noCoins: {
                 bool completed = true;
-                auto coinDict = GameStatsManager::sharedState()->m_verifiedUserCoins;
-                auto coinDict2 = GameStatsManager::sharedState()->m_pendingUserCoins;
                 for(int i = 0; i < currentLvl->coins; i++){
                     bool hasntCoin = coinDict->objectForKey(currentLvl->getCoinKey(i + 1)) == nullptr && coinDict2->objectForKey(currentLvl->getCoinKey(i + 1)) == nullptr;
                     if(hasntCoin) completed = false; else completed = completed && true;
                 }
                 if(((mode == CompleteMode::noCoins) != completed) && (currentLvl->coins > 0)) pRet->addObject(currentLvl);
                 //if(currentLvl->coins > 0) pRet->addObject(currentLvl);
+                break;
+            }
+            case CompleteMode::percentage:
+                if(currentLvl->normalPercent >= percentageMin && currentLvl->normalPercent <= percentageMax) pRet->addObject(currentLvl);
                 break;
         }
     }
