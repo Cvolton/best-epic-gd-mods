@@ -32,6 +32,12 @@ bool CvoltonManager::init(){
     settingsDict = CCDictionary::create();
     settingsDict->retain();
 
+    levelNameCacheDict = CCDictionary::create();
+    levelNameCacheDict->retain();
+
+    coinCountCacheDict = CCDictionary::create();
+    coinCountCacheDict->retain();
+
     this->setup();
 
     std::cout << "initing" << std::endl;
@@ -128,14 +134,35 @@ bool CvoltonManager::isUpToDate(){
 
 void CvoltonManager::encodeDataTo(DS_Dictionary* data) {
     data->setDictForKey("settings", settingsDict);
+    data->setDictForKey("levelNameCache", levelNameCacheDict);
+    data->setDictForKey("coinCountCache", coinCountCacheDict);
     data->setStringForKey("versionString", version);
 
     std::cout << "encodeDataTo";
 }
 void CvoltonManager::dataLoaded(DS_Dictionary* data) {
-    settingsDict->release();
-    settingsDict = static_cast<CCDictionary*>(data->getObjectForKey("settings"));
-    settingsDict->retain();
+    auto settingsDictLoaded = static_cast<CCDictionary*>(data->getObjectForKey("settings"));
+    if(settingsDictLoaded) {
+        settingsDict->release();
+        settingsDict = settingsDictLoaded;
+        settingsDict->retain();
+    }
+
+
+    auto levelNameCacheDictLoaded = static_cast<CCDictionary*>(data->getObjectForKey("levelNameCache"));
+    if(levelNameCacheDictLoaded) {
+        levelNameCacheDict->release();
+        levelNameCacheDict = levelNameCacheDictLoaded;
+        levelNameCacheDict->retain();
+    }
+
+
+    auto coinCountCacheDictLoaded = static_cast<CCDictionary*>(data->getObjectForKey("coinCountCache"));
+    if(coinCountCacheDictLoaded) {
+        coinCountCacheDict->release();
+        coinCountCacheDict = coinCountCacheDictLoaded;
+        coinCountCacheDict->retain();
+    }
 
     this->save();
 }
