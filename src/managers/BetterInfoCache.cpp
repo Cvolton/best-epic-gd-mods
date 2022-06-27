@@ -124,6 +124,8 @@ void BetterInfoCache::loadListFinished(cocos2d::CCArray* levels, const char*) {
 
         cacheLevel(level);
     }
+
+    this->save();
 }
 
 void BetterInfoCache::loadListFailed(const char*) {}
