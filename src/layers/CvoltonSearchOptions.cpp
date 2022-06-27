@@ -86,7 +86,7 @@ void CvoltonSearchOptions::destroyToggles(){
     unsigned int totalMembers = m_pButtonMenu->getChildrenCount();
     for(unsigned int i = 3; i < totalMembers; i++){
         //static index 1 because we're actively moving the elements
-        auto object = static_cast<CCNode*>(m_pButtonMenu->getChildren()->objectAtIndex(2));
+        auto object = static_cast<CCNode*>(m_pButtonMenu->getChildren()->objectAtIndex(3));
         auto userData = object->getUserData();
         if(userData != nullptr) static_cast<CCString*>(userData)->release();
         //m_pButtonMenu->removeChild(object, false);
