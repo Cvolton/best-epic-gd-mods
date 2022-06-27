@@ -78,7 +78,7 @@ void BetterInfoCache::checkDailies() {
         else toDownload.insert(currentLvl->levelID);
     }
 
-    cacheLevels(toDownload);
+    if(!toDownload.empty()) cacheLevels(toDownload);
 
     this->save();
 }
