@@ -509,6 +509,13 @@ bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, v
     scheduleBtn->setPosition({202.5, 100});
     menu->addChild(scheduleBtn);
 
+    if(level->originalLevel != 0) {
+        auto originalBtn = dynamic_cast<CCNode*>(menu->getChildren()->objectAtIndex(1));
+        if(!originalBtn || originalBtn->getPositionY() != 99) return true;
+
+        if(originalBtn->getPositionX() > 155.4f) originalBtn->setPosition({155.4f, originalBtn->getPositionY()});
+    }
+
     return true;
 }
 
