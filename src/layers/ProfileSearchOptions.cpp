@@ -140,6 +140,30 @@ void ProfileSearchOptions::createToggle(const char* option, const char* name, fl
     label->limitLabelWidth(80, 0.5f, 0);
 }
 
+void ProfileSearchOptions::createToggle(const char* option, const char* name, float x, float y, SEL_MenuHandler additional){
+    auto CM = CvoltonManager::sharedState();
+
+    auto buttonSprite = CCSprite::createWithSpriteFrameName(CM->getOption(option) ? "GJ_checkOn_001.png" : "GJ_checkOff_001.png");
+    buttonSprite->setScale(0.8f);
+    auto button = gd::CCMenuItemSpriteExtra::create(
+        buttonSprite,
+        this,
+        menu_selector(ProfileSearchOptions::onToggle)
+    );
+    m_pButtonMenu->addChild(button);
+    button->setPosition({x, y});
+    auto optionString = CCString::create(option);
+    optionString->retain();
+    button->setUserData(optionString);
+    button->setSizeMult(1.2f);
+
+    auto label = createTextLabel(name, {x + 20, y}, 0.5f, m_pButtonMenu);
+    label->setAnchorPoint({0,0.5f});
+    label->limitLabelWidth(60, 0.5f, 0);
+
+    if(CM->getOption(option)) createButton("GJ_plusBtn_001.png", {x + 98, y}, additional, .65f);
+}
+
 void ProfileSearchOptions::destroyToggles(){
     //starting at 1 because 0 is the close button and 1 is the prev button
     unsigned int totalMembers = m_pButtonMenu->getChildrenCount();
@@ -198,8 +222,8 @@ void ProfileSearchOptions::drawTogglesPrimary(){
     createToggle("user_search_featured", "Featured", 90, 80);
     createToggle("user_search_original", "Original", -170, 35);
     createToggle("user_search_epic", "Epic", -40, 35);
-    createToggle("user_search_song", "Song", 90, 35);
-    if(CM->getOption("user_search_song")) createButton("GJ_plusBtn_001.png", {175, 35}, menu_selector(ProfileSearchOptions::onSong), .65f);
+    createToggle("user_search_song", "Song", 90, 35, menu_selector(ProfileSearchOptions::onSong));
+    //if(CM->getOption("user_search_song")) createButton("GJ_plusBtn_001.png", {175, 35}, menu_selector(ProfileSearchOptions::onSong), .65f);
     createToggle("user_search_nostar", "No Star", -170, -10);
     createToggle("user_search_coins", "Coins", -40, -10);
     createToggle("user_search_twoplayer", "2-Player", 90, -10);
@@ -241,8 +265,7 @@ void ProfileSearchOptions::drawTogglesSecondary(){
     createToggle("user_search_copied", "Copied", -170, 80);
     createToggle("user_search_downloaded", "Downloaded", -40, 80);
     createToggle("user_search_ldm", "LDM", 90, 80);
-    createToggle("user_search_idrange", "ID Range", -170, 35);
-    if(CM->getOption("user_search_idrange")) createButton("GJ_plusBtn_001.png", {-85, 35}, menu_selector(ProfileSearchOptions::onIdRange), .65f);
+    createToggle("user_search_idrange", "ID Range", -170, 35, menu_selector(ProfileSearchOptions::onIdRange));
 }
 
 void ProfileSearchOptions::onDialogClosed(){
