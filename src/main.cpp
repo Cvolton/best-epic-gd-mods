@@ -1484,6 +1484,12 @@ CCArray* __fastcall GameLevelManager_getSavedLevels(GameLevelManager* self, void
         if(CM->getOption("user_search_copied") && level->originalLevel == 0) continue;
         if(CM->getOption("user_search_downloaded") && level->levelString.empty()) continue;
         if(CM->getOption("user_search_ldm") && !(level->lowDetailMode)) continue;
+        if(CM->getOption("user_search_idrange")) {
+            int min = CM->getOptionInt("user_search_idrange_min");
+            int max = CM->getOptionInt("user_search_idrange_max");
+            if(min != 0 && level->levelID < min) continue;
+            if(max != 0 && level->levelID > max) continue;
+        }
 
         pRet->addObject(level);
     }
