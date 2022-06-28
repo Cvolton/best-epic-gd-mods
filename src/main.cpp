@@ -1398,7 +1398,7 @@ CCArray* __fastcall GameLevelManager_getCompletedLevels(GameLevelManager* self, 
                 break;
             }
             case CompleteMode::percentage:
-                if(currentLvl->normalPercent >= percentageMin && currentLvl->normalPercent <= percentageMax) pRet->addObject(currentLvl);
+                if((percentageMin == 0 || currentLvl->normalPercent >= percentageMin) && (percentageMax == 0 || currentLvl->normalPercent <= percentageMax)) pRet->addObject(currentLvl);
                 break;
         }
     }
