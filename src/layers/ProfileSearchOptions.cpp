@@ -154,25 +154,6 @@ void ProfileSearchOptions::destroyToggles(){
     toggleCount = 0;
 }
 
-void ProfileSearchOptions::createButtonToggle(const char* option, CCNode* sprite, float x, float y, float scale){
-    auto CM = CvoltonManager::sharedState();
-
-    //auto buttonSprite = CCSprite::createWithSpriteFrameName(sprite);
-    sprite->setScale(scale);
-    auto button = gd::CCMenuItemSpriteExtra::create(
-        sprite,
-        this,
-        menu_selector(ProfileSearchOptions::onToggle)
-    );
-    m_pButtonMenu->addChild(button);
-    button->setPosition({x, y});
-    if(!CM->getOption(option)) button->setColor({125,125,125});
-    auto optionString = CCString::create(option);
-    optionString->retain();
-    button->setUserData(optionString);
-    button->setSizeMult(1.2f);
-}
-
 void ProfileSearchOptions::drawToggles(){
     if(page % 2 == 0) drawTogglesPrimary();
     else drawTogglesSecondary();

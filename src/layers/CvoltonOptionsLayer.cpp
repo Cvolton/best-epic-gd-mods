@@ -84,6 +84,25 @@ void CvoltonOptionsLayer::createToggle(const char* option, const char* name){
     label->setAnchorPoint({0,0.5f});
 }
 
+void CvoltonOptionsLayer::createButtonToggle(const char* option, CCNode* sprite, float x, float y, float scale){
+    auto CM = CvoltonManager::sharedState();
+
+    //auto buttonSprite = CCSprite::createWithSpriteFrameName(sprite);
+    sprite->setScale(scale);
+    auto button = gd::CCMenuItemSpriteExtra::create(
+        sprite,
+        this,
+        menu_selector(CvoltonOptionsLayer::onToggle)
+    );
+    m_pButtonMenu->addChild(button);
+    button->setPosition({x, y});
+    if(!CM->getOption(option)) button->setColor({125,125,125});
+    auto optionString = CCString::create(option);
+    optionString->retain();
+    button->setUserData(optionString);
+    button->setSizeMult(1.2f);
+}
+
 void CvoltonOptionsLayer::destroyToggles(){
     //starting at 1 because 0 is the close button
     unsigned int totalMembers = m_pButtonMenu->getChildrenCount();

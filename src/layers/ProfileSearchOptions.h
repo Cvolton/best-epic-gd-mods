@@ -26,7 +26,6 @@ public:
     void drawTogglesPrimary();
     void drawTogglesSecondary();
     void createToggle(const char* option, const char* name, float x, float y);
-    void createButtonToggle(const char* option, cocos2d::CCNode* sprite, float x, float y, float scale = 1.f);
     void onDialogClosed();
     void onIDRangeFinished(int min, int max);
 };
