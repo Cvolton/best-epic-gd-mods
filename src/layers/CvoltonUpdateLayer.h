@@ -15,6 +15,7 @@ public:
     void onClose(cocos2d::CCObject* sender);
     void onUpdate(cocos2d::CCObject* sender);
     void onVisit(cocos2d::CCObject* sender);
+    void onChangelog(cocos2d::CCObject* sender);
     void onLoadFailed();
     void onLoadFinished();
     void showVersion();

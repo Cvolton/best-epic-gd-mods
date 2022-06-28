@@ -1189,12 +1189,11 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
     menu->addChild(buttonButton);
 
     //showQuestExclamationMark(self);
-    /*CM = CvoltonManager::sharedState();
-    auto alert = CM->missingResourcesError();
+    auto alert = CM->updateCompleteDialog();
     if(alert) {
         alert->setZOrder(100);
         self->addChild(alert);
-    }*/
+    }
 
     return true;
 }

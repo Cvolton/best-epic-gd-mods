@@ -1,6 +1,7 @@
 #include "CvoltonUpdateLayer.h"
 #include "UnregisteredProfileLayer.h"
 #include "../managers/CvoltonManager.h"
+#include "../utils.hpp"
 
 #include <cocos2d.h>
 #include <gd.h>
@@ -53,7 +54,7 @@ bool CvoltonUpdateLayer::init(){
     if(descLength > 140) descLength = 140;
     if(descLength > 70) descDelimiter = ((((140 - descLength) / 140) * 0.3f) + 0.7f);*/
 
-    description = gd::TextArea::create("chatFont.fnt", false, "<cy>Installed: </c>Placeholder\n<cg>Latest: </c> Placeholder\n", 1, 295, 20, {0,0});
+    description = TextArea::create("chatFont.fnt", false, "<cy>Installed: </c>Placeholder\n<cg>Latest: </c> Placeholder\n", 1, 295, 20, {0,0});
     //description->setScale(descDelimiter);
     description->setAnchorPoint({0,0});
     description->setPosition({-161, 50});
@@ -68,7 +69,7 @@ bool CvoltonUpdateLayer::init(){
     m_pButtonMenu->addChild(infoBg, -1);
     infoBg->setPosition({0,4});
 
-    changelog = gd::TextArea::create("chatFont.fnt", false, "Changelog Placeholder Text", 1, 340, 20, {0,1});
+    changelog = TextArea::create("chatFont.fnt", false, "Changelog Placeholder Text", 1, 340, 20, {0,1});
     changelog->setPosition({-162,0.f});
     changelog->setScale(0.8f);
     changelog->setAnchorPoint({0,1});
@@ -80,13 +81,13 @@ bool CvoltonUpdateLayer::init(){
     m_pButtonMenu->addChild(changelogFailText);
     changelogFailText->setVisible(false);
 
-    circle = gd::LoadingCircle::create();
+    circle = LoadingCircle::create();
     m_pButtonMenu->addChild(circle);
     circle->setPosition({-286,-217});
     circle->show();
 
-    auto websiteSprite = gd::ButtonSprite::create("Visit Website", 150, true, "bigFont.fnt", "GJ_button_01.png", 25, 0.5f);
-    auto webBtn = gd::CCMenuItemSpriteExtra::create(
+    auto websiteSprite = ButtonSprite::create("Visit Website", 150, true, "bigFont.fnt", "GJ_button_01.png", 25, 0.5f);
+    auto webBtn = CCMenuItemSpriteExtra::create(
         websiteSprite,
         this,
         menu_selector(CvoltonUpdateLayer::onVisit)
@@ -95,8 +96,8 @@ bool CvoltonUpdateLayer::init(){
     webBtn->setPosition({-88,22});
     m_pButtonMenu->addChild(webBtn);
 
-    auto updateBtnSprite = gd::ButtonSprite::create("Download Update", 150, true, "bigFont.fnt", "GJ_button_01.png", 25, 0.5f);
-    auto updateBtn = gd::CCMenuItemSpriteExtra::create(
+    auto updateBtnSprite = ButtonSprite::create("Download Update", 150, true, "bigFont.fnt", "GJ_button_01.png", 25, 0.5f);
+    auto updateBtn = CCMenuItemSpriteExtra::create(
         updateBtnSprite,
         this,
         menu_selector(CvoltonUpdateLayer::onUpdate)
@@ -104,6 +105,15 @@ bool CvoltonUpdateLayer::init(){
     updateBtn->setSizeMult(1.2f);
     updateBtn->setPosition({88,22});
     m_pButtonMenu->addChild(updateBtn);
+
+    auto historySprite = BetterInfo::createWithBISpriteFrameName("BI_historyBtn_001.png");
+    auto historyBtn = CCMenuItemSpriteExtra::create(
+        historySprite,
+        this,
+        menu_selector(CvoltonUpdateLayer::onChangelog)
+    );
+    historyBtn->setPosition({-210,-135});
+    m_pButtonMenu->addChild(historyBtn);
 
     downloadChangelog();
     showVersion();
@@ -140,6 +150,12 @@ void CvoltonUpdateLayer::onUpdate(cocos2d::CCObject* sender)
 void CvoltonUpdateLayer::onVisit(cocos2d::CCObject* sender)
 {
     CCApplication::sharedApplication()->openURL("https://geometrydash.eu/mods");
+}
+
+void CvoltonUpdateLayer::onChangelog(cocos2d::CCObject* sender)
+{
+    auto layer = CvoltonManager::sharedState()->updateCompleteDialog(true);
+    if(layer) layer->show();
 }
 
 void CvoltonUpdateLayer::onLoadFailed()

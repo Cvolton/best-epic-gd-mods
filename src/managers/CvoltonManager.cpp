@@ -143,6 +143,8 @@ void CvoltonManager::dataLoaded(DS_Dictionary* data) {
         settingsDict->retain();
     }
 
+    saveVer = data->getStringForKey("versionString");
+
     this->save();
 }
 void CvoltonManager::firstLoad() {
@@ -277,6 +279,37 @@ FLAlertLayer* CvoltonManager::missingResourcesError() {
     auto layer = FLAlertLayer::create(nullptr, modName, "OK", nullptr, 400, true, 300, "<cr>Error: Missing resources!</c>\n\nUnable to find:<cl>"+file_list+"</c>\n\nPlease refer to the <cg>installation instructions</c>.");
 
     hasDoneHealthCheck = true;
+
+    return layer;
+}
+
+FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
+    if(saveVer == version && !forced) return nullptr;
+
+    auto layer = FLAlertLayer::create(
+        nullptr,
+        modName,
+        "OK",
+        nullptr,
+        400,
+        true,
+        300,
+        "<cg>BetterInfo has updated!</c>\n"
+        "\n"
+        "<cy>Changelog:</c> <cg>(v2.3.1 - 2022-06-28)</c>\n"
+        "- Added <cj>even more</c> <co>Saved Filters</c>\n"
+        "- Added a <co>percentage</c> <cj>Completed Mode</c>\n"
+        "- Bugfixes & improvements\n"
+        "\n"
+        "<cy>Changelog:</c> <cg>(v2.3.0 - 2022-06-26)</c>\n"
+        "- Added <cj>Claimed Chest</c> <co>history</c>\n"
+        "- Added <cj>more</c> <cj>Saved Filters</c>\n"
+        "- Added <co>Live</c> <cj>Comment Chat</c> <co>refreshing</c>\n"
+        "- Added <co>more stuff</c> to <cj>Extended Level Info</c>\n"
+        "- Added a <cj>white level ID option</c>"
+    );
+
+    this->save();
 
     return layer;
 }

@@ -18,11 +18,12 @@ class CvoltonManager : public gd::GManager {
 
 
 public:
-	inline static constexpr char* version = "v2.3.0\n";
+	inline static constexpr char* version = "v2.3.0-test\n";
 	inline static constexpr char* modName = "BetterInfo";
 	inline static constexpr char* modNameColored = "Better<cg>Info</c>";
 	std::string latestVer;
 	std::string changelog;
+	std::string saveVer;
 	cocos2d::CCDictionary* nameDict;
 	cocos2d::CCDictionary* settingsDict;
 	const char* cellTitle = nullptr;
@@ -59,6 +60,7 @@ public:
 	void loadTextures();
 	int randomNumber(int start, int end);
 	int completedLevelsForStars(int stars);
-	cocos2d::CCDictionary* CvoltonManager::responseToDict(std::string response);
+	cocos2d::CCDictionary* responseToDict(std::string response);
 	gd::FLAlertLayer* missingResourcesError();
+	gd::FLAlertLayer* updateCompleteDialog(bool forced = false);
 };
