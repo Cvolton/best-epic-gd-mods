@@ -1,5 +1,6 @@
 #include "ProfileSearchOptions.h"
 #include "ProfileSearchOptionsSongSelect.h"
+#include "IDRangePopup.h"
 #include "../managers/CvoltonManager.h"
 
 #include <cocos2d.h>
@@ -45,6 +46,12 @@ void ProfileSearchOptions::onPrev(cocos2d::CCObject* sender)
 void ProfileSearchOptions::onSong(cocos2d::CCObject* sender)
 {
     ProfileSearchOptionsSongSelect::create(this)->show();
+}
+
+void ProfileSearchOptions::onIdRange(cocos2d::CCObject* sender)
+{
+    auto CM = CvoltonManager::sharedState();
+    IDRangePopup::create(this, CM->getOptionInt("user_search_idrange_min"), CM->getOptionInt("user_search_idrange_max"), "ID Range")->show();
 }
 
 void ProfileSearchOptions::onNext(cocos2d::CCObject* sender)
@@ -232,7 +239,9 @@ void ProfileSearchOptions::drawTogglesSecondary(){
     demonDiffBg->setVisible(true);
     diffBg->setVisible(false);
 
+    auto CM = CvoltonManager::sharedState();
     auto winSize = CCDirector::sharedDirector()->getWinSize();
+
     for(unsigned int i = 0, diffSprite = 7; i <= 4; i++, diffSprite++){
         if(i == 2) diffSprite = 6;
         if(i == 3) diffSprite = 9;
@@ -251,8 +260,16 @@ void ProfileSearchOptions::drawTogglesSecondary(){
     createToggle("user_search_copied", "Copied", -170, 80);
     createToggle("user_search_downloaded", "Downloaded", -40, 80);
     createToggle("user_search_ldm", "LDM", 90, 80);
+    createToggle("user_search_idrange", "ID Range", -170, 35);
+    if(CM->getOption("user_search_idrange")) createButton("GJ_plusBtn_001.png", {-85, 35}, menu_selector(ProfileSearchOptions::onIdRange), .65f);
 }
 
 void ProfileSearchOptions::onDialogClosed(){
     if(levelBrowserLayer != nullptr) levelBrowserLayer->loadPage(levelBrowserLayer->searchObject);
+}
+
+void ProfileSearchOptions::onIDRangeFinished(int min, int max) {
+    auto CM = CvoltonManager::sharedState();
+    CM->setOptionInt("user_search_idrange_min", min);
+    CM->setOptionInt("user_search_idrange_max", max);
 }

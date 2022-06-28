@@ -2,8 +2,9 @@
 #include <gd.h>
 #include "CvoltonOptionsLayer.h"
 #include "../delegates/DialogCloseDelegate.h"
+#include "../delegates/IDRangeDelegate.h"
 
-class ProfileSearchOptions : public CvoltonOptionsLayer, public DialogCloseDelegate {
+class ProfileSearchOptions : public CvoltonOptionsLayer, public DialogCloseDelegate, public IDRangeDelegate {
     gd::LevelBrowserLayer* levelBrowserLayer = nullptr;
     gd::CCMenuItemSpriteExtra* prevBtn = nullptr;
     gd::CCMenuItemSpriteExtra* nextBtn = nullptr;
@@ -16,6 +17,7 @@ public:
     void onClose(cocos2d::CCObject* sender);
     void onPrev(cocos2d::CCObject* sender);
     void onSong(cocos2d::CCObject* sender);
+    void onIdRange(cocos2d::CCObject* sender);
     void onNext(cocos2d::CCObject* sender);
     void onSecondaryInfo(cocos2d::CCObject* sender);
     bool init();
@@ -26,4 +28,5 @@ public:
     void createToggle(const char* option, const char* name, float x, float y);
     void createButtonToggle(const char* option, cocos2d::CCNode* sprite, float x, float y, float scale = 1.f);
     void onDialogClosed();
+    void onIDRangeFinished(int min, int max);
 };
