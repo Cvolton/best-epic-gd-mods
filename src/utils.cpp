@@ -103,6 +103,8 @@ const char* BetterInfo::rankIcon(int position){
 }
 
 void BetterInfo::showBIExclamationMark(CCLayer* creator){
+    return;
+
     //auto menu = dynamic_cast<CCMenu*>(creator->getChildren()->objectAtIndex(1));
     //if(menu == nullptr) dynamic_cast<CCMenu*>(creator->getChildren()->objectAtIndex(5));
     auto CM = CvoltonManager::sharedState();
