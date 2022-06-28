@@ -40,7 +40,7 @@ bool IDRangePopup::init(IDRangeDelegate* delegate, int min, int max, const char*
 
     minNode = CCTextInputNode::create("Min", this, "bigFont.fnt", 100, 30);
     minNode->setLabelPlaceholderColor({0x75, 0xAA, 0xF0});
-    if(min != 0 || max != 0) minNode->setString(std::to_string(min).c_str());
+    if(min != 0) minNode->setString(std::to_string(min).c_str());
     minNode->setAllowedChars("0123456789");
     minNode->setMaxLabelScale(0.7f);
     minNode->setPosition({0,6});
@@ -48,7 +48,7 @@ bool IDRangePopup::init(IDRangeDelegate* delegate, int min, int max, const char*
 
     maxNode = CCTextInputNode::create("Max", this, "bigFont.fnt", 100, 30);
     maxNode->setLabelPlaceholderColor({0x75, 0xAA, 0xF0});
-    if(min != 0 || max != 0) maxNode->setString(std::to_string(max).c_str());
+    if(max != 0) maxNode->setString(std::to_string(max).c_str());
     maxNode->setAllowedChars("0123456789");
     maxNode->setMaxLabelScale(0.7f);
     maxNode->setPosition({0,-37});
