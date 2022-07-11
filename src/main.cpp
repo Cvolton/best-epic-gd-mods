@@ -564,7 +564,22 @@ bool __fastcall LevelCell_onViewProfile(LevelCell* self, void* a, CCObject* b) {
 
     return true;
 }
+class Copy
+{
+public:
+    
+    static void setObjCopy(int copyid)
+    {
+        LevelCell levelobj;
+        levelobj.id = copyid;
+    }
+    void copyObjID(CCObject* caller)
+    {
+        LevelCell levelobj;
+        levelobj.onCopyID();
+    }
 
+};
 void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
     MHook::getOriginal(LevelCell_loadCustomLevelCell)(self);
     
@@ -572,11 +587,13 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
     for(unsigned int i = 0; i < layer->getChildrenCount(); i++){
         auto menu = dynamic_cast<CCMenu*>(layer->getChildren()->objectAtIndex(i));
         if(menu != nullptr){
+            LevelCell levelobject;
             auto playerName = cast<gd::CCMenuItemSpriteExtra*>(menu->getChildren()->objectAtIndex(1));
             playerName->setEnabled(true);
-
             std::ostringstream idText;
-            idText << "#" << self->level->levelID;
+            Copy::setObjCopy(self->level->levelID);
+            idText << "#" << self->level->levelID << "custom thing lel" << levelobject.id;
+            
             auto idTextNode = CCLabelBMFont::create(idText.str().c_str(), "chatFont.fnt");
             idTextNode->setPosition({33,33});
             idTextNode->setAnchorPoint({1,0});
@@ -584,7 +601,7 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
             idTextNode->setColor({51,51,51});
             idTextNode->setOpacity(152);
             auto idTextCopyBtnSprite = BetterInfo::createBISprite("BI_CopyBtn.png");
-            auto idTextCopyBtn = CCMenuItemSpriteExtra::create(idTextCopyBtnSprite, self, nullptr);
+            auto idTextCopyBtn = CCMenuItemSpriteExtra::create(idTextCopyBtnSprite, self, menu_selector(Copy::copyObjID));
             idTextCopyBtn->setPosition({ -25,38 });
             idTextCopyBtnSprite->setScale(0.4f);
             menu->addChild(idTextCopyBtn);
