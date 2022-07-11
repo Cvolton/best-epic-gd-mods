@@ -369,7 +369,7 @@ void ExtendedLevelInfo::showProgressDialog(GJGameLevel* level){
     }
 
     std::ostringstream contentStream;
-    contentStream << "<cg>Total Attempts</c>: " << level->attempts
+    contentStream << level->levelName << "\n\n<cg>Total Attempts</c>: " << level->attempts
         << "\n<cl>Total Jumps</c>: " << level->jumps
         << "\n<co>Clicks (best att.)</c>: " << level->clicks
         << "\n<co>Time (best att.)</c>: " << ExtendedLevelInfo::workingTime(level->attemptTime);

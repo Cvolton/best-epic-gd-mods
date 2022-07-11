@@ -575,6 +575,15 @@ public:
         BetterInfo::copyToClipboard(pchar);
         FLAlertLayer::create(nullptr, "Copied ID", "OK", nullptr, "Copied the levels <cj>ID</c> to your <cy>clipboard</c>.")->show();
     }
+    void onInfo(CCObject* caller)
+    {
+        InfoLayer* infoLayer = InfoLayer::create(this->level, nullptr);
+        infoLayer->show();
+    }
+    void onProgresses(CCObject* caller)
+    {
+        ExtendedLevelInfo::showProgressDialog(this->level);
+    }
 };
 void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
     MHook::getOriginal(LevelCell_loadCustomLevelCell)(self);
@@ -596,10 +605,21 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
             idTextNode->setOpacity(152);
             auto idTextCopyBtnSprite = gd::ButtonSprite::create("Copy", 0, false, "bigFont.fnt", "GJ_button_04.png", 0, 0.5f);
             auto idTextCopyBtn = CCMenuItemSpriteExtra::create(idTextCopyBtnSprite, self, menu_selector(LevelCel::CopyID));
+            // x = 255 y = 45
+            auto infoSprite = BetterInfo::createWithBISpriteFrameName("GJ_infoBtn_001.png");
+            auto infoBtn = CCMenuItemSpriteExtra::create(infoSprite, self, menu_selector(LevelCel::onInfo));
+            auto infoSprite2 = BetterInfo::createWithBISpriteFrameName("GJ_infoIcon_001.png");
+            auto infoBtn2 = CCMenuItemSpriteExtra::create(infoSprite2, self, menu_selector(LevelCel::onProgresses));
             idTextCopyBtn->setPosition({ 20,26 });
             idTextCopyBtnSprite->setScale(0.4f);
+            infoSprite->setScale(0.4f);
+            infoBtn->setPosition({ -50,0.5f });
+            infoSprite2->setScale(0.8f);
+            infoBtn2->setPosition({ -303,35 });
             menu->addChild(idTextCopyBtn);
             menu->addChild(idTextNode);
+            menu->addChild(infoBtn);
+            menu->addChild(infoBtn2);
             if(self->level->dailyID > 0 || CvoltonManager::sharedState()->getOption("white_id")){
                 idTextNode->setColor({255,255,255});
                 idTextNode->setOpacity(200);
@@ -618,6 +638,7 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
                 dailyTextNode->setColor({255,255,255});
                 dailyTextNode->setOpacity(200);
                 menu->addChild(dailyTextNode);
+                infoBtn2->setPosition({ 25,-40 });
 
             }
 
@@ -1593,8 +1614,8 @@ void setupPageLimitBypass(){
 void setupDailyNew(){
     auto proc = GetCurrentProcess();
     auto winapiBase = reinterpret_cast<char*>(base);
-    //This moves the position of the New! displayed when there's a new daily from 182 (0x43360000) to 130 (0x43020000)
-    unsigned char patch[] = {0xC7, 0x04, 0x24, 0x00, 0x00, 0x02, 0x43};
+    //This moves the position of the New! displayed when there's a new daily from 182 (0x43360000) to 10 (0x42c80000)
+    unsigned char patch[] = {0xC7, 0x04, 0x24, 0x00, 0x00, 0xc8, 0x42};
     WriteProcessMemory(proc, winapiBase + 0x6C709, patch, 7, NULL);
 }
 
