@@ -564,7 +564,17 @@ bool __fastcall LevelCell_onViewProfile(LevelCell* self, void* a, CCObject* b) {
 
     return true;
 }
-
+class LevelCel : public LevelCell
+{
+public:
+    void CopyID(CCObject* e)
+    {
+        // Yeah i took this from stack overflow
+        std::string s = std::to_string(this->level->levelID);
+        char const* pchar = s.c_str();
+        BetterInfo::copyToClipboard(pchar);
+    }
+};
 void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
     MHook::getOriginal(LevelCell_loadCustomLevelCell)(self);
     
@@ -584,7 +594,7 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
             idTextNode->setColor({51,51,51});
             idTextNode->setOpacity(152);
             auto idTextCopyBtnSprite = BetterInfo::createBISprite("BI_CopyBtn.png");
-            auto idTextCopyBtn = CCMenuItemSpriteExtra::create(idTextCopyBtnSprite, self, nullptr);
+            auto idTextCopyBtn = CCMenuItemSpriteExtra::create(idTextCopyBtnSprite, self, menu_selector(LevelCel::CopyID));
             idTextCopyBtn->setPosition({ -25,38 });
             idTextCopyBtnSprite->setScale(0.4f);
             menu->addChild(idTextCopyBtn);
