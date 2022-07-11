@@ -573,6 +573,7 @@ public:
         std::string s = std::to_string(this->level->levelID);
         char const* pchar = s.c_str();
         BetterInfo::copyToClipboard(pchar);
+        FLAlertLayer::create(nullptr, "Copied ID", "OK", nullptr, "Copied the levels <cj>ID</c> to your <cy>clipboard</c>.")->show();
     }
 };
 void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
