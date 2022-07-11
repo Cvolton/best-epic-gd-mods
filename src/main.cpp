@@ -594,10 +594,9 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
             idTextNode->setScale(0.6f);
             idTextNode->setColor({51,51,51});
             idTextNode->setOpacity(152);
-            auto idTextCopyBtnSprite = BetterInfo::createBISprite("BI_CopyBtn.png");
+            auto idTextCopyBtnSprite = gd::ButtonSprite::create("Copy", 0, false, "bigFont.fnt", "GJ_button_04.png", 0, 0.5f);
             auto idTextCopyBtn = CCMenuItemSpriteExtra::create(idTextCopyBtnSprite, self, menu_selector(LevelCel::CopyID));
-            auto buttonoffset = idTextNode->getContentSize();
-            idTextCopyBtn->setPosition({ 53-buttonoffset.width,38 });
+            idTextCopyBtn->setPosition({ 20,26 });
             idTextCopyBtnSprite->setScale(0.4f);
             menu->addChild(idTextCopyBtn);
             menu->addChild(idTextNode);
@@ -609,7 +608,7 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
             if(self->level->dailyID > 0){
 
                 const int maxDaily = 100000;
-
+                idTextCopyBtn->setPosition({ -36,47 });
                 std::ostringstream dailyText;
                 dailyText << ((self->level->dailyID >= maxDaily) ? "Weekly" : "Daily") << " #" << (self->level->dailyID % maxDaily);
                 auto dailyTextNode = CCLabelBMFont::create(dailyText.str().c_str(), "chatFont.fnt");
