@@ -933,7 +933,38 @@ void __fastcall CommentCell_likedItem(uint8_t* self, void* a, LikeItemType* type
     auto cell = reinterpret_cast<CommentCell*>(self - sizeof(TableViewCell));
     cell->release();
 }
-
+class LILCopy : public LevelInfoLayer
+{
+public:
+    void CopyID(CCObject* e)
+    {
+        // Yeah i took this from stack overflow
+        std::string s = std::to_string(this->level->levelID);
+        char const* pchar = s.c_str();
+        BetterInfo::copyToClipboard(pchar);
+        FLAlertLayer::create(nullptr, "Copied ID", "OK", nullptr, "Copied the levels <cj>ID</c> to your <cy>clipboard</c>.")->show();
+    }
+};
+void __fastcall LevelInfoLayer_init(LevelInfoLayer* self, void* a, CCObject* sender) {
+    MHook::getOriginal(LevelInfoLayer_init)(self,a,sender);
+    std::ostringstream idText;
+    idText << "ID: " << self->level->levelID;
+    auto text = CCLabelBMFont::create(idText.str().c_str(),"goldFont.fnt");
+    auto sprite = BetterInfo::createBISprite(".");
+    auto menu = CCMenu::create();
+    auto textclickable = CCMenuItemSpriteExtra::create(text, self, menu_selector(LILCopy::CopyID));
+    if (self->m_pToggler->isVisible() == true)
+    {
+        menu->setPosition({ 70,50 });
+    }
+    else
+    {
+        menu->setPosition({ 70,60 });
+    }
+    text->setScale(0.5f);
+    menu->addChild(textclickable);
+    self->addChild(menu);
+}
 void __fastcall LevelInfoLayer_onLevelInfo(LevelInfoLayer* self, void* a, CCObject* sender) {
     ExtendedLevelInfo::showProgressDialog(self->level);
 }
@@ -1641,6 +1672,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0xA2960, GameLevelManager_getSavedLevels); 
     MHook::registerHook(base + 0xA43B0, GameLevelManager_limitSavedLevels);
     MHook::registerHook(base + 0x2178F0, RewardsPage_init);
+    MHook::registerHook(base + 0x175DF0, LevelInfoLayer_init);
     //MHook::registerHook(base + 0x180FC0, LevelSearchLayer_onSearch);
     //MHook::registerHook(base + 0xF9AE0, GameStatsManager_incrementChallenge);
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
