@@ -583,6 +583,11 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
             idTextNode->setScale(0.6f);
             idTextNode->setColor({51,51,51});
             idTextNode->setOpacity(152);
+            auto idTextCopyBtnSprite = BetterInfo::createBISprite("BI_CopyBtn.png");
+            auto idTextCopyBtn = CCMenuItemSpriteExtra::create(idTextCopyBtnSprite, self, nullptr);
+            idTextCopyBtn->setPosition({ -25,38 });
+            idTextCopyBtnSprite->setScale(0.4f);
+            menu->addChild(idTextCopyBtn);
             menu->addChild(idTextNode);
             if(self->level->dailyID > 0 || CvoltonManager::sharedState()->getOption("white_id")){
                 idTextNode->setColor({255,255,255});
