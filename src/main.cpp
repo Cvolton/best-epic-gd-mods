@@ -596,7 +596,8 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
             idTextNode->setOpacity(152);
             auto idTextCopyBtnSprite = BetterInfo::createBISprite("BI_CopyBtn.png");
             auto idTextCopyBtn = CCMenuItemSpriteExtra::create(idTextCopyBtnSprite, self, menu_selector(LevelCel::CopyID));
-            idTextCopyBtn->setPosition({ -25,38 });
+            auto buttonoffset = idTextNode->getContentSize();
+            idTextCopyBtn->setPosition({ 53-buttonoffset.width,38 });
             idTextCopyBtnSprite->setScale(0.4f);
             menu->addChild(idTextCopyBtn);
             menu->addChild(idTextNode);
