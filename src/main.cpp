@@ -1581,13 +1581,13 @@ DWORD WINAPI my_thread(void* hModule) {
         my solution and if I were to use a static value, it wouldn't work
         with their mod then.
     */
-    /*std::random_device os_seed;
+    std::random_device os_seed;
     const unsigned int seed = os_seed();
 
     std::mt19937 generator(seed);
     std::uniform_int_distribution<int> distribute(1000, 5000);
     int sleepMs = distribute(generator);
-    Sleep(sleepMs);*/
+    Sleep(sleepMs);
     
     /*
         Hook initialization
