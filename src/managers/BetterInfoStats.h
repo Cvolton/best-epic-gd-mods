@@ -23,5 +23,7 @@ public:
 	    }
 	    return m_instance;
 	}
-	void logCompletion(int levelID, uint64_t timestamp, bool practice);
+	void logCompletion(int levelID, bool practice);
+	void logCompletion(int levelID, bool practice, time_t timestamp);
+	time_t getCompletion(int levelID, bool practice);
 };

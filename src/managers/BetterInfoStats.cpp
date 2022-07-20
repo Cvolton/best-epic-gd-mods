@@ -56,8 +56,26 @@ void BetterInfoStats::firstLoad() {
     this->save();
 }
 
-void BetterInfoStats::logCompletion(int levelID, uint64_t timestamp, bool practice) {
+void BetterInfoStats::logCompletion(int levelID, bool practice) {
+    if(getCompletion(levelID, practice) != 0) return;
+
+    logCompletion(levelID, practice, std::time(nullptr));
+}
+
+void BetterInfoStats::logCompletion(int levelID, bool practice, time_t timestamp) {
     auto dict = practice ? m_practiceDict : m_normalDict;
     auto idString = std::to_string(levelID);
     dict->setObject(CCString::create(std::to_string(timestamp).c_str()), idString);
+}
+
+time_t BetterInfoStats::getCompletion(int levelID, bool practice) {
+    auto dict = practice ? m_practiceDict : m_normalDict;
+
+    auto ret = dict->valueForKey(std::to_string(levelID));
+    if(std::string_view(ret->getCString()).empty()) return 0;
+    try {
+        return std::strtol(ret->getCString(), nullptr, 10);
+    } catch(...) {
+        return 0;
+    }
 }

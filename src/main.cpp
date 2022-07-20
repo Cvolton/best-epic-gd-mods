@@ -10,6 +10,9 @@
 #include <cstring>
 #include <deque>
 #include <random>
+#include <format>
+#include <exception>
+#include <ctime>
 #include "utils.hpp"
 
 #include "layers/UnregisteredProfileLayer.h"
@@ -1535,8 +1538,7 @@ void __fastcall PlayLayer_levelComplete(PlayLayer* self){
     MHook::getOriginal(PlayLayer_levelComplete)(self);
 
     auto stats = BetterInfoStats::sharedState();
-    //stats->logCompletion(self->m_level->levelID, std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count(), self->m_isPracticeMode);
-    
+    stats->logCompletion(self->m_level->levelID, self->m_isPracticeMode);
 }
 
 /*void LevelBrowserLayer_loadLevelsFinished(LevelBrowserLayer* self, void* a, CCArray* levels, const char* a2){

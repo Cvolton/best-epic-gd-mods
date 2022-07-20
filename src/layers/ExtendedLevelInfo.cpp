@@ -1,6 +1,7 @@
 #include "ExtendedLevelInfo.h"
 #include "UnregisteredProfileLayer.h"
 #include "../utils.hpp"
+#include "../managers/BetterInfoStats.h"
 
 #include <cocos2d.h>
 #include <gd.h>
@@ -376,8 +377,12 @@ void ExtendedLevelInfo::showProgressDialog(GJGameLevel* level){
         << "\n<co>Clicks (best att.)</c>: " << level->clicks
         << "\n<co>Time (best att.)</c>: " << ExtendedLevelInfo::workingTime(level->attemptTime);
 
-    if(level->levelType != GJLevelType::kGJLevelTypeEditor){ contentStream << "\n<cp>Normal</c>: " << level->normalPercent
-        << "%\n<co>Practice</c>: " << level->practicePercent << "%";
+    if(level->levelType != GJLevelType::kGJLevelTypeEditor){
+        auto stats = BetterInfoStats::sharedState();
+
+        contentStream << "\n<cp>Normal</c>: " << level->normalPercent
+        << "%\n<co>Practice</c>: " << level->practicePercent << "%"
+        << "%\n<co>Completed</c>: " << BetterInfo::timeToString(stats->getCompletion(level->levelID, false)) << "%";
 
         if(level->orbCompletion != level->normalPercent) contentStream << "\n<cj>Orbs</c>: " << level->orbCompletion << "%";
         if(level->newNormalPercent2 != level->orbCompletion) contentStream << "\n<cr>Leaderboard</c>: " << level->newNormalPercent2 << "%";
