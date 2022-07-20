@@ -66,6 +66,8 @@ void BetterInfoStats::logCompletion(int levelID, bool practice, time_t timestamp
     auto dict = practice ? m_practiceDict : m_normalDict;
     auto idString = std::to_string(levelID);
     dict->setObject(CCString::create(std::to_string(timestamp).c_str()), idString);
+    
+    this->save();
 }
 
 time_t BetterInfoStats::getCompletion(int levelID, bool practice) {
