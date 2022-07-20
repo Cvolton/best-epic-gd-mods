@@ -129,7 +129,9 @@ const char* ExtendedLevelInfo::getDifficultyIcon(int stars){
 std::string ExtendedLevelInfo::passwordString(int password){
     if(password == 0) return "NA";
     if(password == 1) return "Free Copy";
-    return std::to_string(password - 1000000);
+    if(password >= 10000 && password <= 19999) return std::to_string(password - 10000);
+    if(password >= 1000000 && password <= 1999999) return std::to_string(password - 1000000);
+    return "Invalid (" + std::to_string(password) + ")";
 }
 
 std::string ExtendedLevelInfo::zeroIfNA(int value){
