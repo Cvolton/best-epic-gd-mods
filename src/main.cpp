@@ -1191,8 +1191,10 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
     //showQuestExclamationMark(self);
     auto alert = CM->updateCompleteDialog();
     if(alert) {
-        alert->setZOrder(100);
-        self->addChild(alert);
+        alert->m_pParent = self;
+        alert->show();
+        //alert->setZOrder(100);
+        //self->addChild(alert);
     }
 
     return true;
