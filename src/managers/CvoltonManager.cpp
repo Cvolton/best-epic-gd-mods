@@ -284,7 +284,9 @@ FLAlertLayer* CvoltonManager::missingResourcesError() {
 }
 
 FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
-    if(saveVer == version && !forced) return nullptr;
+    if((saveVer == version || shownUpdateDialog) && !forced) return nullptr;
+
+    shownUpdateDialog = true;
 
     auto layer = FLAlertLayer::create(
         nullptr,

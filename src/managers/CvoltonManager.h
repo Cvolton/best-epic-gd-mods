@@ -18,7 +18,7 @@ class CvoltonManager : public gd::GManager {
 
 
 public:
-	inline static constexpr char* version = "v2.3.1\n";
+	inline static constexpr char* version = "v2.3.1-test\n";
 	inline static constexpr char* modName = "BetterInfo";
 	inline static constexpr char* modNameColored = "Better<cg>Info</c>";
 	std::string latestVer;
@@ -31,6 +31,7 @@ public:
 	bool plistLoaded = false;
 	bool hasDoneHealthCheck = false;
 	bool skipSavedFilter = false;
+	bool shownUpdateDialog = false;
 
 	bool init();
 	void encodeDataTo(DS_Dictionary* data) override;
