@@ -189,3 +189,23 @@ std::string BetterInfo::fileSize(size_t bytes) {
 
         return size.str();
 }
+
+std::string BetterInfo::fixColorCrashes(std::string input) {
+        int tags = 0;
+
+        std::string openingTag = "<c";
+        for(std::string::size_type pos = 0; (pos = input.find(openingTag, pos)) != std::string::npos; tags++) {
+                pos += openingTag.length();
+        }
+
+        std::string closingTag = "</c>";
+        for(std::string::size_type pos = 0; (pos = input.find(closingTag, pos)) != std::string::npos; tags--) {
+                pos += closingTag.length();
+        }
+
+        for(int i = 0; i < tags; i++) {
+                input.append("</c>");
+        }
+
+        return input;
+}

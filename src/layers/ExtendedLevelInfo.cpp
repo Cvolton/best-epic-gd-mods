@@ -208,7 +208,7 @@ bool ExtendedLevelInfo::init(){
     m_pButtonMenu->addChild(descBg, -1);
     descBg->setPosition({0,52});
 
-    auto descText = level->getUnpackedLevelDescription();
+    auto descText = BetterInfo::fixColorCrashes(level->getUnpackedLevelDescription());
     size_t descLength = descText.length();
     float descDelimiter = 1;
     if(descLength > 140) descLength = 140;
