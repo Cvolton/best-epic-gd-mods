@@ -25,6 +25,7 @@
 #include "layers/RewardTypeSelectLayer.h"
 
 #include "managers/CvoltonManager.h"
+#include "managers/BetterInfoStats.h"
 
 using namespace cocos2d;
 using namespace gd;
@@ -1530,6 +1531,14 @@ bool __fastcall RewardsPage_init(FLAlertLayer* self){
     return true;
 }
 
+void __fastcall PlayLayer_levelComplete(PlayLayer* self){
+    MHook::getOriginal(PlayLayer_levelComplete)(self);
+
+    auto stats = BetterInfoStats::sharedState();
+    //stats->logCompletion(self->m_level->levelID, std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count(), self->m_isPracticeMode);
+    
+}
+
 /*void LevelBrowserLayer_loadLevelsFinished(LevelBrowserLayer* self, void* a, CCArray* levels, const char* a2){
     MHook::getOriginal(GameLevelManager_getCompletedLevels)(self, a, levels, a2);
 
@@ -1635,6 +1644,7 @@ DWORD WINAPI my_thread(void* hModule) {
     //MHook::registerHook(base + 0x180FC0, LevelSearchLayer_onSearch);
     //MHook::registerHook(base + 0xF9AE0, GameStatsManager_incrementChallenge);
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
+    MHook::registerHook(base + 0x1FD3D0, PlayLayer_levelComplete);
 
     /*
         Byte patches
