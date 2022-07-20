@@ -266,6 +266,8 @@ void ProfileSearchOptions::drawTogglesSecondary(){
     createToggle("user_search_downloaded", "Downloaded", -40, 80);
     createToggle("user_search_ldm", "LDM", 90, 80);
     createToggle("user_search_idrange", "ID Range", -170, 35, menu_selector(ProfileSearchOptions::onIdRange));
+    createToggle("user_search_copy", "Copyable", -40, 35);
+    createToggle("user_search_copy_free", "Free Copy", 90, 35);
 }
 
 void ProfileSearchOptions::onDialogClosed(){

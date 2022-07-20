@@ -1485,6 +1485,9 @@ CCArray* __fastcall GameLevelManager_getSavedLevels(GameLevelManager* self, void
         if(CM->getOption("user_search_copied") && level->originalLevel == 0) continue;
         if(CM->getOption("user_search_downloaded") && level->levelString.empty()) continue;
         if(CM->getOption("user_search_ldm") && !(level->lowDetailMode)) continue;
+        int password = level->password_rand - level->password_seed;
+        if(CM->getOption("user_search_copy") && password == 0) continue;
+        if(CM->getOption("user_search_copy_free") && password != 1) continue;
         if(CM->getOption("user_search_idrange")) {
             int min = CM->getOptionInt("user_search_idrange_min");
             int max = CM->getOptionInt("user_search_idrange_max");
