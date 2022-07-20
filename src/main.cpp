@@ -1472,8 +1472,10 @@ CCArray* __fastcall GameLevelManager_getSavedLevels(GameLevelManager* self, void
         if(CM->getOption("user_search_uncompleted") && level->normalPercent == 100) continue;
         if(CM->getOption("user_search_completed") && level->normalPercent != 100) continue;
         if(CM->getOption("user_search_featured") && level->featured < 1) continue;
+        if(CM->getOption("user_search_nofeatured") && level->featured >= 1) continue;
         if(CM->getOption("user_search_original") && level->originalLevel != 0) continue;
         if(CM->getOption("user_search_epic") && !(level->isEpic)) continue;
+        if(CM->getOption("user_search_noepic") && level->isEpic) continue;
         if(CM->getOption("user_search_song")) {
             if(CM->getOption("user_search_song_custom") && level->songID != CM->getOptionInt("user_search_song_id")) continue;
             if(!CM->getOption("user_search_song_custom") && (level->audioTrack != CM->getOptionInt("user_search_song_id") || level->songID != 0)) continue;
