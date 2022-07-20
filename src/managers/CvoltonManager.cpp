@@ -9,8 +9,8 @@ using namespace cocos2d;
 using namespace cocos2d::extension;
 using namespace gd;
 
-inline static constexpr char* sheets[1] = {"BI_GameSheet"};
-inline static constexpr char* textures[3] = {"BI_mainButton_001", "BI_blankBtn_001", "BI_updateArrow_001"};
+const char* sheets[1] = {"BI_GameSheet"};
+const char* textures[3] = {"BI_mainButton_001", "BI_blankBtn_001", "BI_updateArrow_001"};
 
 bool CvoltonManager::init(){
     bool init = CCNode::init();
@@ -244,7 +244,7 @@ FLAlertLayer* CvoltonManager::missingResourcesError() {
     std::ostringstream stream;
     if(!plistLoaded) stream << "\nBI_destroyedUsers.plist";
     for(auto sheet : sheets){
-        constexpr char* extensions[] = {"", "-hd", "-uhd"};
+        const char* extensions[] = {"", "-hd", "-uhd"};
         for(auto extension : extensions){
             std::string plistPath(
                 CCFileUtils::sharedFileUtils()->fullPathForFilename(
@@ -262,7 +262,7 @@ FLAlertLayer* CvoltonManager::missingResourcesError() {
     }
 
     for(auto texture : textures){
-        constexpr char* extensions[] = {"", "-hd", "-uhd"};
+        const char* extensions[] = {"", "-hd", "-uhd"};
         for(auto extension : extensions){
             std::string pngPath(
                 CCFileUtils::sharedFileUtils()->fullPathForFilename(

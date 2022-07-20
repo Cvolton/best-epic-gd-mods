@@ -15,7 +15,7 @@ protected:
     int levelsPerPage() const;
     void startLoading();
     void onLoadFinished(cocos2d::extension::CCHttpClient* client, cocos2d::extension::CCHttpResponse* response);
-    void LeaderboardViewLayer::generateScores(const std::string& response);
+    void generateScores(const std::string& response);
 public:
     void loadPage();
     static LeaderboardViewLayer* create(int accountID);
