@@ -204,7 +204,7 @@ std::string BetterInfo::fixColorCrashes(std::string input) {
         }
 
         for(int i = 0; i < tags; i++) {
-                input.append("</c>");
+                input.append("  </c>");
         }
 
         return input;
