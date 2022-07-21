@@ -4,6 +4,7 @@
 #include <random>
 #include <filesystem>
 #include "../utils.hpp"
+#include "../layers/DailyListView.h"
 
 using namespace cocos2d;
 using namespace cocos2d::extension;
@@ -298,6 +299,12 @@ FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
         300,
         "<cg>BetterInfo has updated!</c>\n"
         "\n"
+        "<cy>Changelog:</c> <cg>(v2.3.2 - 2022-06-28)</c>\n"
+        "- Added <cj>even more</c> <co>Saved Filters</c> (again)\n"
+        "- Added <cj>first/last played, completed dates</c> to <co>Level Stats</c>\n"
+        "- Added <cj>auto submit to level leaderboards</c> (disabled by default, enable in the BI settings)\n"
+        "- Bugfixes & improvements\n"
+        "\n"
         "<cy>Changelog:</c> <cg>(v2.3.1 - 2022-06-28)</c>\n"
         "- Added <cj>even more</c> <co>Saved Filters</c>\n"
         "- Added a <co>percentage</c> <cj>Completed Mode</c>\n"
@@ -310,7 +317,7 @@ FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
         "- Added <co>more stuff</c> to <cj>Extended Level Info</c>\n"
         "- Added a <cj>white level ID option</c>"
     );
-
+    
     this->save();
 
     return layer;
