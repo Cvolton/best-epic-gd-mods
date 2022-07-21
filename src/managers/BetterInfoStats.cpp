@@ -78,24 +78,23 @@ void BetterInfoStats::firstLoad() {
     this->save();
 }
 
-void BetterInfoStats::logCompletion(int levelID, bool practice) {
-    if(getCompletion(levelID, practice) != 0) return;
+void BetterInfoStats::logCompletion(GJGameLevel* level, bool practice) {
+    if(getCompletion(level, practice) != 0) return;
 
-    logCompletion(levelID, practice, std::time(nullptr));
+    logCompletion(level, practice, std::time(nullptr));
 }
 
-void BetterInfoStats::logCompletion(int levelID, bool practice, time_t timestamp) {
+void BetterInfoStats::logCompletion(GJGameLevel* level, bool practice, time_t timestamp) {
     auto dict = practice ? m_practiceDict : m_normalDict;
-    auto idString = std::to_string(levelID);
-    dict->setObject(CCString::create(std::to_string(timestamp).c_str()), idString);
+    dict->setObject(CCString::create(std::to_string(timestamp).c_str()), keyForLevel(level));
     
     this->save();
 }
 
-time_t BetterInfoStats::getCompletion(int levelID, bool practice) {
+time_t BetterInfoStats::getCompletion(GJGameLevel* level, bool practice) {
     auto dict = practice ? m_practiceDict : m_normalDict;
 
-    auto ret = dict->valueForKey(std::to_string(levelID));
+    auto ret = dict->valueForKey(keyForLevel(level));
     if(std::string_view(ret->getCString()).empty()) return 0;
     try {
         return std::strtol(ret->getCString(), nullptr, 10);
@@ -104,23 +103,27 @@ time_t BetterInfoStats::getCompletion(int levelID, bool practice) {
     }
 }
 
-void BetterInfoStats::logPlay(int levelID) {
-    auto idString = std::to_string(levelID);
+void BetterInfoStats::logPlay(GJGameLevel* level) {
+    auto idString = keyForLevel(level);
     auto timeString = CCString::create(std::to_string(std::time(nullptr)).c_str());
     m_lastPlayedDict->setObject(timeString, idString);
-    if(getPlay(levelID, false) == 0) m_firstPlayedDict->setObject(timeString, idString);
+    if(getPlay(level, false) == 0) m_firstPlayedDict->setObject(timeString, idString);
     
     this->save();
 }
 
-time_t BetterInfoStats::getPlay(int levelID, bool last) {
+time_t BetterInfoStats::getPlay(GJGameLevel* level, bool last) {
     auto dict = last ? m_lastPlayedDict : m_firstPlayedDict;
 
-    auto ret = dict->valueForKey(std::to_string(levelID));
+    auto ret = dict->valueForKey(keyForLevel(level));
     if(std::string_view(ret->getCString()).empty()) return 0;
     try {
         return std::strtol(ret->getCString(), nullptr, 10);
     } catch(...) {
         return 0;
     }
+}
+
+std::string BetterInfoStats::keyForLevel(GJGameLevel* level) {
+    return std::format("{}_{}_{}_{}", level->levelID, static_cast<int>(level->levelType), level->dailyID, level->gauntletLevel);
 }

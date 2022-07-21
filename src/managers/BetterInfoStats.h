@@ -25,9 +25,10 @@ public:
 	    }
 	    return m_instance;
 	}
-	void logCompletion(int levelID, bool practice);
-	void logCompletion(int levelID, bool practice, time_t timestamp);
-	time_t getCompletion(int levelID, bool practice);
-	void logPlay(int levelID);
-	time_t getPlay(int levelID, bool last);
+	void logCompletion(gd::GJGameLevel* level, bool practice);
+	void logCompletion(gd::GJGameLevel* level, bool practice, time_t timestamp);
+	time_t getCompletion(gd::GJGameLevel* level, bool practice);
+	void logPlay(gd::GJGameLevel* level);
+	time_t getPlay(gd::GJGameLevel* level, bool last);
+	std::string keyForLevel(gd::GJGameLevel* level);
 };

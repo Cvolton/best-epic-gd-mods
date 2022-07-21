@@ -1538,19 +1538,19 @@ void __fastcall PlayLayer_levelComplete(PlayLayer* self){
     MHook::getOriginal(PlayLayer_levelComplete)(self);
 
     auto stats = BetterInfoStats::sharedState();
-    stats->logCompletion(self->m_level->levelID, self->m_isPracticeMode);
+    stats->logCompletion(self->m_level, self->m_isPracticeMode);
 }
 
 void __fastcall PlayLayer_init(PlayLayer* self, void* a, GJGameLevel* level){
     MHook::getOriginal(PlayLayer_init)(self, a, level);
 
     auto stats = BetterInfoStats::sharedState();
-    stats->logPlay(self->m_level->levelID);
+    stats->logPlay(self->m_level);
 }
 
 void __fastcall PlayLayer_onQuit(PlayLayer* self){
     auto stats = BetterInfoStats::sharedState();
-    stats->logPlay(self->m_level->levelID);
+    stats->logPlay(self->m_level);
 
     MHook::getOriginal(PlayLayer_onQuit)(self);
 }
