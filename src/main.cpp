@@ -1557,6 +1557,12 @@ void __fastcall PlayLayer_onQuit(PlayLayer* self){
     MHook::getOriginal(PlayLayer_onQuit)(self);
 }
 
+void __fastcall GJGameLevel_savePercentage(GJGameLevel* self, void* a, int a1, bool a2, int a3, int a4, bool a5){
+    MHook::getOriginal(GJGameLevel_savePercentage)(self, a, a1, a2, a3, a4, a5);
+
+    if(CvoltonManager::sharedState()->getOption("auto_submit")) GameLevelManager::sharedState()->getLevelLeaderboard(self, 0);
+}
+
 /*void LevelBrowserLayer_loadLevelsFinished(LevelBrowserLayer* self, void* a, CCArray* levels, const char* a2){
     MHook::getOriginal(GameLevelManager_getCompletedLevels)(self, a, levels, a2);
 
@@ -1665,6 +1671,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x1FD3D0, PlayLayer_levelComplete);
     MHook::registerHook(base + 0x1FB780, PlayLayer_init);
     MHook::registerHook(base + 0x20D810, PlayLayer_onQuit);
+    MHook::registerHook(base + 0xBD5C0, GJGameLevel_savePercentage);
 
     /*
         Byte patches
