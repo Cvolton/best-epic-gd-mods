@@ -107,7 +107,7 @@ void BetterInfoStats::logPlay(GJGameLevel* level) {
     auto idString = keyForLevel(level);
     auto timeString = CCString::create(std::to_string(std::time(nullptr)).c_str());
     m_lastPlayedDict->setObject(timeString, idString);
-    if(getPlay(level, false) == 0) m_firstPlayedDict->setObject(timeString, idString);
+    if(getPlay(level, false) == 0 && level->normalPercent <= 0) m_firstPlayedDict->setObject(timeString, idString);
     
     this->save();
 }
