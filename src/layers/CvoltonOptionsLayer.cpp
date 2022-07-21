@@ -122,4 +122,5 @@ void CvoltonOptionsLayer::drawToggles(){
     createToggle("no_green_user", "Disable Green Username Fix");
     createToggle("no_level_info", "Disable Extended Level Info");
     createToggle("white_id", "White Level ID text");
+    createToggle("auto_submit", "Auto submit to leaderboards");
 }
