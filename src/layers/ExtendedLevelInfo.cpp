@@ -403,9 +403,8 @@ void ExtendedLevelInfo::showProgressDialog(GJGameLevel* level){
         contentStream << "\n\n<cy>Progresses</c>: " << progresses;
     }
 
-    /*float dialogWidth = 300;
+    float dialogWidth = 300;
     if(progresses.length() > 48) dialogWidth = 350;
     if(progresses.length() > 72) dialogWidth = 400;
-    FLAlertLayer::create(nullptr, "Level Stats", "OK", nullptr, dialogWidth, contentStream.str().length() > 300, 300, contentStream.str())->show();*/
-    FLAlertLayer::create(nullptr, level->levelName.c_str(), "OK", nullptr, 400, true, 300, contentStream.str())->show();
+    FLAlertLayer::create(nullptr, level->levelName.c_str(), "OK", nullptr, dialogWidth, contentStream.str().length() > 300, 300, contentStream.str())->show();
 }
