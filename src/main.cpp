@@ -568,7 +568,27 @@ bool __fastcall LevelCell_onViewProfile(LevelCell* self, void* a, CCObject* b) {
 
     return true;
 }
-
+class LevelCel : public LevelCell
+{
+public:
+    void CopyID(CCObject* e)
+    {
+        // Yeah i took this from stack overflow
+        std::string s = std::to_string(this->level->levelID);
+        char const* pchar = s.c_str();
+        BetterInfo::copyToClipboard(pchar);
+        FLAlertLayer::create(nullptr, "Copied ID", "OK", nullptr, "Copied the levels <cj>ID</c> to your <cy>clipboard</c>.")->show();
+    }
+    void onInfo(CCObject* caller)
+    {
+        InfoLayer* infoLayer = InfoLayer::create(this->level, nullptr);
+        infoLayer->show();
+    }
+    void onProgresses(CCObject* caller)
+    {
+        ExtendedLevelInfo::showProgressDialog(this->level);
+    }
+};
 void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
     MHook::getOriginal(LevelCell_loadCustomLevelCell)(self);
     
@@ -587,7 +607,23 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
             idTextNode->setScale(0.6f);
             idTextNode->setColor({51,51,51});
             idTextNode->setOpacity(152);
+            auto idTextCopyBtnSprite = gd::ButtonSprite::create("Copy", 0, false, "bigFont.fnt", "GJ_button_04.png", 0, 0.5f);
+            auto idTextCopyBtn = CCMenuItemSpriteExtra::create(idTextCopyBtnSprite, self, menu_selector(LevelCel::CopyID));
+            // x = 255 y = 45
+            auto infoSprite = BetterInfo::createWithBISpriteFrameName("GJ_infoBtn_001.png");
+            auto infoBtn = CCMenuItemSpriteExtra::create(infoSprite, self, menu_selector(LevelCel::onInfo));
+            auto infoSprite2 = BetterInfo::createWithBISpriteFrameName("GJ_infoIcon_001.png");
+            auto infoBtn2 = CCMenuItemSpriteExtra::create(infoSprite2, self, menu_selector(LevelCel::onProgresses));
+            idTextCopyBtn->setPosition({ 20,26 });
+            idTextCopyBtnSprite->setScale(0.4f);
+            infoSprite->setScale(0.4f);
+            infoBtn->setPosition({ -50,0.5f });
+            infoSprite2->setScale(0.8f);
+            infoBtn2->setPosition({ -303,35 });
+            menu->addChild(idTextCopyBtn);
             menu->addChild(idTextNode);
+            menu->addChild(infoBtn);
+            menu->addChild(infoBtn2);
             if(self->level->dailyID > 0 || CvoltonManager::sharedState()->getOption("white_id")){
                 idTextNode->setColor({255,255,255});
                 idTextNode->setOpacity(200);
@@ -596,7 +632,7 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
             if(self->level->dailyID > 0){
 
                 const int maxDaily = 100000;
-
+                idTextCopyBtn->setPosition({ -36,47 });
                 std::ostringstream dailyText;
                 dailyText << ((self->level->dailyID >= maxDaily) ? "Weekly" : "Daily") << " #" << (self->level->dailyID % maxDaily);
                 auto dailyTextNode = CCLabelBMFont::create(dailyText.str().c_str(), "chatFont.fnt");
@@ -606,6 +642,7 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
                 dailyTextNode->setColor({255,255,255});
                 dailyTextNode->setOpacity(200);
                 menu->addChild(dailyTextNode);
+                infoBtn2->setPosition({ 25,-40 });
 
             }
 
@@ -921,7 +958,38 @@ void __fastcall CommentCell_likedItem(uint8_t* self, void* a, LikeItemType* type
     auto cell = reinterpret_cast<CommentCell*>(self - sizeof(TableViewCell));
     cell->release();
 }
-
+class LILCopy : public LevelInfoLayer
+{
+public:
+    void CopyID(CCObject* e)
+    {
+        // Yeah i took this from stack overflow
+        std::string s = std::to_string(this->level->levelID);
+        char const* pchar = s.c_str();
+        BetterInfo::copyToClipboard(pchar);
+        FLAlertLayer::create(nullptr, "Copied ID", "OK", nullptr, "Copied the levels <cj>ID</c> to your <cy>clipboard</c>.")->show();
+    }
+};
+void __fastcall LevelInfoLayer_init(LevelInfoLayer* self, void* a, CCObject* sender) {
+    MHook::getOriginal(LevelInfoLayer_init)(self,a,sender);
+    std::ostringstream idText;
+    idText << "ID: " << self->level->levelID;
+    auto text = CCLabelBMFont::create(idText.str().c_str(),"goldFont.fnt");
+    auto sprite = BetterInfo::createBISprite(".");
+    auto menu = CCMenu::create();
+    auto textclickable = CCMenuItemSpriteExtra::create(text, self, menu_selector(LILCopy::CopyID));
+    if (self->m_pToggler->isVisible() == true)
+    {
+        menu->setPosition({ 70,50 });
+    }
+    else
+    {
+        menu->setPosition({ 70,60 });
+    }
+    text->setScale(0.5f);
+    menu->addChild(textclickable);
+    self->addChild(menu);
+}
 void __fastcall LevelInfoLayer_onLevelInfo(LevelInfoLayer* self, void* a, CCObject* sender) {
     ExtendedLevelInfo::showProgressDialog(self->level);
 }
@@ -1584,8 +1652,8 @@ void setupPageLimitBypass(){
 void setupDailyNew(){
     auto proc = GetCurrentProcess();
     auto winapiBase = reinterpret_cast<char*>(base);
-    //This moves the position of the New! displayed when there's a new daily from 182 (0x43360000) to 130 (0x43020000)
-    unsigned char patch[] = {0xC7, 0x04, 0x24, 0x00, 0x00, 0x02, 0x43};
+    //This moves the position of the New! displayed when there's a new daily from 182 (0x43360000) to 10 (0x42c80000)
+    unsigned char patch[] = {0xC7, 0x04, 0x24, 0x00, 0x00, 0xc8, 0x42};
     WriteProcessMemory(proc, winapiBase + 0x6C709, patch, 7, NULL);
 }
 
@@ -1663,6 +1731,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0xA2960, GameLevelManager_getSavedLevels); 
     MHook::registerHook(base + 0xA43B0, GameLevelManager_limitSavedLevels);
     MHook::registerHook(base + 0x2178F0, RewardsPage_init);
+    MHook::registerHook(base + 0x175DF0, LevelInfoLayer_init);
     //MHook::registerHook(base + 0x180FC0, LevelSearchLayer_onSearch);
     //MHook::registerHook(base + 0xF9AE0, GameStatsManager_incrementChallenge);
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
