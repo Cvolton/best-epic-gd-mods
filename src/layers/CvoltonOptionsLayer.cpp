@@ -30,7 +30,7 @@ void CvoltonOptionsLayer::onClose(cocos2d::CCObject* sender)
 }
 
 bool CvoltonOptionsLayer::init(){
-    bool init = createBasics({300.0f, 200.0f}, menu_selector(CvoltonOptionsLayer::onClose), 0.8f);
+    bool init = createBasics({370.0f, 200.0f}, menu_selector(CvoltonOptionsLayer::onClose), 0.8f);
     if(!init) return false;
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
@@ -74,13 +74,13 @@ void CvoltonOptionsLayer::createToggle(const char* option, const char* name){
     );
     m_pButtonMenu->addChild(button);
     float y = 45.f - (toggleCount++ * 40.f);
-    button->setPosition({-127, y});
+    button->setPosition({-157, y});
     auto optionString = CCString::create(option);
     optionString->retain();
     button->setUserData(optionString);
     button->setSizeMult(1.2f);
 
-    auto label = createTextLabel(name, {-107, y}, 0.5f, m_pButtonMenu);
+    auto label = createTextLabel(name, {-137, y}, 0.5f, m_pButtonMenu);
     label->setAnchorPoint({0,0.5f});
 }
 
