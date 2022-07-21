@@ -1539,8 +1539,6 @@ void __fastcall PlayLayer_levelComplete(PlayLayer* self){
 
     auto stats = BetterInfoStats::sharedState();
     stats->logCompletion(self->m_level, self->m_isPracticeMode);
-
-    if(CvoltonManager::sharedState()->getOption("auto_submit")) GameLevelManager::sharedState()->getLevelLeaderboard(self->m_level, 0);
 }
 
 void __fastcall PlayLayer_init(PlayLayer* self, void* a, GJGameLevel* level){
