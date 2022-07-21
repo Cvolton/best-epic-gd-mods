@@ -85,6 +85,8 @@ void BetterInfoStats::logCompletion(GJGameLevel* level, bool practice) {
 }
 
 void BetterInfoStats::logCompletion(GJGameLevel* level, bool practice, time_t timestamp) {
+    if(level->levelType == kGJLevelTypeEditor) return;
+
     auto dict = practice ? m_practiceDict : m_normalDict;
     dict->setObject(CCString::create(std::to_string(timestamp).c_str()), keyForLevel(level));
     
@@ -104,6 +106,8 @@ time_t BetterInfoStats::getCompletion(GJGameLevel* level, bool practice) {
 }
 
 void BetterInfoStats::logPlay(GJGameLevel* level) {
+    if(level->levelType == kGJLevelTypeEditor) return;
+    
     auto idString = keyForLevel(level);
     auto timeString = CCString::create(std::to_string(std::time(nullptr)).c_str());
     m_lastPlayedDict->setObject(timeString, idString);
