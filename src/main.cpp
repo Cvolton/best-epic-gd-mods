@@ -1558,7 +1558,7 @@ void __fastcall PlayLayer_onQuit(PlayLayer* self){
 void __fastcall GJGameLevel_savePercentage(GJGameLevel* self, void* a, int a1, bool a2, int a3, int a4, bool a5){
     MHook::getOriginal(GJGameLevel_savePercentage)(self, a, a1, a2, a3, a4, a5);
 
-    if(CvoltonManager::sharedState()->getOption("auto_submit")) GameLevelManager::sharedState()->getLevelLeaderboard(self, 0);
+    if(CvoltonManager::sharedState()->getOption("auto_submit") && self->levelType == kGJLevelTypeSaved) GameLevelManager::sharedState()->getLevelLeaderboard(self, 0);
 }
 
 /*void LevelBrowserLayer_loadLevelsFinished(LevelBrowserLayer* self, void* a, CCArray* levels, const char* a2){
