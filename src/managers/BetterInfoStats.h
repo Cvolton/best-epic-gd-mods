@@ -10,6 +10,8 @@ class BetterInfoStats : public gd::GManager {
 public:
 	cocos2d::CCDictionary* m_normalDict;
 	cocos2d::CCDictionary* m_practiceDict;
+	cocos2d::CCDictionary* m_firstPlayedDict;
+	cocos2d::CCDictionary* m_lastPlayedDict;
 
 	bool init();
 	void encodeDataTo(DS_Dictionary* data) override;
@@ -26,4 +28,6 @@ public:
 	void logCompletion(int levelID, bool practice);
 	void logCompletion(int levelID, bool practice, time_t timestamp);
 	time_t getCompletion(int levelID, bool practice);
+	void logPlay(int levelID);
+	time_t getPlay(int levelID, bool last);
 };

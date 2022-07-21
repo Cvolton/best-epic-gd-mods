@@ -1541,6 +1541,13 @@ void __fastcall PlayLayer_levelComplete(PlayLayer* self){
     stats->logCompletion(self->m_level->levelID, self->m_isPracticeMode);
 }
 
+void __fastcall PlayLayer_init(PlayLayer* self, void* a, GJGameLevel* level){
+    MHook::getOriginal(PlayLayer_init)(self, a, level);
+
+    auto stats = BetterInfoStats::sharedState();
+    stats->logPlay(self->m_level->levelID);
+}
+
 /*void LevelBrowserLayer_loadLevelsFinished(LevelBrowserLayer* self, void* a, CCArray* levels, const char* a2){
     MHook::getOriginal(GameLevelManager_getCompletedLevels)(self, a, levels, a2);
 
@@ -1647,6 +1654,7 @@ DWORD WINAPI my_thread(void* hModule) {
     //MHook::registerHook(base + 0xF9AE0, GameStatsManager_incrementChallenge);
     //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
     MHook::registerHook(base + 0x1FD3D0, PlayLayer_levelComplete);
+    MHook::registerHook(base + 0x1FB780, PlayLayer_init);
 
     /*
         Byte patches

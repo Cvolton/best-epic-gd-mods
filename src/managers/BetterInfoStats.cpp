@@ -20,6 +20,12 @@ bool BetterInfoStats::init(){
     m_practiceDict = CCDictionary::create();
     m_practiceDict->retain();
 
+    m_firstPlayedDict = CCDictionary::create();
+    m_firstPlayedDict->retain();
+
+    m_lastPlayedDict = CCDictionary::create();
+    m_lastPlayedDict->retain();
+
     this->setup();
 
     return true;
@@ -30,6 +36,8 @@ BetterInfoStats::BetterInfoStats(){}
 void BetterInfoStats::encodeDataTo(DS_Dictionary* data) {
     data->setDictForKey("normalCompletions", m_normalDict);
     data->setDictForKey("practiceCompletions", m_practiceDict);
+    data->setDictForKey("firstPlayed", m_firstPlayedDict);
+    data->setDictForKey("lastPlayed", m_lastPlayedDict);
 }
 
 void BetterInfoStats::dataLoaded(DS_Dictionary* data) {
@@ -45,6 +53,20 @@ void BetterInfoStats::dataLoaded(DS_Dictionary* data) {
         m_practiceDict->release();
         m_practiceDict = practiceDict;
         m_practiceDict->retain();
+    }
+
+    auto firstPlayedDict = static_cast<CCDictionary*>(data->getObjectForKey("firstPlayed"));
+    if(firstPlayedDict) {
+        m_firstPlayedDict->release();
+        m_firstPlayedDict = firstPlayedDict;
+        m_firstPlayedDict->retain();
+    }
+
+    auto lastPlayedDict = static_cast<CCDictionary*>(data->getObjectForKey("lastPlayed"));
+    if(lastPlayedDict) {
+        m_lastPlayedDict->release();
+        m_lastPlayedDict = lastPlayedDict;
+        m_lastPlayedDict->retain();
     }
 
     this->save();
@@ -72,6 +94,27 @@ void BetterInfoStats::logCompletion(int levelID, bool practice, time_t timestamp
 
 time_t BetterInfoStats::getCompletion(int levelID, bool practice) {
     auto dict = practice ? m_practiceDict : m_normalDict;
+
+    auto ret = dict->valueForKey(std::to_string(levelID));
+    if(std::string_view(ret->getCString()).empty()) return 0;
+    try {
+        return std::strtol(ret->getCString(), nullptr, 10);
+    } catch(...) {
+        return 0;
+    }
+}
+
+void BetterInfoStats::logPlay(int levelID) {
+    auto idString = std::to_string(levelID);
+    auto timeString = CCString::create(std::to_string(std::time(nullptr)).c_str());
+    m_lastPlayedDict->setObject(timeString, idString);
+    if(getPlay(levelID, false) == 0) m_firstPlayedDict->setObject(timeString, idString);
+    
+    this->save();
+}
+
+time_t BetterInfoStats::getPlay(int levelID, bool last) {
+    auto dict = last ? m_lastPlayedDict : m_firstPlayedDict;
 
     auto ret = dict->valueForKey(std::to_string(levelID));
     if(std::string_view(ret->getCString()).empty()) return 0;

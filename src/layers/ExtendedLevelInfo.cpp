@@ -381,11 +381,15 @@ void ExtendedLevelInfo::showProgressDialog(GJGameLevel* level){
         auto stats = BetterInfoStats::sharedState();
 
         contentStream << "\n<cp>Normal</c>: " << level->normalPercent
-        << "%\n<co>Practice</c>: " << level->practicePercent
-        << "%\n<co>Completed</c>: " << BetterInfo::timeToString(stats->getCompletion(level->levelID, false));
-
+        << "%\n<co>Practice</c>: " << level->practicePercent << "%";
         if(level->orbCompletion != level->normalPercent) contentStream << "\n<cj>Orbs</c>: " << level->orbCompletion << "%";
         if(level->newNormalPercent2 != level->orbCompletion) contentStream << "\n<cr>Leaderboard</c>: " << level->newNormalPercent2 << "%";
+
+
+        if(stats->getPlay(level->levelID, false) != 0) contentStream << "\n\n<co>First played</c>: " << BetterInfo::timeToString(stats->getPlay(level->levelID, false));
+        if(stats->getCompletion(level->levelID, false) != 0) contentStream << "\n<co>Completed</c>: " << BetterInfo::timeToString(stats->getCompletion(level->levelID, false));
+        if(stats->getCompletion(level->levelID, true) != 0) contentStream << "\n<co>Completed (practice)</c>: " << BetterInfo::timeToString(stats->getCompletion(level->levelID, true));
+        if(stats->getPlay(level->levelID, true) != 0) contentStream << "\n<co>Last played</c>: " << BetterInfo::timeToString(stats->getPlay(level->levelID, true));
     }else{
         contentStream << "\n<cp>Objects</c>: " << level->objectCount
             << "\n<cr>In Editor</c>: " << ExtendedLevelInfo::workingTime(level->workingTime);
@@ -399,8 +403,9 @@ void ExtendedLevelInfo::showProgressDialog(GJGameLevel* level){
         contentStream << "\n\n<cy>Progresses</c>: " << progresses;
     }
 
-    float dialogWidth = 300;
+    /*float dialogWidth = 300;
     if(progresses.length() > 48) dialogWidth = 350;
     if(progresses.length() > 72) dialogWidth = 400;
-    gd::FLAlertLayer::create(nullptr, "Level Stats", "OK", nullptr, dialogWidth, contentStream.str().length() > 300, 300, contentStream.str())->show();
+    FLAlertLayer::create(nullptr, "Level Stats", "OK", nullptr, dialogWidth, contentStream.str().length() > 300, 300, contentStream.str())->show();*/
+    FLAlertLayer::create(nullptr, "Level Stats", "OK", nullptr, 400, true, 300, contentStream.str())->show();
 }
