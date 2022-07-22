@@ -112,6 +112,8 @@ void BetterInfoStats::logPlay(GJGameLevel* level) {
     auto timeString = CCString::create(std::to_string(std::time(nullptr)).c_str());
     m_lastPlayedDict->setObject(timeString, idString);
     if(getPlay(level, false) == 0 && level->normalPercent <= 0) m_firstPlayedDict->setObject(timeString, idString);
+    if(level->normalPercent == 100 && getCompletion(level, false) == 0) logCompletion(level, false, -1);
+    if(level->practicePercent == 100 && getCompletion(level, true) == 0) logCompletion(level, true, -1);
     
     this->save();
 }

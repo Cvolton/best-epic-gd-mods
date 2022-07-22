@@ -385,25 +385,26 @@ void ExtendedLevelInfo::showProgressDialog(GJGameLevel* level){
         if(level->orbCompletion != level->normalPercent) contentStream << "\n<cj>Orbs</c>: " << level->orbCompletion << "%";
         if(level->newNormalPercent2 != level->orbCompletion) contentStream << "\n<cr>Leaderboard</c>: " << level->newNormalPercent2 << "%";
 
+        contentStream << "\n\n";
 
-        if(stats->getPlay(level, false) != 0) contentStream << "\n\n<cg>First played</c>: " << BetterInfo::timeToString(stats->getPlay(level, false));
-        if(stats->getPlay(level, true) != 0) contentStream << "\n<cl>Last played</c>: " << BetterInfo::timeToString(stats->getPlay(level, true));
-        if(stats->getCompletion(level, false) != 0) contentStream << "\n<cp>Completed</c>: " << BetterInfo::timeToString(stats->getCompletion(level, false));
-        if(stats->getCompletion(level, true) != 0) contentStream << "\n<co>Completed (practice)</c>: " << BetterInfo::timeToString(stats->getCompletion(level, true));
+        if(stats->getPlay(level, false) != 0) contentStream << "<cg>First played</c>: " << BetterInfo::timeToString(stats->getPlay(level, false)) << "\n";
+        if(stats->getPlay(level, true) != 0) contentStream << "<cl>Last played</c>: " << BetterInfo::timeToString(stats->getPlay(level, true)) << "\n";
+        if(stats->getCompletion(level, false) > 0) contentStream << "<cp>Completed</c>: " << BetterInfo::timeToString(stats->getCompletion(level, false)) << "\n";
+        if(stats->getCompletion(level, true) > 0) contentStream << "<co>Completed (practice)</c>: " << BetterInfo::timeToString(stats->getCompletion(level, true)) << "\n";
     }else{
         contentStream << "\n<cp>Objects</c>: " << level->objectCount
-            << "\n<cr>In Editor</c>: " << ExtendedLevelInfo::workingTime(level->workingTime);
-        if(level->workingTime2) contentStream << "\n<cr>Editor (C)</c>: " << ExtendedLevelInfo::workingTime(level->workingTime2);
+            << "\n<cr>In Editor</c>: " << ExtendedLevelInfo::workingTime(level->workingTime) << "\n";
+        if(level->workingTime2) contentStream << "<cr>Editor (C)</c>: " << ExtendedLevelInfo::workingTime(level->workingTime2) << "\n";
         ;
     }
 
     std::string progresses;
     if(level->personalBests != ""){
         progresses = ExtendedLevelInfo::printableProgress(level->personalBests, level->newNormalPercent2);
-        contentStream << "\n\n<cy>Progresses</c>: " << progresses;
+        contentStream << "\n<cy>Progresses</c>: " << progresses;
     }
 
     float dialogWidth = 350;
-    if(contentStream.str().length() > 300) dialogWidth = 400;
-    FLAlertLayer::create(nullptr, level->levelName.c_str(), "OK", nullptr, dialogWidth, contentStream.str().length() > 300, 300, contentStream.str())->show();
+    if(contentStream.str().length() > 250) dialogWidth = 400;
+    FLAlertLayer::create(nullptr, level->levelName.c_str(), "OK", nullptr, dialogWidth, contentStream.str().length() > 250, 300, contentStream.str())->show();
 }
