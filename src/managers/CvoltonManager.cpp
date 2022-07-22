@@ -297,6 +297,7 @@ FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
         400,
         true,
         300,
+        "\n"
         "<cg>BetterInfo has updated!</c>\n"
         "\n"
         "<cy>Changelog:</c> <cg>(v2.3.2 - 2022-06-28)</c>\n"
@@ -316,6 +317,7 @@ FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
         "- Added <co>Live</c> <cj>Comment Chat</c> <co>refreshing</c>\n"
         "- Added <co>more stuff</c> to <cj>Extended Level Info</c>\n"
         "- Added a <cj>white level ID option</c>"
+        "\n"
     );
     
     this->save();
