@@ -40,5 +40,6 @@ namespace BetterInfo {
     std::string fixColorCrashes(std::string input);
     std::string timeToString(time_t input);
     bool isSavedFiltered();
+    void debugObjectIndexes(cocos2d::CCNode* node);
 
 }

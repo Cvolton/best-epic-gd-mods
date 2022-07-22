@@ -261,3 +261,19 @@ bool BetterInfo::isSavedFiltered() {
 
         return false;
 }
+
+void BetterInfo::debugObjectIndexes(CCNode* node) {
+        auto menu = CCMenu::create();
+        menu->setPosition({0, 0});
+        menu->setZOrder(1000);
+        for (size_t i = 0; i < node->getChildrenCount(); i++) {
+                auto text = CCLabelBMFont::create(std::to_string(i).c_str(), "bigFont.fnt");
+                auto child = static_cast<CCNode*>(node->getChildren()->objectAtIndex(i));
+                text->setAnchorPoint(child->getAnchorPoint());
+                text->setScale(0.5f);
+                text->setPosition(child->getPosition());
+                text->setZOrder(1000);
+                menu->addChild(text);
+        }
+        node->addChild(menu);
+}

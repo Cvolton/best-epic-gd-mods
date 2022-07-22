@@ -1035,9 +1035,7 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
     bool isLocal = BetterInfo::isLocal(self->searchObject);
 
     if((self->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite)){
-        if(BetterInfo::isSavedFiltered()){
-            self->countText->setString((std::string("(Filtered) ") + self->countText->getString()).c_str());
-        }
+        if(BetterInfo::isSavedFiltered() && self->countText) self->countText->setString((std::string("(Filtered) ") + self->countText->getString()).c_str());
 
         if(menu->getChildByTag(filterBtnTag) == nullptr) {
             auto filterSprite = CCSprite::createWithSpriteFrameName("GJ_plusBtn_001.png");
