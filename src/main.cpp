@@ -1034,19 +1034,26 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
     auto winSize = CCDirector::sharedDirector()->getWinSize();
     bool isLocal = BetterInfo::isLocal(self->searchObject);
 
-    if((self->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite) && menu->getChildByTag(filterBtnTag) == nullptr){
-        auto filterSprite = CCSprite::createWithSpriteFrameName("GJ_plusBtn_001.png");
-        filterSprite->setScale(0.7f);
-        auto filterButton = gd::CCMenuItemSpriteExtra::create(
-            filterSprite,
-            self,
-            menu_selector(GamingButton::onLevelBrowserSavedFilter)
-        );
-        menu->addChild(filterButton);
-        filterButton->setPosition({- (winSize.width / 2) + 64, 92});
-        //filterButton->setScale(0.8f);
-        filterButton->setSizeMult(1.2f);
-        filterButton->setTag(filterBtnTag);
+    if((self->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite)){
+        if(BetterInfo::isSavedFiltered()){
+            self->countText->setString((std::string("(Filtered) ") + self->countText->getString()).c_str());
+        }
+
+        if(menu->getChildByTag(filterBtnTag) == nullptr) {
+            auto filterSprite = CCSprite::createWithSpriteFrameName("GJ_plusBtn_001.png");
+            filterSprite->setScale(0.7f);
+            auto filterButton = gd::CCMenuItemSpriteExtra::create(
+                filterSprite,
+                self,
+                menu_selector(GamingButton::onLevelBrowserSavedFilter)
+            );
+            menu->addChild(filterButton);
+            filterButton->setPosition({- (winSize.width / 2) + 64, 92});
+            //filterButton->setScale(0.8f);
+            filterButton->setSizeMult(1.2f);
+            filterButton->setTag(filterBtnTag);
+        }
+
     }
 
     if(menu->getChildByTag(starBtnTag)) return;

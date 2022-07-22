@@ -215,3 +215,49 @@ std::string BetterInfo::timeToString(time_t input) {
         localtime_s(&time3, &input);
         return std::format("{}-{:02}-{:02} {:02}:{:02}", time3.tm_year + 1900, time3.tm_mon + 1, time3.tm_mday, time3.tm_hour, time3.tm_min);
 }
+
+bool BetterInfo::isSavedFiltered() {
+        auto CM = CvoltonManager::sharedState();
+
+        for(unsigned int i = 0; i <= 4; i++){
+                if(
+                        CM->getOption(
+                                CCString::createWithFormat("user_search_len_%02u", i)->getCString()
+                        )
+                ) return true;
+        }
+
+        if(CM->getOption("user_search_diff_auto")) return true;
+
+        for(int i = 0; i <= 6; i++){
+                if(
+                        CM->getOption(
+                                CCString::createWithFormat("user_search_diff_%02i", i)->getCString()
+                        )
+                ) return true;
+        }
+
+        if(CM->getOption("user_search_diff_06"))
+                for(int i = 0; i <= 5; i++){
+                        if(
+                                CM->getOption(
+                                        CCString::createWithFormat("user_search_demon_%02i", i)->getCString()
+                                )
+                        ) return true;
+                }
+
+        const char* options[] = {
+                "user_search_star", "user_search_uncompleted", "user_search_completed",
+                "user_search_featured", "user_search_nofeatured", "user_search_original",
+                "user_search_epic", "user_search_noepic", "user_search_song",
+                "user_search_nostar", "user_search_coins", "user_search_twoplayer",
+                "user_search_copied", "user_search_downloaded", "user_search_ldm",
+                "user_search_copy", "user_search_copy_free", "user_search_idrange"
+        };
+
+        for(auto option : options) {
+                if(CM->getOption(option)) return true;
+        }
+
+        return false;
+}

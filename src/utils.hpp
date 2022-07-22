@@ -39,5 +39,6 @@ namespace BetterInfo {
     std::string fileSize(size_t bytes);
     std::string fixColorCrashes(std::string input);
     std::string timeToString(time_t input);
+    bool isSavedFiltered();
 
 }
