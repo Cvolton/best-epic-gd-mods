@@ -30,12 +30,12 @@ void CvoltonOptionsLayer::onClose(cocos2d::CCObject* sender)
 }
 
 bool CvoltonOptionsLayer::init(){
-    bool init = createBasics({370.0f, 200.0f}, menu_selector(CvoltonOptionsLayer::onClose), 0.8f);
+    bool init = createBasics({370.0f, 240.0f}, menu_selector(CvoltonOptionsLayer::onClose), 0.8f);
     if(!init) return false;
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
-    createTextLabel("Mod Settings", {(winSize.width / 2),(winSize.height / 2) + 78}, 0.7f, m_pLayer, "goldFont.fnt");
+    createTextLabel("Mod Settings", {(winSize.width / 2),(winSize.height / 2) + 78 + 20}, 0.7f, m_pLayer, "goldFont.fnt");
 
     drawToggles();
 
@@ -73,7 +73,7 @@ void CvoltonOptionsLayer::createToggle(const char* option, const char* name){
         menu_selector(CvoltonOptionsLayer::onToggle)
     );
     m_pButtonMenu->addChild(button);
-    float y = 45.f - (toggleCount++ * 40.f);
+    float y = 65.f - (toggleCount++ * 40.f);
     button->setPosition({-157, y});
     auto optionString = CCString::create(option);
     optionString->retain();
@@ -123,4 +123,5 @@ void CvoltonOptionsLayer::drawToggles(){
     createToggle("no_level_info", "Disable Extended Level Info");
     createToggle("white_id", "White Level ID text");
     createToggle("auto_submit", "Auto submit to level leaderboards");
+    createToggle("alt_button", "Alt BI button texture (req. restart)");
 }
