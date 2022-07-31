@@ -1,5 +1,6 @@
 #include "ExtendedLevelInfo.h"
 #include "UnregisteredProfileLayer.h"
+#include "PaginatedFLAlert.h"
 #include "../utils.hpp"
 #include "../managers/BetterInfoStats.h"
 
@@ -366,12 +367,13 @@ void ExtendedLevelInfo::showProgressDialog(GJGameLevel* level){
 
     if(level == nullptr) return;
 
+
     if(level->levelID == -1){
         gd::FLAlertLayer::create(nullptr, "It's a secret...", "OK", nullptr, 360, "The <cr>darkness</c> lingers. Be careful who you trust...\nThere might be an <c_>impostor</c> among us.")->show();
         return;
     }
 
-    std::ostringstream contentStream;
+    std::ostringstream contentStream, secondStream;
     contentStream << "<cg>Total Attempts</c>: " << level->attempts
         << "\n<cl>Total Jumps</c>: " << level->jumps
         << "\n<cy>Clicks (best att.)</c>: " << level->clicks
@@ -385,12 +387,10 @@ void ExtendedLevelInfo::showProgressDialog(GJGameLevel* level){
         if(level->orbCompletion != level->normalPercent) contentStream << "\n<cj>Orbs</c>: " << level->orbCompletion << "%";
         if(level->newNormalPercent2 != level->orbCompletion) contentStream << "\n<cr>Leaderboard</c>: " << level->newNormalPercent2 << "%";
 
-        contentStream << "\n\n";
-
-        if(stats->getPlay(level, false) != 0) contentStream << "<cg>First played</c>: " << BetterInfo::timeToString(stats->getPlay(level, false)) << "\n";
-        if(stats->getPlay(level, true) != 0) contentStream << "<cl>Last played</c>: " << BetterInfo::timeToString(stats->getPlay(level, true)) << "\n";
-        if(stats->getCompletion(level, false) > 0) contentStream << "<cp>Completed</c>: " << BetterInfo::timeToString(stats->getCompletion(level, false)) << "\n";
-        if(stats->getCompletion(level, true) > 0) contentStream << "<co>Completed (practice)</c>: " << BetterInfo::timeToString(stats->getCompletion(level, true)) << "\n";
+        if(stats->getPlay(level, false) != 0) secondStream << "<cg>First played</c>: " << BetterInfo::timeToString(stats->getPlay(level, false)) << "\n";
+        if(stats->getPlay(level, true) != 0) secondStream << "<cl>Last played</c>: " << BetterInfo::timeToString(stats->getPlay(level, true)) << "\n";
+        if(stats->getCompletion(level, false) > 0) secondStream << "<cp>Completed</c>: " << BetterInfo::timeToString(stats->getCompletion(level, false)) << "\n";
+        if(stats->getCompletion(level, true) > 0) secondStream << "<co>Completed (practice)</c>: " << BetterInfo::timeToString(stats->getCompletion(level, true)) << "\n";
     }else{
         contentStream << "\n<cp>Objects</c>: " << level->objectCount
             << "\n<cr>In Editor</c>: " << ExtendedLevelInfo::workingTime(level->workingTime) << "\n";
@@ -401,10 +401,15 @@ void ExtendedLevelInfo::showProgressDialog(GJGameLevel* level){
     std::string progresses;
     if(level->personalBests != ""){
         progresses = ExtendedLevelInfo::printableProgress(level->personalBests, level->newNormalPercent2);
-        contentStream << "\n<cy>Progresses</c>: " << progresses;
+        contentStream << "\n\n<cy>Progresses</c>: " << progresses;
     }
 
-    float dialogWidth = 350;
-    if(contentStream.str().length() > 250) dialogWidth = 400;
-    FLAlertLayer::create(nullptr, level->levelName.c_str(), "OK", nullptr, dialogWidth, contentStream.str().length() > 250, 300, contentStream.str())->show();
+    std::vector<std::string> contents;
+    contents.push_back(contentStream.str());
+    if(!(secondStream.str().empty())) contents.push_back(secondStream.str());
+
+    /*float dialogWidth = 350;
+    if(contentStream.str().length() > 250) dialogWidth = 400;*/
+    //FLAlertLayer::create(nullptr, level->levelName.c_str(), "OK", nullptr, dialogWidth, contentStream.str().length() > 250, 300, contentStream.str())->show();
+    PaginatedFLAlert::create(level->levelName, contents)->show();
 }
