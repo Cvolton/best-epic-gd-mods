@@ -5,6 +5,7 @@
 #include <filesystem>
 #include "../utils.hpp"
 #include "../layers/DailyListView.h"
+#include "../layers/PaginatedFLAlert.h"
 
 using namespace cocos2d;
 using namespace cocos2d::extension;
@@ -289,36 +290,41 @@ FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
 
     shownUpdateDialog = true;
 
-    auto layer = FLAlertLayer::create(
-        nullptr,
-        modName,
-        "OK",
-        nullptr,
-        400,
-        true,
-        300,
-        "\n"
+    std::vector<std::string> versions;
+    versions.push_back(
         "<cg>BetterInfo has updated!</c>\n"
         "\n"
+        "<cy>Changelog:</c> <cg>(v2.3.3 - 2022-07-22)</c>\n"
+        "- Replaced <cj>scrolling alerts</c> with <co>paginated</c> ones\n"
+        "- <cg>Fixed</c> a <cr>startup crash</c> for people with\n<cl>more</c> than ~450 <co>daily levels</c>\n"
+        "- <cg>:)</c>"
+    );
+
+    versions.push_back(
         "<cy>Changelog:</c> <cg>(v2.3.2 - 2022-07-22)</c>\n"
         "- Added <cj>even more</c> <co>Saved Filters</c> (again)\n"
         "- Added <cj>first/last played, completed dates</c> to <co>Level Stats</c>\n"
         "- Added <cj>auto submit to level leaderboards</c> (<cr>disabled</c> by default, <cg>enable</c> in the BI settings)\n"
-        "- Bugfixes & improvements\n"
-        "\n"
+        "- Bugfixes & improvements"
+    );
+
+    versions.push_back(
         "<cy>Changelog:</c> <cg>(v2.3.1 - 2022-06-28)</c>\n"
         "- Added <cj>even more</c> <co>Saved Filters</c>\n"
         "- Added a <co>percentage</c> <cj>Completed Mode</c>\n"
         "- Bugfixes & improvements\n"
-        "\n"
+    );
+
+    versions.push_back(
         "<cy>Changelog:</c> <cg>(v2.3.0 - 2022-06-26)</c>\n"
         "- Added <cj>Claimed Chest</c> <co>history</c>\n"
         "- Added <cj>more</c> <cj>Saved Filters</c>\n"
         "- Added <co>Live</c> <cj>Comment Chat</c> <co>refreshing</c>\n"
         "- Added <co>more stuff</c> to <cj>Extended Level Info</c>\n"
         "- Added a <cj>white level ID option</c>"
-        "\n"
     );
+
+    auto layer = PaginatedFLAlert::create(modName, versions);
     
     this->save();
 

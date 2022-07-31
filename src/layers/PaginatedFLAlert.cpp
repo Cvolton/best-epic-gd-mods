@@ -10,9 +10,9 @@
 using namespace gd;
 using namespace cocos2d;
 
-PaginatedFLAlert* PaginatedFLAlert::create(const std::string& title, const std::vector<std::string>& content, size_t page) {
+PaginatedFLAlert* PaginatedFLAlert::create(const std::string& title, const std::vector<std::string>& content, CCObject* parent, size_t page) {
     auto ret = new PaginatedFLAlert();
-    if (ret && ret->init(title, content, page)) {
+    if (ret && ret->init(title, content, parent, page)) {
         ret->autorelease();
     } else {
         delete ret;
@@ -21,12 +21,13 @@ PaginatedFLAlert* PaginatedFLAlert::create(const std::string& title, const std::
     return ret;
 }
 
-bool PaginatedFLAlert::init(const std::string& title, const std::vector<std::string>& content, size_t page) {
+bool PaginatedFLAlert::init(const std::string& title, const std::vector<std::string>& content, CCObject* parent, size_t page) {
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
     m_title = title;
     m_content = content;
     m_page = page;
+    m_pParent = parent;
     /*
         flalert
     */
@@ -78,8 +79,9 @@ void PaginatedFLAlert::onPrev(cocos2d::CCObject* sender) {
 }
 
 void PaginatedFLAlert::loadPage(size_t page) {
-    //this needs adjustments to support the parent member in flalert shall it ever be needed
-    auto newAlert = PaginatedFLAlert::create(m_title, m_content, page);
-    CCDirector::sharedDirector()->getRunningScene()->addChild(newAlert);
+    auto newAlert = PaginatedFLAlert::create(m_title, m_content, m_pParent, page);
+    newAlert->setZOrder(getZOrder());
+    if(!m_pParent) CCDirector::sharedDirector()->getRunningScene()->addChild(newAlert);
+    else static_cast<CCNode*>(m_pParent)->addChild(newAlert);
     onClose(this);
 }

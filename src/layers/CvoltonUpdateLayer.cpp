@@ -155,6 +155,7 @@ void CvoltonUpdateLayer::onVisit(cocos2d::CCObject* sender)
 void CvoltonUpdateLayer::onChangelog(cocos2d::CCObject* sender)
 {
     auto layer = CvoltonManager::sharedState()->updateCompleteDialog(true);
+    layer->m_pParent = this;
     if(layer) layer->show();
 }
 
