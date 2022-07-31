@@ -12,6 +12,8 @@ public:
 	cocos2d::CCDictionary* m_practiceDict;
 	cocos2d::CCDictionary* m_firstPlayedDict;
 	cocos2d::CCDictionary* m_lastPlayedDict;
+	cocos2d::CCDictionary* m_normalAttemptDict;
+	cocos2d::CCDictionary* m_practiceAttemptDict;
 
 	bool init();
 	void encodeDataTo(DS_Dictionary* data) override;
@@ -31,4 +33,6 @@ public:
 	void logPlay(gd::GJGameLevel* level);
 	time_t getPlay(gd::GJGameLevel* level, bool last);
 	std::string keyForLevel(gd::GJGameLevel* level);
+	void logAttempt(gd::GJGameLevel* level, bool practice);
+	int getAttempts(gd::GJGameLevel* level, bool practice);
 };

@@ -387,6 +387,12 @@ void ExtendedLevelInfo::showProgressDialog(GJGameLevel* level){
         if(level->orbCompletion != level->normalPercent) contentStream << "\n<cj>Orbs</c>: " << level->orbCompletion << "%";
         if(level->newNormalPercent2 != level->orbCompletion) contentStream << "\n<cr>Leaderboard</c>: " << level->newNormalPercent2 << "%";
 
+        auto normalAttempts = stats->getAttempts(level, false);
+        auto practiceAttempts = stats->getAttempts(level, true);
+        secondStream << "<cp>Attempts (normal)</c>: " << normalAttempts << "\n";
+        secondStream << "<co>Attempts (practice)</c>: " << practiceAttempts << "\n";
+        if((normalAttempts + practiceAttempts) != level->attempts) secondStream << "<cy>Attempts (unknown)</c>: " << (level->attempts - practiceAttempts - normalAttempts) << "\n";
+        secondStream << "\n";
         if(stats->getPlay(level, false) != 0) secondStream << "<cg>First played</c>: " << BetterInfo::timeToString(stats->getPlay(level, false)) << "\n";
         if(stats->getPlay(level, true) != 0) secondStream << "<cl>Last played</c>: " << BetterInfo::timeToString(stats->getPlay(level, true)) << "\n";
         if(stats->getCompletion(level, false) > 0) secondStream << "<cp>Completed</c>: " << BetterInfo::timeToString(stats->getCompletion(level, false)) << "\n";

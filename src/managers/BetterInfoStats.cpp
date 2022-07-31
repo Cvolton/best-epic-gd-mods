@@ -26,6 +26,12 @@ bool BetterInfoStats::init(){
     m_lastPlayedDict = CCDictionary::create();
     m_lastPlayedDict->retain();
 
+    m_normalAttemptDict = CCDictionary::create();
+    m_normalAttemptDict->retain();
+
+    m_practiceAttemptDict = CCDictionary::create();
+    m_practiceAttemptDict->retain();
+
     this->setup();
 
     return true;
@@ -38,6 +44,8 @@ void BetterInfoStats::encodeDataTo(DS_Dictionary* data) {
     data->setDictForKey("practiceCompletions", m_practiceDict);
     data->setDictForKey("firstPlayed", m_firstPlayedDict);
     data->setDictForKey("lastPlayed", m_lastPlayedDict);
+    data->setDictForKey("normalAttempt", m_normalAttemptDict);
+    data->setDictForKey("practiceAttempt", m_practiceAttemptDict);
 }
 
 void BetterInfoStats::dataLoaded(DS_Dictionary* data) {
@@ -67,6 +75,20 @@ void BetterInfoStats::dataLoaded(DS_Dictionary* data) {
         m_lastPlayedDict->release();
         m_lastPlayedDict = lastPlayedDict;
         m_lastPlayedDict->retain();
+    }
+
+    auto normalAttemptDict = static_cast<CCDictionary*>(data->getObjectForKey("normalAttempt"));
+    if(normalAttemptDict) {
+        m_normalAttemptDict->release();
+        m_normalAttemptDict = normalAttemptDict;
+        m_normalAttemptDict->retain();
+    }
+
+    auto practiceAttemptDict = static_cast<CCDictionary*>(data->getObjectForKey("practiceAttempt"));
+    if(practiceAttemptDict) {
+        m_practiceAttemptDict->release();
+        m_practiceAttemptDict = practiceAttemptDict;
+        m_practiceAttemptDict->retain();
     }
 
     this->save();
@@ -132,4 +154,23 @@ time_t BetterInfoStats::getPlay(GJGameLevel* level, bool last) {
 
 std::string BetterInfoStats::keyForLevel(GJGameLevel* level) {
     return std::format("{}_{}_{}_{}", level->levelID, static_cast<int>(level->levelType), level->dailyID, level->gauntletLevel);
+}
+
+void BetterInfoStats::logAttempt(GJGameLevel* level, bool practice) {
+    if(level->levelType == kGJLevelTypeEditor) return;
+
+    auto dict = practice ? m_practiceAttemptDict : m_normalAttemptDict;
+    dict->setObject(CCString::create(std::to_string(getAttempts(level, practice) + 1).c_str()), keyForLevel(level));
+}
+
+int BetterInfoStats::getAttempts(GJGameLevel* level, bool practice) {
+    auto dict = practice ? m_practiceAttemptDict : m_normalAttemptDict;
+
+    auto ret = dict->valueForKey(keyForLevel(level));
+    if(std::string_view(ret->getCString()).empty()) return 0;
+    try {
+        return std::strtol(ret->getCString(), nullptr, 10);
+    } catch(...) {
+        return 0;
+    }
 }

@@ -1570,6 +1570,14 @@ void __fastcall PlayLayer_destroyPlayer(PlayLayer* self, void* a, PlayerObject* 
 
 }
 
+void __fastcall PlayLayer_resetLevel(PlayLayer* self){
+    MHook::getOriginal(PlayLayer_resetLevel)(self);
+
+    auto stats = BetterInfoStats::sharedState();
+    stats->logAttempt(self->m_level, self->m_isPracticeMode);
+}
+
+
 /*void LevelBrowserLayer_loadLevelsFinished(LevelBrowserLayer* self, void* a, CCArray* levels, const char* a2){
     MHook::getOriginal(GameLevelManager_getCompletedLevels)(self, a, levels, a2);
 
@@ -1679,6 +1687,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x1FB780, PlayLayer_init);
     MHook::registerHook(base + 0x20D810, PlayLayer_onQuit);
     MHook::registerHook(base + 0x20A1A0, PlayLayer_destroyPlayer);
+    MHook::registerHook(base + 0x20BF00, PlayLayer_resetLevel);
     //MHook::registerHook(base + 0xBD5C0, GJGameLevel_savePercentage);
 
     /*
