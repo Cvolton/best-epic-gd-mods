@@ -18,7 +18,7 @@ class CvoltonManager : public gd::GManager {
 
 
 public:
-	inline static const char* version = "v2.3.2\n";
+	inline static const char* version = "v2.3.3\n";
 	inline static const char* modName = "BetterInfo";
 	inline static const char* modNameColored = "Better<cg>Info</c>";
 	std::string latestVer;

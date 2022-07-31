@@ -295,8 +295,10 @@ FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
         "<cg>BetterInfo has updated!</c>\n"
         "\n"
         "<cy>Changelog:</c> <cg>(v2.3.3 - 2022-07-22)</c>\n"
-        "- Replaced <cj>scrolling alerts</c> with <co>paginated</c> ones\n"
+        "- <cg>Added</c> separate <cj>normal & practice mode</c> <co>attempts</c>\n"
+        "- <cg>Replaced</c> <cj>scrolling alerts</c> with <co>paginated</c> ones\n"
         "- <cg>Fixed</c> a <cr>startup crash</c> for people with\n<cl>more</c> than ~450 <co>daily levels</c>\n"
+        "- <cg>Fixed</c> <cj>auto submit to leaderboards</c>\n<cr>not</c> submitting coins\n"
         "- <cg>:)</c>"
     );
 
