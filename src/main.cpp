@@ -1547,12 +1547,14 @@ void __fastcall PlayLayer_levelComplete(PlayLayer* self){
     if(CvoltonManager::sharedState()->getOption("auto_submit") && self->m_level->levelType == kGJLevelTypeSaved) GameLevelManager::sharedState()->getLevelLeaderboard(self->m_level, 0);
 }
 
-void __fastcall PlayLayer_init(PlayLayer* self, void* a, GJGameLevel* level){
-    MHook::getOriginal(PlayLayer_init)(self, a, level);
+bool __fastcall PlayLayer_init(PlayLayer* self, void* a, GJGameLevel* level){
+    if(!MHook::getOriginal(PlayLayer_init)(self, a, level)) return false;
 
     auto stats = BetterInfoStats::sharedState();
     stats->logPlay(self->m_level);
     if(CvoltonManager::sharedState()->getOption("auto_submit") && self->m_level->levelType == kGJLevelTypeSaved) GameLevelManager::sharedState()->getLevelLeaderboard(self->m_level, 0);
+
+    return true;
 }
 
 void __fastcall PlayLayer_onQuit(PlayLayer* self){
