@@ -2,6 +2,8 @@
 #include <gd.h>
 #include "../utils.hpp"
 
+#include <fstream>
+
 using namespace cocos2d;
 using namespace cocos2d::extension;
 using namespace gd;
@@ -91,17 +93,37 @@ void BetterInfoCache::cacheLevel(GJGameLevel* level) {
 
 void BetterInfoCache::cacheLevels(std::set<int> toDownload) {
     //Search type 10 currently does not have a limit on level IDs, so we can do this all in one request
+
+    for(int i = 10000000; i < 10010000; i++) {
+        toDownload.insert(i);
+    }
+
+
     bool first = true;
     std::stringstream levels;
+    std::vector<std::string> levelSets;
+    int i = 0;
     for(const auto& id : toDownload) {
-        if(!first) levels << ",";
+        if(i != 0) levels << ",";
         levels << id;
         first = false;
+        
+        i = (i + 1) % 300;
+        if(i == 0) {
+            levelSets.push_back(levels.str());
+            levels.str("");
+        }
     }
-    auto searchObj = GJSearchObject::create(kSearchTypeMapPackList, levels.str());
-    auto GLM = GameLevelManager::sharedState();
-    GLM->m_pOnlineListDelegate = this;
-    GLM->getOnlineLevels(searchObj);
+
+    levelSets.push_back(levels.str());
+
+    //Splitting up the request like this is required because GJSearchObject::create crashes if str is too long
+    for(const auto& set : levelSets) {
+        auto searchObj = GJSearchObject::create(kSearchTypeMapPackList, set);
+        auto GLM = GameLevelManager::sharedState();
+        GLM->m_pOnlineListDelegate = this;
+        GLM->getOnlineLevels(searchObj);
+    }
 
 }
 
