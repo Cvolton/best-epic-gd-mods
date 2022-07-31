@@ -1544,6 +1544,7 @@ void __fastcall PlayLayer_levelComplete(PlayLayer* self){
 
     auto stats = BetterInfoStats::sharedState();
     stats->logCompletion(self->m_level, self->m_isPracticeMode);
+    if(CvoltonManager::sharedState()->getOption("auto_submit") && self->m_level->levelType == kGJLevelTypeSaved) GameLevelManager::sharedState()->getLevelLeaderboard(self->m_level, 0);
 }
 
 void __fastcall PlayLayer_init(PlayLayer* self, void* a, GJGameLevel* level){
@@ -1551,6 +1552,7 @@ void __fastcall PlayLayer_init(PlayLayer* self, void* a, GJGameLevel* level){
 
     auto stats = BetterInfoStats::sharedState();
     stats->logPlay(self->m_level);
+    if(CvoltonManager::sharedState()->getOption("auto_submit") && self->m_level->levelType == kGJLevelTypeSaved) GameLevelManager::sharedState()->getLevelLeaderboard(self->m_level, 0);
 }
 
 void __fastcall PlayLayer_onQuit(PlayLayer* self){
@@ -1560,10 +1562,12 @@ void __fastcall PlayLayer_onQuit(PlayLayer* self){
     MHook::getOriginal(PlayLayer_onQuit)(self);
 }
 
-void __fastcall GJGameLevel_savePercentage(GJGameLevel* self, void* a, int a1, bool a2, int a3, int a4, bool a5){
-    MHook::getOriginal(GJGameLevel_savePercentage)(self, a, a1, a2, a3, a4, a5);
+void __fastcall PlayLayer_destroyPlayer(PlayLayer* self, void* a, PlayerObject* a1, GameObject* a2){
+    int best = self->m_level->newNormalPercent2;
 
-    if(CvoltonManager::sharedState()->getOption("auto_submit") && self->levelType == kGJLevelTypeSaved) GameLevelManager::sharedState()->getLevelLeaderboard(self, 0);
+    MHook::getOriginal(PlayLayer_destroyPlayer)(self, a, a1, a2);
+    if(CvoltonManager::sharedState()->getOption("auto_submit") && self->m_level->levelType == kGJLevelTypeSaved && self->m_level->newNormalPercent2 != best) GameLevelManager::sharedState()->getLevelLeaderboard(self->m_level, 0);
+
 }
 
 /*void LevelBrowserLayer_loadLevelsFinished(LevelBrowserLayer* self, void* a, CCArray* levels, const char* a2){
@@ -1674,7 +1678,8 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x1FD3D0, PlayLayer_levelComplete);
     MHook::registerHook(base + 0x1FB780, PlayLayer_init);
     MHook::registerHook(base + 0x20D810, PlayLayer_onQuit);
-    MHook::registerHook(base + 0xBD5C0, GJGameLevel_savePercentage);
+    MHook::registerHook(base + 0x20A1A0, PlayLayer_destroyPlayer);
+    //MHook::registerHook(base + 0xBD5C0, GJGameLevel_savePercentage);
 
     /*
         Byte patches
