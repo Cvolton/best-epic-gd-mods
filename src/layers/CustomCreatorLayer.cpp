@@ -3,7 +3,6 @@
 #include "CvoltonOptionsLayer.h"
 #include "LevelIDLayer.h"
 #include "RewardViewLayer.h"
-#include "MoreStatsListView.h"
 #include "../managers/CvoltonManager.h"
 #include "../utils.hpp"
 
@@ -204,15 +203,6 @@ void CustomCreatorLayer::onInfo(CCObject* object) {
         450,
         "This is the main menu for all features related to the mod.\n\n<cy>Featured:</c> Levels featured in Geometry Dash World\n<cg>Most liked:</c> \"Most Liked\" in Geometry Dash World,\nreal purpose unknown.\n<cj>Search:</c> View comments of any level ID.\n\n<cl>Settings:</c> Opens the mod settings\n<cr>Update:</c> Opens the mod update menu"
     )->show();
-    /*auto winSize = CCDirector::sharedDirector()->getWinSize();
-
-    CCArray* keys = CCArray::create();
-    for(int i = 0; i < 20; i++) keys->addObject(CCString::createWithFormat("%i", i));
-
-    auto listView = MoreStatsListView::create(keys, 356.f, 220.f);
-    auto listLayer = GJListLayer::create(listView, "BetterInfo Stats", {191, 114, 62, 255}, 356.f, 220.f);
-    listLayer->setPosition(winSize / 2 - listLayer->getScaledContentSize() / 2 - CCPoint(0,5));
-    addChild(listLayer);*/
 }
 
 void CustomCreatorLayer::onSearch(CCObject* object) {
