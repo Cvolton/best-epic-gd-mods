@@ -1346,7 +1346,6 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x152270, InfoLayer_setupCommentsBrowser);
     MHook::registerHook(base + 0x151E70, InfoLayer_loadPage);
     MHook::registerHook(base + 0x15C350, LevelBrowserLayer_updateLevelsLabel); //init 0x15A040
-    //MHook::registerHook(base + 0x15A040, LevelBrowserLayer_init);
     //setupProgressBars = very bad workaround for interoperability with gdshare lol (help how do i hook something thats already hooked)
     MHook::registerHook(base + 0x177FC0, LevelInfoLayer_setupProgressBars);
     MHook::registerHook(base + 0x17AC90, LevelInfoLayer_onViewProfile);
