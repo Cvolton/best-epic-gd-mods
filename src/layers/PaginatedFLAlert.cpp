@@ -1,11 +1,4 @@
 #include "PaginatedFLAlert.h"
-#include "CvoltonUpdateLayer.h"
-#include "CvoltonOptionsLayer.h"
-#include "LevelIDLayer.h"
-#include "RewardViewLayer.h"
-#include "MoreStatsListView.h"
-#include "../managers/CvoltonManager.h"
-#include "../utils.hpp"
 
 using namespace gd;
 using namespace cocos2d;
