@@ -78,13 +78,45 @@ bool LevelSearchViewLayer::init() {
         m_allLevels.push_back(currentLvl);
     }
 
-    loadPage(0);
+    m_statusText = CCLabelBMFont::create("Waiting", "goldFont.fnt");
+    m_statusText->setPosition({winSize.width / 2, winSize.height / 2 - 143});
+    m_statusText->setScale(.85f);
+    addChild(m_statusText);
+
+    //TODO: controller keybinds
+    auto prevSprite = CCSprite::createWithSpriteFrameName(controllerConnected ? "controllerBtn_DPad_Left_001.png" : "GJ_arrow_03_001.png");
+    m_prevBtn = gd::CCMenuItemSpriteExtra::create(
+        prevSprite,
+        this,
+        menu_selector(LevelSearchViewLayer::onPrev)
+    );
+    m_prevBtn->setPosition({- (winSize.width / 2) + 25, 0});
+    menu->addChild(m_prevBtn);
+
+    auto nextSprite = CCSprite::createWithSpriteFrameName(controllerConnected ? "controllerBtn_DPad_Right_001.png" : "GJ_arrow_03_001.png");
+    if(!controllerConnected) nextSprite->setFlipX(true);
+    m_nextBtn = gd::CCMenuItemSpriteExtra::create(
+        nextSprite,
+        this,
+        menu_selector(LevelSearchViewLayer::onNext)
+    );
+    m_nextBtn->setPosition({+ (winSize.width / 2) - 25, 0});
+    menu->addChild(m_nextBtn);
+
+    loadPage(false);
     startLoading();
 
     return true;
 }
 
 void LevelSearchViewLayer::startLoading(){
+    if(m_allLevels.empty() || (m_page + 2) * 10 < m_loadedLevels->count()) {
+        setTextStatus(true);
+        return;
+    }
+
+    setTextStatus(false);
+
     std::stringstream toDownload;
     bool first = true;
     for(size_t i = 0; i < ((m_allLevels.size() < 10) ? m_allLevels.size() : 10); i++) {
@@ -100,17 +132,33 @@ void LevelSearchViewLayer::startLoading(){
     GLM->getOnlineLevels(searchObj);
 }
 
-void LevelSearchViewLayer::loadPage(int page){
+void LevelSearchViewLayer::loadPage(bool reload){
     if(!m_loadedLevels) return;
+
+    auto currentPage = CCArray::create();
+    auto end = (m_page + 1) * 10;
+    end = m_loadedLevels->count() < end ? m_loadedLevels->count() : end;
+    for(size_t i = m_page * 10; i < end; i++) {
+        currentPage->addObject(m_loadedLevels->objectAtIndex(i));
+    }
+
+    if(!reload && m_shownLevels == currentPage->count()) return;
+    m_shownLevels = currentPage->count();
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
     if(m_listLayer != nullptr) m_listLayer->removeFromParentAndCleanup(true);
 
-    m_listView = LevelSearchListView::create(m_loadedLevels, 356.f, 220.f);
+    m_listView = LevelSearchListView::create(currentPage, 356.f, 220.f);
     m_listLayer = GJListLayer::create(m_listView, "Levels", {191, 114, 62, 255}, 356.f, 220.f);
-    m_listLayer->setPosition(winSize / 2 - m_listLayer->getScaledContentSize() / 2 - CCPoint(0,5));
+    m_listLayer->setPosition(winSize / 2 - m_listLayer->getScaledContentSize() / 2 + CCPoint(0,5));
     addChild(m_listLayer);
+
+    if(m_page == 0) m_prevBtn->setVisible(false);
+    else m_prevBtn->setVisible(true);
+
+    if(currentPage->count() == 0) m_nextBtn->setVisible(false);
+    else m_nextBtn->setVisible(true);
 }
 
 void LevelSearchViewLayer::keyBackClicked() {
@@ -147,13 +195,46 @@ void LevelSearchViewLayer::loadListFinished(cocos2d::CCArray* levels, const char
         m_loadedLevels->addObject(level);
     }
 
-    loadPage(0);
+    loadPage(false);
+
+    startLoading();
 }
 
 void LevelSearchViewLayer::loadListFailed(const char*) {
-
+    setTextStatus(true);
 }
 
 void LevelSearchViewLayer::setupPageInfo(std::string, const char*) {
 
+}
+
+void LevelSearchViewLayer::setTextStatus(bool finished) {
+    if(m_statusText) m_statusText->setString(finished ? "Finished" : "Loading");
+}
+
+void LevelSearchViewLayer::onPrev(cocos2d::CCObject*) {
+    if(m_page == 0) return;
+    m_page--;
+    loadPage(true);
+}
+
+void LevelSearchViewLayer::onNext(cocos2d::CCObject*) {
+    m_page++;
+    loadPage(true);
+    startLoading();
+}
+
+void LevelSearchViewLayer::keyDown(enumKeyCodes key){
+    switch(key){
+        case KEY_Left:
+        case CONTROLLER_Left:
+            if(m_prevBtn->isVisible() == true) onPrev(nullptr);
+            break;
+        case KEY_Right:
+        case CONTROLLER_Right:
+            if(m_nextBtn->isVisible() == true) onNext(nullptr);
+            break;
+        default:
+            CCLayer::keyDown(key);
+    }
 }
