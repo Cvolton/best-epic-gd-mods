@@ -142,14 +142,6 @@ public:
         BetterInfo::copyToClipboard(self->score->getPlayerName().c_str(), self);
     }
 
-    /*void onProfilePageStar(CCObject* sender){
-        auto self = cast<ProfilePage*>(this);
-        auto button = cast<CCMenuItemSpriteExtra*>(sender);
-        auto CM = CvoltonManager::sharedState();
-        if(CM->toggleOption("profile_search_star")) button->setColor({255, 255, 255});
-        else button->setColor({125,125,125});
-    }*/
-
     void onLevelBrowserSavedFilter(CCObject* sender){
         auto self = cast<LevelBrowserLayer*>(this);
 
@@ -230,20 +222,11 @@ public:
         level->dailyID_rand = !self->level->dailyID;
         level->dailyID_seed = 0;
         level->dailyID = !self->level->dailyID;
-        //GameLevelManager::sharedState()->m_pTimerDict->setObject(CCString::create("0"), "upd_11");
-        //GameLevelManager::sharedState()->m_pTimerDict->writeToFile("c:/users/brabe/documents/test.plist");
         GameLevelManager::sharedState()->m_pTimerDict->removeAllObjects(); //this is equivalent to GLM::resetAllTimers() which I suspect is inlined on windows but i didn't bother checking
-        //auto obj = dynamic_cast<CCString*>(GameLevelManager::sharedState()->m_pTimerDict->objectForKey("upd_ll"));
-        //gd::FLAlertLayer::create(nullptr, "Level Stats", "OK", nullptr, std::to_string(GameLevelManager::sharedState()->m_weeklyTimeLeft))->show();
         auto newLeaderboard = LevelLeaderboard::create(level, self->leaderboardType);
-        //newLeaderboard->show();
         newLeaderboard->onUpdate(sender);
         CCDirector::sharedDirector()->getRunningScene()->addChild(newLeaderboard);
         self->onClose(sender);
-        /*self->level->release();
-        level->retain();
-        self->level = level;
-        self->onUpdate(sender);*/
     }
 
     void onLevelBrowserRandom(CCObject* sender){
@@ -251,7 +234,6 @@ public:
 
         if(layer->searchObject == nullptr) return;
         int pageMax = layer->total / BetterInfo::levelsPerPage(layer->searchObject);
-        //int pageToLoad = std::rand() % pageMax;
 
         int pageToLoad = CvoltonManager::sharedState()->randomNumber(0, pageMax);
 
@@ -295,7 +277,6 @@ public:
         auto layer = DailyViewLayer::scene(self->isWeekly);
         auto transitionFade = CCTransitionFade::create(0.5, layer);
         CCDirector::sharedDirector()->pushScene(transitionFade);
-        //CCDirector::sharedDirector()->getRunningScene()->addChild(layer);
     }
 
     void onLeaderboardRefresh(CCObject* sender){
@@ -510,7 +491,6 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
     );
     menu->addChild(infoButton);
     infoButton->setPosition({16, -135});
-    //infoButton->setScale(0.8f);
     infoButton->setSizeMult(1.2f);
 
     self->objectsInMenu->addObject(infoButton);
@@ -520,7 +500,6 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
             CCNode* node = dynamic_cast<CCNode*>(layer->getChildren()->objectAtIndex(i));
             if(node != nullptr && node->getPositionX() == (winSize.width / 2) - 164 && node->getPositionY() == (winSize.height / 2) + 123) node->setVisible(false);
             if(node != nullptr && node->getPositionX() == (winSize.width / 2) && node->getPositionY() == (winSize.height / 2) + 125) node->setVisible(false);
-            //if(node != nullptr && node->getPositionX() == (winSize.width / 2) + 138 && node->getPositionY() == (winSize.height / 2) - 123) node->setVisible(false);
         }
 
         auto leaderboardButtonSprite = BetterInfo::createBISprite("BI_blankBtn_001.png");
@@ -543,29 +522,10 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         );
         menu->addChild(leaderboardButton);
         leaderboardButton->setPosition({46, -12});
-        //leaderboardButton->setScale(0.8f);
         leaderboardButton->setSizeMult(1.2f);
         self->objectsInMenu->addObject(leaderboardButton);
 
-        //auto leaderboardArrow = BetterInfo::createBISprite("BI_viewLeaderboard_001.png");
-        //menu->addChild(leaderboardArrow);
-
-        /*auto upArrow = BetterInfo::createBISprite("BI_upArrow_001.png");
-        upArrow->setScale(0.8f);
-        upArrow->setPosition({30, -18});
-        upArrow->setVisible(!(CM->getOption("has_viewed_as")));
-        menu->addChild(upArrow);
-        self->objectsInMenu->addObject(upArrow);*/
-
-        //set comment to 408 -148
-        /*for(unsigned int i = 0; i < self->m_pButtonMenu->getChildrenCount(); i++){
-            CCNode* node = dynamic_cast<CCNode*>(self->m_pButtonMenu->getChildren()->objectAtIndex(i));
-            if(node != nullptr && node->getPositionX() == 408 && node->getPositionY() == -135) node->setPosition(408, -148); //node->setPosition({52, -258}); // //
-        }*/
-
-
         auto refreshSprite = CCSprite::createWithSpriteFrameName("GJ_updateBtn_001.png");
-        //refreshSprite->setScale(0.7f);
         auto refreshButton = gd::CCMenuItemSpriteExtra::create(
             refreshSprite,
             self,
@@ -573,8 +533,6 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         );
         menu->addChild(refreshButton);
         refreshButton->setPosition({0, -269});
-        //refreshButton->setPosition({16,-175});
-        //refreshButton->setScale(0.8f);
         refreshButton->setSizeMult(1.2f);
 
         self->objectsInMenu->addObject(refreshButton);
@@ -617,18 +575,6 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         usernameBtn->setPosition({210,-10});
         menu->addChild(usernameBtn);
         self->objectsInMenu->addObject(usernameBtn);
-
-        /*auto CM = CvoltonManager::sharedState();
-        auto starButton = gd::CCMenuItemSpriteExtra::create(
-            CCSprite::createWithSpriteFrameName("GJ_starsIcon_001.png"),
-            self,
-            menu_selector(GamingButton::onProfilePageStar)
-        );
-        menu->addChild(starButton);
-        starButton->setPosition({370,-259});
-        if(!CM->getOption("profile_search_star")) starButton->setColor({125,125,125});
-        starButton->setSizeMult(1.2f);
-        self->objectsInMenu->addObject(starButton);*/
     }
 
 }
@@ -641,35 +587,8 @@ bool __fastcall ProfilePage_init(ProfilePage* self, void* a, int id, bool a2){
     return true;
 }
 
-/*void __fastcall ProfilePage_onMyLevels(ProfilePage* self, void* a, CCObject* sender) {
-    //gd::FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, "aaegeg")->show();
-    //self->m_pLevel->retain();
-    auto CM = CvoltonManager::sharedState();
-    if(!CM->getOption("profile_search_star")){
-        MHook::getOriginal(ProfilePage_onMyLevels)(self, a, sender);
-    }
-
-    auto searchObj = GJSearchObject::create(SearchType::kSearchTypeUsersLevels, std::to_string(self->score->getUserID()));
-    searchObj->m_bStarFilter = true;
-
-    auto browserLayer = LevelBrowserLayer::scene(searchObj);
-    auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
-    CCDirector::sharedDirector()->pushScene(transitionFade);
-}*/
-
-/*void* __fastcall ProfilePage_getUserInfoFailed(ProfilePage* self, void* a, gd::GJUserScore* a2){
-    void* returnValue = MHook::getOriginal(ProfilePage_getUserInfoFailed)(self, a, a2);
-    gd::GJUserScore* score = gd::GJUserScore::create();
-    score->setPlayerName("amongus");
-    score->setPlayerCube(6);
-    //self->loadPageFromUserInfo(score);
-    return returnValue;
-}*/
-
 void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJComment* b) {
     MHook::getOriginal(CommentCell_loadFromComment)(self, a, b);
-
-    //if(b->m_bHasLevelID) return;
 
     auto layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(1));
 
@@ -690,7 +609,6 @@ void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJCommen
         if(b->m_nAuthorAccountID != 0) return;
 
         auto originalNameNode = cast<CCLabelBMFont*>(layer->getChildren()->objectAtIndex(2));
-        //std::string userName = originalNameNode->getString();
         
         if(strlen(originalNameNode->getString()) == 0){
             std::stringstream contentStream;
@@ -698,9 +616,6 @@ void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJCommen
             originalNameNode->setString(contentStream.str().c_str());
         }
         layer->removeChild(originalNameNode);
-        //originalNameNode->setAnchorPoint({0,0});
-
-        //auto newPlayerName = CCLabelBMFont::create(userName.c_str(), "goldFont.fnt");
 
         auto buttonButton = gd::CCMenuItemSpriteExtra::create(
             originalNameNode,
@@ -723,11 +638,9 @@ void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJCommen
             menu_selector(GamingButton::onLevelInfoNoLoad)
         );
         menu->addChild(commentsButton);
-        //commentsButton->setPosition({-79,-136});
         CCPoint smallPosition({206 - (winSize.width / 2), 24.5f - (winSize.height / 2) });
         CCPoint largePosition({154 - (winSize.width / 2), 60 - (winSize.height / 2) });
         commentsButton->setPosition(smallCommentsMode ? smallPosition : largePosition);
-        //commentsButton->setScale(0.8f);
         commentsButton->setSizeMult(1.2f);
 
     }
@@ -790,8 +703,6 @@ void __fastcall EditLevelLayer_onLevelInfo(EditLevelLayer* self, void* a, CCObje
 }
 
 void __fastcall LevelPage_onInfo(LevelPage* self, void* a, CCObject* sender) {
-    //gd::FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, std::to_string((int)self))->show();
-    //self->m_pLevel->retain();
     ExtendedLevelInfo::showProgressDialog(self->m_pLevel);
 }
 
@@ -809,10 +720,9 @@ void __fastcall InfoLayer_onLevelInfo(InfoLayer* self, void* a, CCObject* sender
 
 }
 
+//This function is a prime example of a struct return, the original signature is GLM::userNameForUserID(int userID)
 std::string* __fastcall GameLevelManager_userNameForUserID(void* a, void* b, std::string* userName, int userID) {
     auto original = MHook::getOriginal(GameLevelManager_userNameForUserID)(a, b, userName, userID);
-    //if i don't clone the string then unmodified strings have a slight chance of crashing the game and i have no idea why
-    //auto newString = std::string(*userName);
 
     auto CM = CvoltonManager::sharedState();
 
@@ -822,33 +732,6 @@ std::string* __fastcall GameLevelManager_userNameForUserID(void* a, void* b, std
 
         if(userID == 32471) *userName = "PixelCube"; //previous dataset had an error
     }
-    //std::cout << userID << " " << newString << std::endl;
-
-    //*userName = newString;
-
-    /*switch(userID){
-        case 248868:
-            *userName = "roadbose";
-            break;
-        case 35:
-            *userName = "lich";
-            break;
-        case 32:
-            *userName = "chad";
-            break;
-        case 65:
-            *userName = "Carbonelite";
-            break;
-        case 90:
-            *userName = "angrybirds94";
-            break;
-        case 1732:
-            *userName = "darnoc2";
-            break;
-        case 46587:
-            *userName = "diamond";
-            break;
-    }*/
 
     return original;
 }
@@ -906,7 +789,6 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
             );
             menu->addChild(filterButton);
             filterButton->setPosition({- (winSize.width / 2) + 64, 92});
-            //filterButton->setScale(0.8f);
             filterButton->setSizeMult(1.2f);
             filterButton->setTag(filterBtnTag);
         }
@@ -943,8 +825,6 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
     arrowLeft->setPosition({0,20});
     doubleArrowLeft->addChild(arrowLeft);
     doubleArrowLeft->setScale(0.5f);
-    //doubleArrowLeft->setFlipX(true);
-    //arrowLeft->setFlipX(true);
     auto firstBtn = gd::CCMenuItemSpriteExtra::create(
         doubleArrowLeft,
         self,
@@ -993,18 +873,10 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
         //259 60
         lastBtn->setPosition({ (winSize.width / 2) - 26, 60});
         menu->addChild(lastBtn);
-        //lastBtn->setTag(randomBtnTag);
     }
 }
 
-/*bool __fastcall LevelBrowserLayer_init(LevelBrowserLayer* self, void* a, GJSearchObject* searchObject) {
-    if(!MHook::getOriginal(LevelBrowserLayer_init)(self, a, searchObject)) return false;
-
-    return true;
-}*/
-
 void showQuestExclamationMark(CCLayer* creator){
-    //if(creator == nullptr || creator->getChildrenCount() < 2) return;
     auto menu = dynamic_cast<CCMenu*>(creator->getChildren()->objectAtIndex(1));
     auto GSM = GameStatsManager::sharedState();
 
@@ -1035,15 +907,13 @@ void showQuestExclamationMark(CCLayer* creator){
 bool __fastcall CreatorLayer_init(CCLayer* self) {
     if(!MHook::getOriginal(CreatorLayer_init)(self)) return false;
 
-    //update check
     auto CM = CvoltonManager::sharedState();
-    /*CM->doUpdateCheck();*/
+
     //betterinfo btn
     auto menu = cast<CCMenu*>(self->getChildren()->objectAtIndex(1));
 
     auto door = cast<CCMenuItemSpriteExtra*>(menu->getChildren()->objectAtIndex(12));
 
-    //auto buttonSprite = gd::ButtonSprite::create("Better\nInfo", (int)(100*0.45), true, "bigFont.fnt", "GJ_button_01.png", 120*0.45f, 0.45f);
     auto buttonSprite = BetterInfo::createBISprite(CM->getOption("alt_button") ? "BI_altBtn_001.png" : "BI_mainButton_001.png");
     buttonSprite->setScale(.9f);
     auto buttonButton = gd::CCMenuItemSpriteExtra::create(
@@ -1056,13 +926,10 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
     buttonButton->setTag(BetterInfo::mainBtnTag);
     menu->addChild(buttonButton);
 
-    //showQuestExclamationMark(self);
     auto alert = CM->updateCompleteDialog();
     if(alert) {
         alert->m_pParent = self;
         alert->show();
-        //alert->setZOrder(100);
-        //self->addChild(alert);
     }
 
     return true;
@@ -1075,12 +942,6 @@ void __fastcall CreatorLayer_onChallenge(CCLayer* self, void* a, CCMenuItemSprit
     }
     MHook::getOriginal(CreatorLayer_onChallenge)(self, a, sender);
 }
-
-/*void __fastcall CreatorLayer_onBack(CCLayer* self, void* a, CCMenuItemSpriteExtra* sender) {
-    auto CM = CvoltonManager::sharedState();
-
-    MHook::getOriginal(CreatorLayer_onBack)(self, a, sender);
-}*/
 
 void _fastcall CreatorLayer_sceneWillResume(uint8_t* self){
     MHook::getOriginal(CreatorLayer_sceneWillResume)(self);
@@ -1134,8 +995,6 @@ bool __fastcall LevelLeaderboard_init(LevelLeaderboard* self, void* a, GJGameLev
     if(!MHook::getOriginal(LevelLeaderboard_init)(self, a, level, type)) return false;
 
     CCLayer* layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(0));
-
-    //if(layer->getChildrenCount() > 11) return;
     CCMenu* menu = cast<CCMenu*>(layer->getChildren()->objectAtIndex(5));
 
     auto buttonSprite = gd::ButtonSprite::create((level->dailyID ? "Daily" : "Normal"), 20, true, "bigFont.fnt", "GJ_button_01.png", 30, 0.5);
@@ -1179,8 +1038,6 @@ GJSearchObject* __fastcall LevelSearchLayer_getSearchObject(LevelSearchLayer* se
     while (it != str.end() && std::isdigit(*it)) ++it;
     bool isID = !str.empty() && it == str.end();
 
-    //std::ostringstream query;
-    //query << "%" << self->input->getString();
     auto CM = CvoltonManager::sharedState();
 
     if(CM->getOption("search_trim")) {
@@ -1194,9 +1051,6 @@ GJSearchObject* __fastcall LevelSearchLayer_getSearchObject(LevelSearchLayer* se
     if(CM->getOption("search_surround_percent") && !isID && type == SearchType::kSearchTypeSearch) str = str + "%25%25";
     
     if(CM->getOption("search_contains") && type == SearchType::kSearchTypeSearch && !isID) str = "%25" + str;
-    //FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, str)->show();
-
-
 
     return MHook::getOriginal(LevelSearchLayer_getSearchObject)(self, a, type, str);
 }
@@ -1220,13 +1074,6 @@ bool __fastcall MoreSearchLayer_init(MoreSearchLayer* self){
 
     return true;
 }
-
-/*void __fastcall GameStatsManager_incrementChallenge(void* self, void* a, int challengeType, int count){
-    MHook::getOriginal(GameStatsManager_incrementChallenge)(self, a, challengeType, count);
-
-    auto CM = CvoltonManager::sharedState();
-    showQuestExclamationMark(CM->getActiveCreator());
-}*/
 
 CCArray* __fastcall GameLevelManager_getCompletedLevels(GameLevelManager* self, void* a, bool newFilter){
     auto CM = CvoltonManager::sharedState();
@@ -1320,7 +1167,9 @@ CCArray* __fastcall GameLevelManager_getSavedLevels(GameLevelManager* self, void
     CCARRAY_FOREACH(original, obj){
         auto level = static_cast<GJGameLevel*>(obj);
 
+        int password = level->password_rand - level->password_seed;
         int difficulty = (level->ratings == 0) ? 0 : (level->ratingsSum / level->ratings);
+
         if(level->demon != 0) difficulty = 6;
         if(level->autoLevel) difficulty = -1;
         if(!(diff.empty()) && std::find(diff.begin(), diff.end(), difficulty) == diff.end()) continue;
@@ -1348,14 +1197,12 @@ CCArray* __fastcall GameLevelManager_getSavedLevels(GameLevelManager* self, void
             if(CM->getOption("user_search_song_custom") && level->songID != CM->getOptionInt("user_search_song_id")) continue;
             if(!CM->getOption("user_search_song_custom") && (level->audioTrack != CM->getOptionInt("user_search_song_id") || level->songID != 0)) continue;
         }
-        //searchObj->m_bSongFilter = CM->getOption("user_search_song");
         if(CM->getOption("user_search_nostar") && level->stars != 0) continue;
         if(CM->getOption("user_search_coins") && (level->coins == 0 || level->coinsVerified == 0)) continue;
         if(CM->getOption("user_search_twoplayer") && !(level->twoPlayerMode)) continue;
         if(CM->getOption("user_search_copied") && level->originalLevel == 0) continue;
         if(CM->getOption("user_search_downloaded") && level->levelString.empty()) continue;
         if(CM->getOption("user_search_ldm") && !(level->lowDetailMode)) continue;
-        int password = level->password_rand - level->password_seed;
         if(CM->getOption("user_search_copy") && password == 0) continue;
         if(CM->getOption("user_search_copy_free") && password != 1) continue;
         if(CM->getOption("user_search_idrange")) {
@@ -1438,16 +1285,6 @@ void __fastcall PlayLayer_resetLevel(PlayLayer* self){
     stats->logAttempt(self->m_level, self->m_isPracticeMode);
 }
 
-
-/*void LevelBrowserLayer_loadLevelsFinished(LevelBrowserLayer* self, void* a, CCArray* levels, const char* a2){
-    MHook::getOriginal(GameLevelManager_getCompletedLevels)(self, a, levels, a2);
-
-    auto CM = CvoltonManager::sharedState();
-    if(CM->searchInProgress){
-        
-    }
-}*/
-
 void setupPageLimitBypass(){
     auto proc = GetCurrentProcess();
     auto winapiBase = reinterpret_cast<char*>(base);
@@ -1508,9 +1345,9 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x151850, InfoLayer_onLevelInfo);
     MHook::registerHook(base + 0x152270, InfoLayer_setupCommentsBrowser);
     MHook::registerHook(base + 0x151E70, InfoLayer_loadPage);
-    //setupProgressBars = very bad workaround for interoperability with gdshare lol (help how do i hook something thats already hooked)
-    MHook::registerHook(base + 0x15C350, LevelBrowserLayer_updateLevelsLabel);
+    MHook::registerHook(base + 0x15C350, LevelBrowserLayer_updateLevelsLabel); //init 0x15A040
     //MHook::registerHook(base + 0x15A040, LevelBrowserLayer_init);
+    //setupProgressBars = very bad workaround for interoperability with gdshare lol (help how do i hook something thats already hooked)
     MHook::registerHook(base + 0x177FC0, LevelInfoLayer_setupProgressBars);
     MHook::registerHook(base + 0x17AC90, LevelInfoLayer_onViewProfile);
     MHook::registerHook(base + 0x17ACF0, LevelInfoLayer_onLevelInfo);
@@ -1524,32 +1361,28 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x60F90, CommentCell_onLike);
     MHook::registerHook(base + 0x61070, CommentCell_likedItem);
     MHook::registerHook(base + 0x210040, ProfilePage_loadPageFromUserInfo);
-    MHook::registerHook(base + 0x20EF00, ProfilePage_init);
-    //MHook::registerHook(base + 0x211BB0, ProfilePage_onMyLevels);
+    MHook::registerHook(base + 0x20EF00, ProfilePage_init); //onMyLevels 0x211BB0; getUserInfoFailed 0x2133E0
     MHook::registerHook(base + 0xA1C20, GameLevelManager_userNameForUserID);
     MHook::registerHook(base + 0x4DE40, CreatorLayer_init);
-    MHook::registerHook(base + 0x4F1B0, CreatorLayer_onChallenge);
-    //MHook::registerHook(base + 0x4FAE0, CreatorLayer_onBack);
+    MHook::registerHook(base + 0x4F1B0, CreatorLayer_onChallenge); //onBack 0x4FAE0
     MHook::registerHook(base + 0x4FB50, CreatorLayer_sceneWillResume); //onLeaderboards 0x4ED20
     MHook::registerHook(base + 0x6BEF0, DailyLevelPage_updateTimers);
     MHook::registerHook(base + 0x6A900, DailyLevelPage_init);
-    MHook::registerHook(base + 0x17C4F0, LevelLeaderboard_init); //0x17D090 onChangeType
+    MHook::registerHook(base + 0x17C4F0, LevelLeaderboard_init); //onChangeType 0x17D090
     MHook::registerHook(base + 0x1587B0, LeaderboardsLayer_init);
-    MHook::registerHook(base + 0x1805F0, LevelSearchLayer_getSearchObject); //17F500 onMoreOptions
+    MHook::registerHook(base + 0x1805F0, LevelSearchLayer_getSearchObject); //onMoreOptions 17F500; onSearch 0x180FC0
     MHook::registerHook(base + 0x1825C0, MoreSearchLayer_init); 
     MHook::registerHook(base + 0xA2D20, GameLevelManager_getCompletedLevels); 
     MHook::registerHook(base + 0xA2960, GameLevelManager_getSavedLevels); 
     MHook::registerHook(base + 0xA43B0, GameLevelManager_limitSavedLevels);
     MHook::registerHook(base + 0x2178F0, RewardsPage_init);
-    //MHook::registerHook(base + 0x180FC0, LevelSearchLayer_onSearch);
-    //MHook::registerHook(base + 0xF9AE0, GameStatsManager_incrementChallenge);
-    //MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed);
+    //GameStatsManager: incrementChallenge 0xF9AE0
     MHook::registerHook(base + 0x1FD3D0, PlayLayer_levelComplete);
     MHook::registerHook(base + 0x1FB780, PlayLayer_init);
     MHook::registerHook(base + 0x20D810, PlayLayer_onQuit);
     MHook::registerHook(base + 0x20A1A0, PlayLayer_destroyPlayer);
     MHook::registerHook(base + 0x20BF00, PlayLayer_resetLevel);
-    //MHook::registerHook(base + 0xBD5C0, GJGameLevel_savePercentage);
+    //GJGameLevel: savePercentage 0xBD5C0
 
     /*
         Byte patches
