@@ -93,12 +93,6 @@ void BetterInfoCache::cacheLevel(GJGameLevel* level) {
 
 void BetterInfoCache::cacheLevels(std::set<int> toDownload) {
     //Search type 10 currently does not have a limit on level IDs, so we can do this all in one request
-
-    for(int i = 10000000; i < 10010000; i++) {
-        toDownload.insert(i);
-    }
-
-
     bool first = true;
     std::stringstream levels;
     std::vector<std::string> levelSets;
