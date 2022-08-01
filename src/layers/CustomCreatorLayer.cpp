@@ -3,6 +3,7 @@
 #include "CvoltonOptionsLayer.h"
 #include "LevelIDLayer.h"
 #include "RewardViewLayer.h"
+#include "LevelSearchViewLayer.h"
 #include "../managers/CvoltonManager.h"
 #include "../utils.hpp"
 
@@ -206,7 +207,12 @@ void CustomCreatorLayer::onInfo(CCObject* object) {
 }
 
 void CustomCreatorLayer::onSearch(CCObject* object) {
-    LevelIDLayer::create()->show();
+    //LevelIDLayer::create()->show();
+    auto browserLayer = LevelSearchViewLayer::scene();
+
+    auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
+
+    CCDirector::sharedDirector()->pushScene(transitionFade);
 }
 
 void CustomCreatorLayer::onFeatured(CCObject* object) {
