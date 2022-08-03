@@ -115,7 +115,7 @@ bool LevelSearchViewLayer::init() {
     m_searchObj.starRangeMin = 4;
     m_searchObj.starRangeMax = 4;
 
-    loadPage(false);
+    loadPage(true);
     startLoading();
 
     return true;
@@ -129,16 +129,19 @@ void LevelSearchViewLayer::startLoading(){
 
     setTextStatus(false);
 
+    bool starFilter = m_searchObj.star || m_searchObj.starRangeMin > 0;
+    size_t levelsPerRequest = (starFilter) ? 300 : 10;
+
     std::stringstream toDownload;
     bool first = true;
-    for(size_t i = 0; i < ((m_allLevels.size() < 10) ? m_allLevels.size() : 10); i++) {
+    for(size_t i = 0; i < ((m_allLevels.size() < levelsPerRequest) ? m_allLevels.size() : levelsPerRequest); i++) {
         if(!first) toDownload << ",";
         toDownload << m_allLevels[0]->levelID;
         m_allLevels.pop_front();
         first = false;
     }
 
-    auto searchObj = GJSearchObject::create(kSearchType19, toDownload.str());
+    auto searchObj = GJSearchObject::create(starFilter ? kSearchTypeMapPackList : kSearchType19, toDownload.str());
     auto GLM = GameLevelManager::sharedState();
     GLM->m_pOnlineListDelegate = this;
     GLM->getOnlineLevels(searchObj);
@@ -153,6 +156,8 @@ void LevelSearchViewLayer::loadPage(bool reload){
     for(size_t i = m_page * 10; i < end; i++) {
         currentPage->addObject(m_loadedLevels->objectAtIndex(i));
     }
+
+    m_counter->setCString(CCString::createWithFormat("%i to %i of %i", (m_page * 10) + 1, (m_page + 1) * 10, m_allLevels.size() + m_loadedLevels->count())->getCString());
 
     if(!reload && m_shownLevels == currentPage->count()) return;
     m_shownLevels = currentPage->count();
@@ -171,8 +176,6 @@ void LevelSearchViewLayer::loadPage(bool reload){
 
     if(currentPage->count() == 0) m_nextBtn->setVisible(false);
     else m_nextBtn->setVisible(true);
-
-    m_counter->setCString(CCString::createWithFormat("%i to %i of %i", (m_page * 10) + 1, (m_page + 1) * 10, m_allLevels.size() + m_loadedLevels->count())->getCString());
 }
 
 void LevelSearchViewLayer::keyBackClicked() {
