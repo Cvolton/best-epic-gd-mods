@@ -80,8 +80,8 @@ bool LevelSearchViewLayer::init() {
     }
 
     m_statusText = CCLabelBMFont::create("Waiting", "goldFont.fnt");
-    m_statusText->setPosition({winSize.width / 2, winSize.height / 2 - 143});
-    m_statusText->setScale(.85f);
+    m_statusText->setPosition({winSize.width / 2, winSize.height / 2 - 146});
+    m_statusText->setScale(.75f);
     addChild(m_statusText);
 
     auto prevSprite = CCSprite::createWithSpriteFrameName(controllerConnected ? "controllerBtn_DPad_Left_001.png" : "GJ_arrow_03_001.png");
@@ -171,7 +171,7 @@ void LevelSearchViewLayer::loadPage(bool reload){
 
     m_listView = LevelSearchListView::create(currentPage, 356.f, 220.f);
     m_listLayer = GJListLayer::create(m_listView, "Levels", {191, 114, 62, 255}, 356.f, 220.f);
-    m_listLayer->setPosition(winSize / 2 - m_listLayer->getScaledContentSize() / 2 + CCPoint(0,5));
+    m_listLayer->setPosition(winSize / 2 - m_listLayer->getScaledContentSize() / 2 - CCPoint(0,1));
     addChild(m_listLayer);
 
     if(m_page == 0) m_prevBtn->setVisible(false);
