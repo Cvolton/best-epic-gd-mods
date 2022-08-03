@@ -155,6 +155,12 @@ void LevelSearchViewLayer::loadPage(bool reload){
     size_t totalAmount = m_allLevels.size() + m_loadedLevels->count();
     m_counter->setCString(CCString::createWithFormat("%i to %i of %i / %i", (m_page * 10) + 1, lastIndex, m_loadedLevels->count(), totalAmount)->getCString());
 
+    if(m_page == 0) m_prevBtn->setVisible(false);
+    else m_prevBtn->setVisible(true);
+
+    if(m_loadedLevels->count() > lastIndex) m_nextBtn->setVisible(true);
+    else m_nextBtn->setVisible(false);
+
     if(!reload && m_shownLevels == currentPage->count()) return;
     m_shownLevels = currentPage->count();
 
@@ -166,12 +172,6 @@ void LevelSearchViewLayer::loadPage(bool reload){
     m_listLayer = GJListLayer::create(m_listView, "Levels", {191, 114, 62, 255}, 356.f, 220.f);
     m_listLayer->setPosition(winSize / 2 - m_listLayer->getScaledContentSize() / 2 - CCPoint(0,1));
     addChild(m_listLayer);
-
-    if(m_page == 0) m_prevBtn->setVisible(false);
-    else m_prevBtn->setVisible(true);
-
-    if(totalAmount > lastIndex) m_nextBtn->setVisible(true);
-    else m_nextBtn->setVisible(false);
 }
 
 void LevelSearchViewLayer::keyBackClicked() {
