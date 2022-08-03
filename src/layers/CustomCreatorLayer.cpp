@@ -4,6 +4,7 @@
 #include "LevelIDLayer.h"
 #include "RewardViewLayer.h"
 #include "LevelSearchViewLayer.h"
+#include "LevelCategorySearchAlert.h"
 #include "../managers/CvoltonManager.h"
 #include "../utils.hpp"
 
@@ -209,17 +210,7 @@ void CustomCreatorLayer::onInfo(CCObject* object) {
 void CustomCreatorLayer::onSearch(CCObject* object) {
     //LevelIDLayer::create()->show();
 
-    std::deque<GJGameLevel*> levelsDeque;
-    auto levels = GameLevelManager::sharedState()->m_onlineLevels;
-    CCDictElement* obj;
-    CCDICT_FOREACH(levels, obj){
-        auto currentLvl = static_cast<GJGameLevel*>(obj->getObject());
-        levelsDeque.push_back(currentLvl);
-    }
-
-    auto browserLayer = LevelSearchViewLayer::scene(levelsDeque);
-    auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
-    CCDirector::sharedDirector()->pushScene(transitionFade);
+    LevelCategorySearchAlert::create()->show();
 }
 
 void CustomCreatorLayer::onFeatured(CCObject* object) {
