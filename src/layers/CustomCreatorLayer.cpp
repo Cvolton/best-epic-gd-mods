@@ -208,10 +208,17 @@ void CustomCreatorLayer::onInfo(CCObject* object) {
 
 void CustomCreatorLayer::onSearch(CCObject* object) {
     //LevelIDLayer::create()->show();
-    auto browserLayer = LevelSearchViewLayer::scene();
 
+    std::deque<GJGameLevel*> levelsDeque;
+    auto levels = GameLevelManager::sharedState()->m_onlineLevels;
+    CCDictElement* obj;
+    CCDICT_FOREACH(levels, obj){
+        auto currentLvl = static_cast<GJGameLevel*>(obj->getObject());
+        levelsDeque.push_back(currentLvl);
+    }
+
+    auto browserLayer = LevelSearchViewLayer::scene(levelsDeque);
     auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
-
     CCDirector::sharedDirector()->pushScene(transitionFade);
 }
 

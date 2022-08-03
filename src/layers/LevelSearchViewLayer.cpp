@@ -8,9 +8,9 @@ using namespace gd;
 using namespace cocos2d;
 using namespace cocos2d::extension;
 
-LevelSearchViewLayer* LevelSearchViewLayer::create() {
+LevelSearchViewLayer* LevelSearchViewLayer::create(std::deque<gd::GJGameLevel*> allLevels, BISearchObject searchObj) {
     auto ret = new LevelSearchViewLayer();
-    if (ret && ret->init()) {
+    if (ret && ret->init(allLevels, searchObj)) {
         ret->autorelease();
     } else {
         delete ret;
@@ -19,7 +19,7 @@ LevelSearchViewLayer* LevelSearchViewLayer::create() {
     return ret;
 }
 
-bool LevelSearchViewLayer::init() {
+bool LevelSearchViewLayer::init(std::deque<gd::GJGameLevel*> allLevels, BISearchObject searchObj) {
 
     auto CM = CvoltonManager::sharedState();
     CM->loadTextures();
@@ -60,6 +60,8 @@ bool LevelSearchViewLayer::init() {
     m_loadedLevels = CCArray::create();
     m_loadedLevels->retain();
 
+    m_allLevels = m_unloadedLevels = allLevels;
+
     //corners
     auto cornerBL = CCSprite::createWithSpriteFrameName("GJ_sideArt_001.png");
     cornerBL->setPosition({0,0});
@@ -71,13 +73,6 @@ bool LevelSearchViewLayer::init() {
     cornerBR->setAnchorPoint({0,0});
     cornerBR->setRotation(270);
     addChild(cornerBR, -1);
-
-    auto levels = GameLevelManager::sharedState()->m_onlineLevels;
-    CCDictElement* obj;
-    CCDICT_FOREACH(levels, obj){
-        auto currentLvl = static_cast<GJGameLevel*>(obj->getObject());
-        m_allLevels.push_back(currentLvl);
-    }
 
     m_statusText = CCLabelBMFont::create("Waiting", "goldFont.fnt");
     m_statusText->setPosition({winSize.width / 2, winSize.height / 2 - 147});
@@ -109,6 +104,8 @@ bool LevelSearchViewLayer::init() {
     m_counter->setScale(0.5f);
     addChild(m_counter);
 
+    m_searchObj = searchObj;
+
     loadPage(true);
     startLoading();
 
@@ -116,7 +113,7 @@ bool LevelSearchViewLayer::init() {
 }
 
 void LevelSearchViewLayer::startLoading(){
-    if(m_allLevels.empty() || (m_page + 2) * 10 < m_loadedLevels->count()) {
+    if(m_unloadedLevels.empty() || (m_page + 2) * 10 < m_loadedLevels->count()) {
         setTextStatus(true);
         return;
     }
@@ -128,10 +125,10 @@ void LevelSearchViewLayer::startLoading(){
 
     std::stringstream toDownload;
     bool first = true;
-    for(size_t i = 0; i < ((m_allLevels.size() < levelsPerRequest) ? m_allLevels.size() : levelsPerRequest); i++) {
+    for(size_t i = 0; i < ((m_unloadedLevels.size() < levelsPerRequest) ? m_unloadedLevels.size() : levelsPerRequest); i++) {
         if(!first) toDownload << ",";
-        toDownload << m_allLevels[0]->levelID;
-        m_allLevels.pop_front();
+        toDownload << m_unloadedLevels[0]->levelID;
+        m_unloadedLevels.pop_front();
         first = false;
     }
 
@@ -152,7 +149,7 @@ void LevelSearchViewLayer::loadPage(bool reload){
     }
 
     size_t lastIndex = (m_page * 10) + currentPage->count();
-    size_t totalAmount = m_allLevels.size() + m_loadedLevels->count();
+    size_t totalAmount = m_unloadedLevels.size() + m_loadedLevels->count();
     m_counter->setCString(CCString::createWithFormat("%i to %i of %i / %i", (m_page * 10) + 1, lastIndex, m_loadedLevels->count(), totalAmount)->getCString());
 
     if(m_page == 0) m_prevBtn->setVisible(false);
@@ -192,8 +189,8 @@ void LevelSearchViewLayer::onBack(CCObject* object) {
     keyBackClicked();
 }
 
-CCScene* LevelSearchViewLayer::scene() {
-    auto layer = LevelSearchViewLayer::create();
+CCScene* LevelSearchViewLayer::scene(std::deque<gd::GJGameLevel*> allLevels, BISearchObject searchObj) {
+    auto layer = LevelSearchViewLayer::create(allLevels, searchObj);
     auto scene = CCScene::create();
     scene->addChild(layer);
     return scene;
