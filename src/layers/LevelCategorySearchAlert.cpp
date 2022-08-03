@@ -51,7 +51,8 @@ void LevelCategorySearchAlert::onTestBtn(CCObject* sender) {
     searchObj.starRangeMin = 4;
     searchObj.starRangeMax = 7;
     searchObj.unfeatured = true;
-    searchObj.copied = true;
+    searchObj.gameVersionMax = 19;
+    //searchObj.copied = true;
 
     auto browserLayer = LevelSearchViewLayer::scene(levelsDeque, searchObj);
     auto transitionFade = CCTransitionFade::create(0.5, browserLayer);

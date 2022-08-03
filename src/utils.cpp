@@ -307,6 +307,8 @@ bool BetterInfo::levelMatchesObject(GJGameLevel* level, const BISearchObject& se
         if(searchObj.unepic && level->isEpic) return false;
         if(searchObj.starRangeMin > 0 && level->stars < searchObj.starRangeMin) return false;
         if(searchObj.starRangeMax > 0 && level->stars > searchObj.starRangeMax) return false;
+        if(searchObj.gameVersionMin > 0 && level->gameVersion < searchObj.gameVersionMin) return false;
+        if(searchObj.gameVersionMax > 0 && level->gameVersion > searchObj.gameVersionMax) return false;
 
         return true;
 }

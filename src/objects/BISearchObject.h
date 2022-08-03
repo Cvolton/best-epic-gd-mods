@@ -31,4 +31,6 @@ struct BISearchObject {
         bool unepic = false;
         int starRangeMin = 0;
         int starRangeMax = 0;
+        int gameVersionMin = 0;
+        int gameVersionMax = 0;
 };
