@@ -83,7 +83,6 @@ bool LevelSearchViewLayer::init() {
     m_statusText->setScale(.85f);
     addChild(m_statusText);
 
-    //TODO: controller keybinds
     auto prevSprite = CCSprite::createWithSpriteFrameName(controllerConnected ? "controllerBtn_DPad_Left_001.png" : "GJ_arrow_03_001.png");
     m_prevBtn = gd::CCMenuItemSpriteExtra::create(
         prevSprite,
@@ -102,6 +101,12 @@ bool LevelSearchViewLayer::init() {
     );
     m_nextBtn->setPosition({+ (winSize.width / 2) - 25, 0});
     menu->addChild(m_nextBtn);
+
+    m_counter = CCLabelBMFont::create("0 to 0", "goldFont.fnt");
+    m_counter->setAnchorPoint({ 1.f, 1.f });
+    m_counter->setPosition(winSize - CCPoint(7,3));
+    m_counter->setScale(0.5f);
+    addChild(m_counter);
 
     loadPage(false);
     startLoading();
@@ -159,6 +164,8 @@ void LevelSearchViewLayer::loadPage(bool reload){
 
     if(currentPage->count() == 0) m_nextBtn->setVisible(false);
     else m_nextBtn->setVisible(true);
+
+    m_counter->setCString(CCString::createWithFormat("%i to %i of %i", (m_page * 10) + 1, (m_page + 1) * 10, m_allLevels.size() + m_loadedLevels->count())->getCString());
 }
 
 void LevelSearchViewLayer::keyBackClicked() {

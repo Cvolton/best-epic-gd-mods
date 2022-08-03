@@ -11,6 +11,7 @@ class LevelSearchViewLayer : public cocos2d::CCLayer, public gd::OnlineListDeleg
     gd::CCMenuItemSpriteExtra* m_nextBtn = nullptr;
     cocos2d::CCArray* m_loadedLevels = nullptr;
     cocos2d::CCLabelBMFont* m_statusText = nullptr;
+    cocos2d::CCLabelBMFont* m_counter = nullptr;
     std::deque<gd::GJGameLevel*> m_allLevels;
     size_t m_page = 0;
     size_t m_shownLevels = 0;
