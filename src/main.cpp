@@ -175,6 +175,8 @@ public:
     }
 
     void onInfoLayerToggleSchedule(CCObject* sender){
+        onInfoLayerSchedule(sender);
+
         auto self = cast<InfoLayer*>(this);
         auto senderBtn = static_cast<CCMenuItemToggler*>(sender);
 
