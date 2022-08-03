@@ -2,6 +2,7 @@
 #include "DailyListView.h"
 #include "JumpToPageLayer.h"
 #include "../managers/CvoltonManager.h"
+#include "../utils.hpp"
 
 using namespace gd;
 using namespace cocos2d;
@@ -108,6 +109,12 @@ bool LevelSearchViewLayer::init() {
     m_counter->setScale(0.5f);
     addChild(m_counter);
 
+    /**
+     * temp assigning to search object do not keep this in
+     */
+    m_searchObj.starRangeMin = 4;
+    m_searchObj.starRangeMax = 4;
+
     loadPage(false);
     startLoading();
 
@@ -199,7 +206,7 @@ void LevelSearchViewLayer::loadListFinished(cocos2d::CCArray* levels, const char
         if(level == nullptr) continue;
 
         level->retain();
-        m_loadedLevels->addObject(level);
+        if(BetterInfo::levelMatchesObject(level, m_searchObj)) m_loadedLevels->addObject(level);
     }
 
     loadPage(false);

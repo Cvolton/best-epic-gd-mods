@@ -3,8 +3,10 @@
 #include <gd.h>
 #include <deque>
 #include "LevelSearchListView.h"
+#include "../objects/BISearchObject.h"
 
 class LevelSearchViewLayer : public cocos2d::CCLayer, public gd::OnlineListDelegate {
+    BISearchObject m_searchObj;
     LevelSearchListView* m_listView = nullptr;
     gd::GJListLayer* m_listLayer = nullptr;
     gd::CCMenuItemSpriteExtra* m_prevBtn = nullptr;

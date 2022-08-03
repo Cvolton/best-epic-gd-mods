@@ -277,3 +277,36 @@ void BetterInfo::debugObjectIndexes(CCNode* node) {
         }
         node->addChild(menu);
 }
+
+bool BetterInfo::levelMatchesObject(GJGameLevel* level, const BISearchObject& searchObj) {
+        //TODO
+        if(searchObj.star && level->stars == 0) return false;
+        if(searchObj.noStar && level->stars != 0) return false;
+        if(searchObj.uncompleted && level->normalPercent == 100) return false;
+        if(searchObj.completed && level->normalPercent != 100) return false; //this doesnt work?
+        if(searchObj.completedOrbs && level->orbCompletion != 100) return false;
+        if(searchObj.completedLeaderboard && level->newNormalPercent2 != 100) return false;
+        if(searchObj.featured && level->featured <= 0) return false;
+        if(searchObj.original && level->originalLevel > 0) return false;
+        if(searchObj.twoPlayer && !level->twoPlayerMode) return false;
+        if(searchObj.coins && (level->coins == 0 || level->coinsVerified == 0)) return false;
+        if(searchObj.epic && !level->isEpic) return false;
+        //TODO: searchObj.folder
+        if(searchObj.song) {
+                if(!searchObj.songCustom && level->audioTrack != searchObj.songID) return false;
+                if(searchObj.songCustom && level->songID != searchObj.songID) return false;
+        }
+        if(searchObj.copied && level->originalLevel <= 0) return false;
+        //TODO. searchObj.downloaded
+        //TODO: searchObj.ldm
+        if(searchObj.idRangeMin > 0 && level->levelID < searchObj.idRangeMin) return false;
+        if(searchObj.idRangeMax > 0 && level->levelID > searchObj.idRangeMax) return false;
+        //TODO: searchObj.copyable
+        //TODO: searchObj.freeCopy
+        if(searchObj.unfeatured && level->featured > 0) return false;
+        if(searchObj.unepic && level->isEpic) return false;
+        if(searchObj.starRangeMin > 0 && level->stars < searchObj.starRangeMin) return false;
+        if(searchObj.starRangeMax > 0 && level->stars > searchObj.starRangeMax) return false;
+
+        return true;
+}

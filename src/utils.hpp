@@ -17,6 +17,8 @@ T union_cast(U value) {
     return u.a;
 }
 
+#include "objects/BISearchObject.h"
+
 namespace BetterInfo {
     
     const int mainBtnTag = 863390896;
@@ -41,5 +43,5 @@ namespace BetterInfo {
     std::string timeToString(time_t input);
     bool isSavedFiltered();
     void debugObjectIndexes(cocos2d::CCNode* node);
-
+    bool levelMatchesObject(gd::GJGameLevel* level, const BISearchObject& searchObj);
 }
