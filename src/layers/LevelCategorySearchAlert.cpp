@@ -48,10 +48,10 @@ void LevelCategorySearchAlert::onTestBtn(CCObject* sender) {
     }
 
     BISearchObject searchObj;
-    searchObj.starRangeMin = 4;
+    /*searchObj.starRangeMin = 4;
     searchObj.starRangeMax = 7;
-    searchObj.unfeatured = true;
-    searchObj.gameVersionMax = 19;
+    searchObj.unfeatured = true;*/
+    searchObj.gameVersionMax = 7;
     //searchObj.copied = true;
 
     auto browserLayer = LevelSearchViewLayer::scene(levelsDeque, searchObj);

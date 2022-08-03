@@ -148,14 +148,15 @@ void LevelSearchViewLayer::loadPage(bool reload){
         currentPage->addObject(m_loadedLevels->objectAtIndex(i));
     }
 
-    size_t lastIndex = (m_page * 10) + currentPage->count();
-    size_t totalAmount = m_unloadedLevels.size() + m_loadedLevels->count();
-    m_counter->setCString(CCString::createWithFormat("%i to %i of %i / %i", (m_page * 10) + 1, lastIndex, m_loadedLevels->count(), totalAmount)->getCString());
+    m_firstIndex = (m_page * 10) + 1;
+    m_lastIndex = (m_page * 10) + currentPage->count();
+    m_totalAmount = m_unloadedLevels.size() + m_loadedLevels->count();
+    m_counter->setCString(CCString::createWithFormat("%i to %i of %i / %i", m_firstIndex, m_lastIndex, m_loadedLevels->count(), m_totalAmount)->getCString());
 
     if(m_page == 0) m_prevBtn->setVisible(false);
     else m_prevBtn->setVisible(true);
 
-    if(m_loadedLevels->count() > lastIndex) m_nextBtn->setVisible(true);
+    if(m_loadedLevels->count() > m_lastIndex) m_nextBtn->setVisible(true);
     else m_nextBtn->setVisible(false);
 
     if(!reload && m_shownLevels == currentPage->count()) return;
@@ -220,7 +221,7 @@ void LevelSearchViewLayer::setupPageInfo(std::string, const char*) {
 }
 
 void LevelSearchViewLayer::setTextStatus(bool finished) {
-    if(m_statusText) m_statusText->setString(finished ? "Finished" : "Loading");
+    if(m_statusText) m_statusText->setString(finished ? "Finished" : (m_loadedLevels->count() > m_lastIndex ? "Loading (next page)" : "Loading (current page)"));
 }
 
 void LevelSearchViewLayer::onPrev(cocos2d::CCObject*) {

@@ -18,6 +18,9 @@ class LevelSearchViewLayer : public cocos2d::CCLayer, public gd::OnlineListDeleg
     std::deque<gd::GJGameLevel*> m_allLevels;
     size_t m_page = 0;
     size_t m_shownLevels = 0;
+    size_t m_firstIndex = 0;
+    size_t m_lastIndex = 0;
+    size_t m_totalAmount = 0;
 protected:
     virtual bool init(std::deque<gd::GJGameLevel*> allLevels, BISearchObject searchObj = BISearchObject());
     virtual void keyBackClicked();
