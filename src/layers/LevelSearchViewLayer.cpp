@@ -109,13 +109,6 @@ bool LevelSearchViewLayer::init() {
     m_counter->setScale(0.5f);
     addChild(m_counter);
 
-    /**
-     * temp assigning to search object do not keep this in
-     */
-    m_searchObj.epic = true;
-    m_searchObj.starRangeMin = 4;
-    m_searchObj.starRangeMax = 4;
-
     loadPage(true);
     startLoading();
 
