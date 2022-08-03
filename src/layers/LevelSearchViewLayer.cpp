@@ -112,6 +112,7 @@ bool LevelSearchViewLayer::init() {
     /**
      * temp assigning to search object do not keep this in
      */
+    m_searchObj.epic = true;
     m_searchObj.starRangeMin = 4;
     m_searchObj.starRangeMax = 4;
 
@@ -157,7 +158,9 @@ void LevelSearchViewLayer::loadPage(bool reload){
         currentPage->addObject(m_loadedLevels->objectAtIndex(i));
     }
 
-    m_counter->setCString(CCString::createWithFormat("%i to %i of %i", (m_page * 10) + 1, (m_page + 1) * 10, m_allLevels.size() + m_loadedLevels->count())->getCString());
+    size_t lastIndex = (m_page * 10) + currentPage->count();
+    size_t totalAmount = m_allLevels.size() + m_loadedLevels->count();
+    m_counter->setCString(CCString::createWithFormat("%i to %i of %i", (m_page * 10) + 1, lastIndex, totalAmount)->getCString());
 
     if(!reload && m_shownLevels == currentPage->count()) return;
     m_shownLevels = currentPage->count();
@@ -174,8 +177,8 @@ void LevelSearchViewLayer::loadPage(bool reload){
     if(m_page == 0) m_prevBtn->setVisible(false);
     else m_prevBtn->setVisible(true);
 
-    if(currentPage->count() == 0) m_nextBtn->setVisible(false);
-    else m_nextBtn->setVisible(true);
+    if(totalAmount > lastIndex) m_nextBtn->setVisible(true);
+    else m_nextBtn->setVisible(false);
 }
 
 void LevelSearchViewLayer::keyBackClicked() {
@@ -218,7 +221,8 @@ void LevelSearchViewLayer::loadListFinished(cocos2d::CCArray* levels, const char
 }
 
 void LevelSearchViewLayer::loadListFailed(const char*) {
-    setTextStatus(true);
+    //setTextStatus(true);
+    startLoading();
 }
 
 void LevelSearchViewLayer::setupPageInfo(std::string, const char*) {
