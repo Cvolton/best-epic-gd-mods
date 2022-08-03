@@ -80,8 +80,8 @@ bool LevelSearchViewLayer::init() {
     }
 
     m_statusText = CCLabelBMFont::create("Waiting", "goldFont.fnt");
-    m_statusText->setPosition({winSize.width / 2, winSize.height / 2 - 146});
-    m_statusText->setScale(.75f);
+    m_statusText->setPosition({winSize.width / 2, winSize.height / 2 - 147});
+    m_statusText->setScale(.7f);
     addChild(m_statusText);
 
     auto prevSprite = CCSprite::createWithSpriteFrameName(controllerConnected ? "controllerBtn_DPad_Left_001.png" : "GJ_arrow_03_001.png");
@@ -160,7 +160,7 @@ void LevelSearchViewLayer::loadPage(bool reload){
 
     size_t lastIndex = (m_page * 10) + currentPage->count();
     size_t totalAmount = m_allLevels.size() + m_loadedLevels->count();
-    m_counter->setCString(CCString::createWithFormat("%i to %i of %i", (m_page * 10) + 1, lastIndex, totalAmount)->getCString());
+    m_counter->setCString(CCString::createWithFormat("%i to %i of %i / %i", (m_page * 10) + 1, lastIndex, m_loadedLevels->count(), totalAmount)->getCString());
 
     if(!reload && m_shownLevels == currentPage->count()) return;
     m_shownLevels = currentPage->count();
