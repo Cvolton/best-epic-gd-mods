@@ -24,7 +24,7 @@ bool LevelSearchViewLayer::init(std::deque<gd::GJGameLevel*> allLevels, BISearch
     auto CM = CvoltonManager::sharedState();
     CM->loadTextures();
 
-    auto GLM = gd::GameLevelManager::sharedState();
+    auto GLM = GameLevelManager::sharedState();
     auto winSize = CCDirector::sharedDirector()->getWinSize();
     auto backgroundSprite = CCSprite::create("game_bg_14_001.png");
     bool controllerConnected = CCApplication::sharedApplication()->getControllerConnected();
@@ -175,6 +175,8 @@ void LevelSearchViewLayer::loadPage(bool reload){
 void LevelSearchViewLayer::keyBackClicked() {
     setTouchEnabled(false);
     setKeypadEnabled(false);
+    auto GLM = GameLevelManager::sharedState();
+    GLM->m_pOnlineListDelegate = nullptr;
     for(size_t i = 0; i < m_loadedLevels->count(); i++) {
         auto level = static_cast<GJGameLevel*>(m_loadedLevels->objectAtIndex(i));
         level->release();
