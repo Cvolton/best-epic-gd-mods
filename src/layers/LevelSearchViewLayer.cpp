@@ -134,8 +134,12 @@ void LevelSearchViewLayer::startLoading(){
 
     auto searchObj = GJSearchObject::create(starFilter ? kSearchTypeMapPackList : kSearchType19, toDownload.str());
     auto GLM = GameLevelManager::sharedState();
-    GLM->m_pOnlineListDelegate = this;
-    GLM->getOnlineLevels(searchObj);
+    auto storedLevels = GLM->getStoredOnlineLevels(searchObj->getKey());
+    if(storedLevels) loadListFinished(storedLevels, "");
+    else {
+        GLM->m_pOnlineListDelegate = this;
+        GLM->getOnlineLevels(searchObj);
+    }
 }
 
 void LevelSearchViewLayer::loadPage(bool reload){
