@@ -11,6 +11,8 @@ class LevelBrowserEndLayer : public CvoltonAlertLayerStub, public gd::OnlineList
     int min = 0;
     int max = 0;
     int requests = 0;
+
+    bool updateLabel = false;
 public:
     static LevelBrowserEndLayer* create(gd::LevelBrowserLayer* levelBrowserLayer);
     void onClose(cocos2d::CCObject* sender);
@@ -23,4 +25,5 @@ public:
     void setupPageInfo(std::string, const char*);
 
     void updateDisplay();
+    void getOnlineLevels(gd::GJSearchObject* searchObj);
 };

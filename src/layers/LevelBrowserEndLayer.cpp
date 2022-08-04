@@ -37,10 +37,8 @@ void LevelBrowserEndLayer::onClose(cocos2d::CCObject* sender)
 
 void LevelBrowserEndLayer::onOK(cocos2d::CCObject* sender){
     levelBrowserLayer->searchObject->m_nPage = 1;
-    //if(levelBrowserLayer != nullptr) levelBrowserLayer->loadPage(searchObj);
-    auto GLM = GameLevelManager::sharedState();
-    GLM->m_pOnlineListDelegate = this;
-    GLM->getOnlineLevels(levelBrowserLayer->searchObject);
+    
+    getOnlineLevels(levelBrowserLayer->searchObject);
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
@@ -111,8 +109,7 @@ void LevelBrowserEndLayer::loadListFinished(cocos2d::CCArray*, const char* test)
     if(max == 0) {
         levelBrowserLayer->searchObject->m_nPage *= 2;
 
-        auto GLM = GameLevelManager::sharedState();
-        GLM->getOnlineLevels(levelBrowserLayer->searchObject);
+        getOnlineLevels(levelBrowserLayer->searchObject);
 
         updateDisplay();
         return;
@@ -125,8 +122,7 @@ void LevelBrowserEndLayer::loadListFinished(cocos2d::CCArray*, const char* test)
 
     levelBrowserLayer->searchObject->m_nPage = levelBrowserLayer->searchObject->m_nPage + ((max - min) / 2);
 
-    auto GLM = GameLevelManager::sharedState();
-    GLM->getOnlineLevels(levelBrowserLayer->searchObject);
+    getOnlineLevels(levelBrowserLayer->searchObject);
 
     updateDisplay();
 }
@@ -140,8 +136,7 @@ void LevelBrowserEndLayer::loadListFailed(const char* test){
 
     levelBrowserLayer->searchObject->m_nPage = levelBrowserLayer->searchObject->m_nPage - ((max - min) / 2);
 
-    auto GLM = GameLevelManager::sharedState();
-    GLM->getOnlineLevels(levelBrowserLayer->searchObject);
+    getOnlineLevels(levelBrowserLayer->searchObject);
 
     updateDisplay();
 }
@@ -150,8 +145,25 @@ void LevelBrowserEndLayer::setupPageInfo(std::string, const char*){
 }
 
 void LevelBrowserEndLayer::updateDisplay(){
+    if(!updateLabel) return;
+
     textLabel->setString(
         CCString::createWithFormat("<cg>Minimum</c>: %i\n<cy>Current</c>: %i\n<cr>Maximum</c>: %i\n<cl>Requests</c>: %i", min, levelBrowserLayer->searchObject->m_nPage, max, ++requests)->getCString()
     );
     textLabel->setScale(1.f);
+}
+
+
+
+void LevelBrowserEndLayer::getOnlineLevels(GJSearchObject* searchObj) {
+    auto GLM = GameLevelManager::sharedState();
+    GLM->m_pOnlineListDelegate = this;
+    auto storedLevels = GLM->getStoredOnlineLevels(searchObj->getKey());
+    if(storedLevels) {
+        updateLabel = false;
+        loadListFinished(storedLevels, "");
+    } else {
+        updateLabel = true;
+        GLM->getOnlineLevels(levelBrowserLayer->searchObject);
+    }
 }
