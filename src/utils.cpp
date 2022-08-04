@@ -1,5 +1,6 @@
 #include <cocos2d.h>
 #include <gd.h>
+#include <fstream>
 #include "utils.hpp"
 #include "managers/CvoltonManager.h"
 
@@ -311,4 +312,11 @@ bool BetterInfo::levelMatchesObject(GJGameLevel* level, const BISearchObject& se
         if(searchObj.gameVersionMax > 0 && level->gameVersion > searchObj.gameVersionMax) return false;
 
         return true;
+}
+
+void BetterInfo::writeToDebugFile(const std::string& content) {
+        std::ofstream fileStream;
+        fileStream.open("betterinfo/v2/debug.txt", std::fstream::out | std::fstream::app);
+        fileStream << content << "\n";
+        fileStream.close();
 }

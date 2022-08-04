@@ -44,4 +44,5 @@ namespace BetterInfo {
     bool isSavedFiltered();
     void debugObjectIndexes(cocos2d::CCNode* node);
     bool levelMatchesObject(gd::GJGameLevel* level, const BISearchObject& searchObj);
+    void writeToDebugFile(const std::string& content);
 }
