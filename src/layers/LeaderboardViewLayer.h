@@ -12,7 +12,6 @@ protected:
     virtual bool init(int accountID);
     virtual void keyBackClicked();
     void onBack(cocos2d::CCObject*);
-    int levelsPerPage() const;
     void startLoading();
     void onLoadFinished(cocos2d::extension::CCHttpClient* client, cocos2d::extension::CCHttpResponse* response);
     void generateScores(const std::string& response);
