@@ -48,12 +48,6 @@ bool LevelSearchViewLayer::init(std::deque<gd::GJGameLevel*> allLevels, BISearch
     backBtn->setPosition({(-winSize.width / 2) + 25, (winSize.height / 2) - 25});
     menu->addChild(backBtn);
 
-    /*auto menuBack = CCMenu::create();
-    menuBack->addChild(backBtn);
-    menuBack->setPosition({25, winSize.height - 25});
-
-    addChild(menuBack);*/
-
     setTouchEnabled(true);
     setKeypadEnabled(true);
 
