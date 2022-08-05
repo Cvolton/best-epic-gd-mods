@@ -3,6 +3,7 @@
 #include "CvoltonOptionsLayer.h"
 #include "../delegates/DialogCloseDelegate.h"
 #include "../delegates/IDRangeDelegate.h"
+#include "../objects/BISearchObject.h"
 
 class ProfileSearchOptions : public CvoltonOptionsLayer, public DialogCloseDelegate, public IDRangeDelegate {
     std::map<std::string, bool> options;
@@ -35,5 +36,8 @@ public:
     int getOptionInt(const std::string& option);
     bool toggleOption(const std::string& option);
     void onToggle(cocos2d::CCObject* sender);
+    void setOption(const std::string& option, bool value);
     void setOptionInt(const std::string& option, int value);
+    BISearchObject getSearchObject();
+    void setSearchObject(const BISearchObject& searchObj);
 };

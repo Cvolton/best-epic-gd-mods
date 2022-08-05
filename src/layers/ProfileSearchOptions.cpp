@@ -298,6 +298,113 @@ bool ProfileSearchOptions::toggleOption(const std::string& option) {
     return CvoltonManager::sharedState()->toggleOption(std::format("user_search_{}", option));
 }
 
+void ProfileSearchOptions::setOption(const std::string& option, bool value) {
+    CvoltonManager::sharedState()->setOption(std::format("user_search_{}", option), value);
+}
+
 void ProfileSearchOptions::setOptionInt(const std::string& option, int value) {
     CvoltonManager::sharedState()->setOptionInt(std::format("user_search_{}", option), value);
+}
+
+BISearchObject ProfileSearchOptions::getSearchObject() {
+    BISearchObject searchObj;
+
+    if(getOption("diff_auto")) searchObj.difficulty.insert(-1);
+    for(int i = 0; i <= 6; i++) {
+        auto diff = CCString::createWithFormat("diff_%02i", i)->getCString();
+        if(getOption(diff)) searchObj.difficulty.insert(i);
+    }
+
+    for(int i = 0; i <= 4; i++) {
+        auto len = CCString::createWithFormat("len_%02i", i)->getCString();
+        if(getOption(len)) searchObj.length.insert(i);
+    }
+
+    for(int i = 0; i <= 4; i++) {
+        auto len = CCString::createWithFormat("demon_%02i", i)->getCString();
+        if(getOption(len)) searchObj.length.insert(i);
+    }
+
+    searchObj.star = getOption("star");
+    searchObj.noStar = getOption("nostar");
+    searchObj.uncompleted = getOption("uncompleted");
+    searchObj.completed = getOption("completed");
+    searchObj.completedOrbs = false;
+    searchObj.completedLeaderboard = false;
+    searchObj.featured = getOption("featured");
+    searchObj.original = getOption("original");
+    searchObj.twoPlayer = getOption("twoplayer");
+    searchObj.coins = getOption("coins");
+    searchObj.epic = getOption("epic");
+    searchObj.folder = 0;
+    searchObj.song = getOption("song");
+    searchObj.songCustom = false;
+    searchObj.songID = 0;
+    searchObj.copied = getOption("copied");
+    searchObj.downloaded = getOption("downloaded");
+    searchObj.ldm = getOption("ldm");
+    searchObj.idRangeMin = getOptionInt("idrange_min");
+    searchObj.idRangeMax = getOptionInt("idrange_max");
+    searchObj.copyable = getOption("copy");
+    searchObj.freeCopy = getOption("copy_free");
+    searchObj.unfeatured = getOption("nofeatured");
+    searchObj.unepic = getOption("noepic");
+    searchObj.starRangeMin = 0;
+    searchObj.starRangeMax = 0;
+    searchObj.gameVersionMin = 0;
+    searchObj.gameVersionMax = 0;
+
+    return searchObj;
+}
+
+void ProfileSearchOptions::setSearchObject(const BISearchObject& searchObj) {
+    for(int i = -1; i <= 6; i++) {
+        setOption(
+            i == -1 ? "diff_auto" : CCString::createWithFormat("diff_%02i", i)->getCString(),
+            searchObj.difficulty.find(i) != searchObj.difficulty.end()
+        );
+    }
+
+    for(int i = 0; i <= 4; i++) {
+        setOption(
+            CCString::createWithFormat("len_%02i", i)->getCString(),
+            searchObj.length.find(i) != searchObj.length.end()
+        );
+    }
+
+    for(int i = 0; i <= 4; i++) {
+        setOption(
+            CCString::createWithFormat("demon_%02i", i)->getCString(),
+            searchObj.demonDifficulty.find(i) != searchObj.demonDifficulty.end()
+        );
+    }
+
+    setOption("star", searchObj.star);
+    setOption("nostar", searchObj.noStar);
+    setOption("uncompleted", searchObj.uncompleted);
+    setOption("completed", searchObj.completed);
+    //searchObj.completedOrbs = false;
+    //searchObj.completedLeaderboard = false;
+    setOption("featured", searchObj.featured);
+    setOption("original", searchObj.original);
+    setOption("twoplayer", searchObj.twoPlayer);
+    setOption("coins", searchObj.coins);
+    setOption("epic", searchObj.epic);
+    //searchObj.folder = 0;
+    setOption("song", searchObj.song);
+    //searchObj.songCustom = false;
+    //searchObj.songID = 0;
+    setOption("copied", searchObj.copied);
+    setOption("downloaded", searchObj.downloaded);
+    setOption("ldm", searchObj.ldm);
+    setOptionInt("idrange_min", searchObj.idRangeMin);
+    setOptionInt("idrange_max", searchObj.idRangeMax);
+    setOption("copy", searchObj.copyable);
+    setOption("copy_free", searchObj.freeCopy);
+    setOption("nofeatured", searchObj.unfeatured);
+    setOption("noepic", searchObj.unepic);
+    /*searchObj.starRangeMin = 0;
+    searchObj.starRangeMax = 0;
+    searchObj.gameVersionMin = 0;
+    searchObj.gameVersionMax = 0;*/
 }
