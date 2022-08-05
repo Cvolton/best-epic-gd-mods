@@ -14,16 +14,17 @@ class ProfileSearchOptions : public CvoltonOptionsLayer, public DialogCloseDeleg
     cocos2d::extension::CCScale9Sprite* lengthBg = nullptr;
     cocos2d::extension::CCScale9Sprite* diffBg = nullptr;
     cocos2d::extension::CCScale9Sprite* demonDiffBg = nullptr;
+    std::string prefix;
     int page = 0;
 public:
-    static ProfileSearchOptions* create(gd::LevelBrowserLayer* levelBrowserLayer = nullptr);
+    static ProfileSearchOptions* create(gd::LevelBrowserLayer* levelBrowserLayer = nullptr, const std::string& prefix = "");
     void onClose(cocos2d::CCObject* sender);
     void onPrev(cocos2d::CCObject* sender);
     void onSong(cocos2d::CCObject* sender);
     void onIdRange(cocos2d::CCObject* sender);
     void onNext(cocos2d::CCObject* sender);
     void onSecondaryInfo(cocos2d::CCObject* sender);
-    bool init();
+    bool init(gd::LevelBrowserLayer* levelBrowserLayer = nullptr, const std::string& prefix = "");
     void destroyToggles();
     void drawToggles();
     void drawTogglesPrimary();

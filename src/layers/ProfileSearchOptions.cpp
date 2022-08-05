@@ -9,11 +9,9 @@
 using namespace cocos2d;
 using namespace gd;
 
-ProfileSearchOptions* ProfileSearchOptions::create(gd::LevelBrowserLayer* levelBrowserLayer){
+ProfileSearchOptions* ProfileSearchOptions::create(gd::LevelBrowserLayer* levelBrowserLayer, const std::string& prefix){
     auto ret = new ProfileSearchOptions();
-    ret->levelBrowserLayer = levelBrowserLayer;
-    if(levelBrowserLayer != nullptr) levelBrowserLayer->retain();
-    if (ret && ret->init()) {
+    if (ret && ret->init(levelBrowserLayer, prefix)) {
         //robert 1 :D
         ret->autorelease();
     } else {
@@ -72,9 +70,13 @@ void ProfileSearchOptions::onSecondaryInfo(cocos2d::CCObject* sender){
     )->show();
 }
 
-bool ProfileSearchOptions::init(){
+bool ProfileSearchOptions::init(gd::LevelBrowserLayer* levelBrowserLayer, const std::string& prefix){
     bool init = createBasics({440.0f, 290.0f}, menu_selector(ProfileSearchOptions::onClose), 1.f, {0x00, 0x00, 0x00, 0x96});
     if(!init) return false;
+
+    this->levelBrowserLayer = levelBrowserLayer;
+    if(levelBrowserLayer != nullptr) levelBrowserLayer->retain();
+    this->prefix = prefix;
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
@@ -275,11 +277,11 @@ void ProfileSearchOptions::onIDRangeFinished(int min, int max) {
 }
 
 bool ProfileSearchOptions::getOption(const std::string& option) {
-    return CvoltonManager::sharedState()->getOption(std::format("user_search_{}", option));
+    return CvoltonManager::sharedState()->getOption(std::format("{}_{}", prefix, option));
 }
 
 int ProfileSearchOptions::getOptionInt(const std::string& option) {
-    return CvoltonManager::sharedState()->getOptionInt(std::format("user_search_{}", option));
+    return CvoltonManager::sharedState()->getOptionInt(std::format("{}_{}", prefix, option));
 }
 
 void ProfileSearchOptions::onToggle(cocos2d::CCObject* sender)
@@ -295,15 +297,15 @@ void ProfileSearchOptions::onToggle(cocos2d::CCObject* sender)
 }
 
 bool ProfileSearchOptions::toggleOption(const std::string& option) {
-    return CvoltonManager::sharedState()->toggleOption(std::format("user_search_{}", option));
+    return CvoltonManager::sharedState()->toggleOption(std::format("{}_{}", prefix, option));
 }
 
 void ProfileSearchOptions::setOption(const std::string& option, bool value) {
-    CvoltonManager::sharedState()->setOption(std::format("user_search_{}", option), value);
+    CvoltonManager::sharedState()->setOption(std::format("{}_{}", prefix, option), value);
 }
 
 void ProfileSearchOptions::setOptionInt(const std::string& option, int value) {
-    CvoltonManager::sharedState()->setOptionInt(std::format("user_search_{}", option), value);
+    CvoltonManager::sharedState()->setOptionInt(std::format("{}_{}", prefix, option), value);
 }
 
 BISearchObject ProfileSearchOptions::getSearchObject() {

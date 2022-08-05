@@ -145,7 +145,7 @@ public:
     void onLevelBrowserSavedFilter(CCObject* sender){
         auto self = cast<LevelBrowserLayer*>(this);
 
-        ProfileSearchOptions::create(self)->show();
+        ProfileSearchOptions::create(self, "user_search")->show();
     }
 
     void onCustomSearch(CCObject* sender){
