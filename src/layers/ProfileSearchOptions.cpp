@@ -51,7 +51,7 @@ void ProfileSearchOptions::onSong(cocos2d::CCObject* sender)
 void ProfileSearchOptions::onIdRange(cocos2d::CCObject* sender)
 {
     auto CM = CvoltonManager::sharedState();
-    IDRangePopup::create(this, CM->getOptionInt("user_search_idrange_min"), CM->getOptionInt("user_search_idrange_max"), "ID Range")->show();
+    IDRangePopup::create(this, getOptionInt("idrange_min"), getOptionInt("idrange_max"), "ID Range")->show();
 }
 
 void ProfileSearchOptions::onNext(cocos2d::CCObject* sender)
@@ -121,7 +121,7 @@ bool ProfileSearchOptions::init(){
 void ProfileSearchOptions::createToggle(const char* option, const char* name, float x, float y){
     auto CM = CvoltonManager::sharedState();
 
-    auto buttonSprite = CCSprite::createWithSpriteFrameName(CM->getOption(option) ? "GJ_checkOn_001.png" : "GJ_checkOff_001.png");
+    auto buttonSprite = CCSprite::createWithSpriteFrameName(getOption(option) ? "GJ_checkOn_001.png" : "GJ_checkOff_001.png");
     buttonSprite->setScale(0.8f);
     auto button = gd::CCMenuItemSpriteExtra::create(
         buttonSprite,
@@ -143,7 +143,7 @@ void ProfileSearchOptions::createToggle(const char* option, const char* name, fl
 void ProfileSearchOptions::createToggle(const char* option, const char* name, float x, float y, SEL_MenuHandler additional){
     auto CM = CvoltonManager::sharedState();
 
-    auto buttonSprite = CCSprite::createWithSpriteFrameName(CM->getOption(option) ? "GJ_checkOn_001.png" : "GJ_checkOff_001.png");
+    auto buttonSprite = CCSprite::createWithSpriteFrameName(getOption(option) ? "GJ_checkOn_001.png" : "GJ_checkOff_001.png");
     buttonSprite->setScale(0.8f);
     auto button = gd::CCMenuItemSpriteExtra::create(
         buttonSprite,
@@ -161,7 +161,7 @@ void ProfileSearchOptions::createToggle(const char* option, const char* name, fl
     label->setAnchorPoint({0,0.5f});
     label->limitLabelWidth(60, 0.5f, 0);
 
-    if(CM->getOption(option)) createButton("GJ_plusBtn_001.png", {x + 98, y}, additional, .65f);
+    if(getOption(option)) createButton("GJ_plusBtn_001.png", {x + 98, y}, additional, .65f);
 }
 
 void ProfileSearchOptions::destroyToggles(){
@@ -199,42 +199,33 @@ void ProfileSearchOptions::drawTogglesPrimary(){
     auto timeIcon = CCSprite::createWithSpriteFrameName("GJ_timeIcon_001.png");
     m_pButtonMenu->addChild(timeIcon);
     timeIcon->setPosition({-193, -120});
-    createButtonToggle("user_search_len_00", CCLabelBMFont::create("Tiny", "bigFont.fnt"), -142, -119, 0.6f);
-    createButtonToggle("user_search_len_01", CCLabelBMFont::create("Short", "bigFont.fnt"), -69, -119, 0.6f);
-    createButtonToggle("user_search_len_02", CCLabelBMFont::create("Medium", "bigFont.fnt"), 16, -119, 0.6f);
-    createButtonToggle("user_search_len_03", CCLabelBMFont::create("Long", "bigFont.fnt"), 93.5f, -119, 0.6f);
-    createButtonToggle("user_search_len_04", CCLabelBMFont::create("XL", "bigFont.fnt"), 150, -119, 0.6f);
-    createButtonToggle("user_search_star", CCSprite::createWithSpriteFrameName("GJ_starsIcon_001.png"), 193, -120);
+    createButtonToggle("len_00", CCLabelBMFont::create("Tiny", "bigFont.fnt"), -142, -119, 0.6f);
+    createButtonToggle("len_01", CCLabelBMFont::create("Short", "bigFont.fnt"), -69, -119, 0.6f);
+    createButtonToggle("len_02", CCLabelBMFont::create("Medium", "bigFont.fnt"), 16, -119, 0.6f);
+    createButtonToggle("len_03", CCLabelBMFont::create("Long", "bigFont.fnt"), 93.5f, -119, 0.6f);
+    createButtonToggle("len_04", CCLabelBMFont::create("XL", "bigFont.fnt"), 150, -119, 0.6f);
+    createButtonToggle("star", CCSprite::createWithSpriteFrameName("GJ_starsIcon_001.png"), 193, -120);
 
     for(unsigned int i = 0; i <= 6; i++){
         createButtonToggle(
-            CCString::createWithFormat("user_search_diff_%02u", i)->getCString(),
+            CCString::createWithFormat("diff_%02u", i)->getCString(),
             CCSprite::createWithSpriteFrameName(CCString::createWithFormat("difficulty_%02u_btn_001.png", i)->getCString()),
             -187 + (i * 53.5f),
             -70,
             .9f
         );
     }
-    createButtonToggle("user_search_diff_auto", CCSprite::createWithSpriteFrameName("difficulty_auto_btn_001.png"), 187, -70, .9f);
+    createButtonToggle("diff_auto", CCSprite::createWithSpriteFrameName("difficulty_auto_btn_001.png"), 187, -70, .9f);
 
-    createToggle("user_search_uncompleted", "Uncompleted", -170, 80); //40 -60, 170 -60, 300 -60, 40 -110
-    createToggle("user_search_completed", "Completed", -40, 80);
-    createToggle("user_search_featured", "Featured", 90, 80);
-    createToggle("user_search_original", "Original", -170, 35);
-    createToggle("user_search_epic", "Epic", -40, 35);
-    createToggle("user_search_song", "Song", 90, 35, menu_selector(ProfileSearchOptions::onSong));
-    //if(CM->getOption("user_search_song")) createButton("GJ_plusBtn_001.png", {175, 35}, menu_selector(ProfileSearchOptions::onSong), .65f);
-    createToggle("user_search_nostar", "No Star", -170, -10);
-    createToggle("user_search_coins", "Coins", -40, -10);
-    createToggle("user_search_twoplayer", "2-Player", 90, -10);
-
-    //createToggle("user_search_advanced", "Enable Advanced Options", -170, 75);
-
-    /*createTextLabel("Completed Mode:", {0, - (winSize.height / 2) + 65}, 0.5f, m_pButtonMenu, "goldFont.fnt");
-    createButton("edit_leftBtn_001.png", {-120, - (winSize.height / 2) + 40}, menu_selector(ProfileSearchOptions::onCompletedPrev), 1.2f);
-    auto label = createTextLabel(getCompletedString(), {0, - (winSize.height / 2) + 40}, 1, m_pButtonMenu, "bigFont.fnt");
-    label->limitLabelWidth(200, 0.8f, 0);
-    createButton("edit_rightBtn_001.png", {120, - (winSize.height / 2) + 40}, menu_selector(ProfileSearchOptions::onCompletedNext), 1.2f);*/
+    createToggle("uncompleted", "Uncompleted", -170, 80); //40 -60, 170 -60, 300 -60, 40 -110
+    createToggle("completed", "Completed", -40, 80);
+    createToggle("featured", "Featured", 90, 80);
+    createToggle("original", "Original", -170, 35);
+    createToggle("epic", "Epic", -40, 35);
+    createToggle("song", "Song", 90, 35, menu_selector(ProfileSearchOptions::onSong));
+    createToggle("nostar", "No Star", -170, -10);
+    createToggle("coins", "Coins", -40, -10);
+    createToggle("twoplayer", "2-Player", 90, -10);
 }
 
 void ProfileSearchOptions::drawTogglesSecondary(){
@@ -252,7 +243,7 @@ void ProfileSearchOptions::drawTogglesSecondary(){
         if(i == 3) diffSprite = 9;
 
         createButtonToggle(
-            CCString::createWithFormat("user_search_demon_%02u", i)->getCString(),
+            CCString::createWithFormat("demon_%02u", i)->getCString(),
             CCSprite::createWithSpriteFrameName(CCString::createWithFormat("difficulty_%02u_btn2_001.png", diffSprite)->getCString()),
             -133.5f + (i * 66.875f),
             -102,
@@ -262,14 +253,14 @@ void ProfileSearchOptions::drawTogglesSecondary(){
 
     createButton("GJ_infoIcon_001.png", {203, 128}, menu_selector(ProfileSearchOptions::onSecondaryInfo));
 
-    createToggle("user_search_copied", "Copied", -170, 80);
-    createToggle("user_search_downloaded", "Downloaded", -40, 80);
-    createToggle("user_search_ldm", "LDM", 90, 80);
-    createToggle("user_search_idrange", "ID Range", -170, 35, menu_selector(ProfileSearchOptions::onIdRange));
-    createToggle("user_search_copy", "Copyable", -40, 35);
-    createToggle("user_search_copy_free", "Free Copy", 90, 35);
-    createToggle("user_search_nofeatured", "Not Featured", -170, -10);
-    createToggle("user_search_noepic", "Not Epic", -40, -10);
+    createToggle("copied", "Copied", -170, 80);
+    createToggle("downloaded", "Downloaded", -40, 80);
+    createToggle("ldm", "LDM", 90, 80);
+    createToggle("idrange", "ID Range", -170, 35, menu_selector(ProfileSearchOptions::onIdRange));
+    createToggle("copy", "Copyable", -40, 35);
+    createToggle("copy_free", "Free Copy", 90, 35);
+    createToggle("nofeatured", "Not Featured", -170, -10);
+    createToggle("noepic", "Not Epic", -40, -10);
     
 }
 
@@ -278,7 +269,35 @@ void ProfileSearchOptions::onDialogClosed(){
 }
 
 void ProfileSearchOptions::onIDRangeFinished(int min, int max) {
+    setOptionInt("idrange_min", min);
+    setOptionInt("idrange_max", max);
+    if(levelBrowserLayer != nullptr) levelBrowserLayer->loadPage(levelBrowserLayer->searchObject);
+}
+
+bool ProfileSearchOptions::getOption(const std::string& option) {
+    return CvoltonManager::sharedState()->getOption(std::format("user_search_{}", option));
+}
+
+int ProfileSearchOptions::getOptionInt(const std::string& option) {
+    return CvoltonManager::sharedState()->getOptionInt(std::format("user_search_{}", option));
+}
+
+void ProfileSearchOptions::onToggle(cocos2d::CCObject* sender)
+{
+    sender->retain();
+    auto button = static_cast<CCMenuItemSpriteExtra*>(sender);
     auto CM = CvoltonManager::sharedState();
-    CM->setOptionInt("user_search_idrange_min", min);
-    CM->setOptionInt("user_search_idrange_max", max);
+    toggleOption(static_cast<CCString*>(button->getUserData())->getCString());
+
+    destroyToggles();
+    drawToggles();
+    sender->release();
+}
+
+bool ProfileSearchOptions::toggleOption(const std::string& option) {
+    return CvoltonManager::sharedState()->toggleOption(std::format("user_search_{}", option));
+}
+
+void ProfileSearchOptions::setOptionInt(const std::string& option, int value) {
+    CvoltonManager::sharedState()->setOptionInt(std::format("user_search_{}", option), value);
 }

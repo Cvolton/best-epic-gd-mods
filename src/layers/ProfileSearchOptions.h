@@ -5,6 +5,8 @@
 #include "../delegates/IDRangeDelegate.h"
 
 class ProfileSearchOptions : public CvoltonOptionsLayer, public DialogCloseDelegate, public IDRangeDelegate {
+    std::map<std::string, bool> options;
+    std::map<std::string, int> optionInts;
     gd::LevelBrowserLayer* levelBrowserLayer = nullptr;
     gd::CCMenuItemSpriteExtra* prevBtn = nullptr;
     gd::CCMenuItemSpriteExtra* nextBtn = nullptr;
@@ -29,4 +31,9 @@ public:
     void createToggle(const char* option, const char* name, float x, float y, cocos2d::SEL_MenuHandler additional);
     void onDialogClosed();
     void onIDRangeFinished(int min, int max);
+    bool getOption(const std::string& option);
+    int getOptionInt(const std::string& option);
+    bool toggleOption(const std::string& option);
+    void onToggle(cocos2d::CCObject* sender);
+    void setOptionInt(const std::string& option, int value);
 };

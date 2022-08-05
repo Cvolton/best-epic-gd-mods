@@ -8,7 +8,7 @@ protected:
 public:
     static CvoltonOptionsLayer* create();
     void onClose(cocos2d::CCObject* sender);
-    void onToggle(cocos2d::CCObject* sender);
+    virtual void onToggle(cocos2d::CCObject* sender);
     bool init();
     virtual void destroyToggles();
     virtual void drawToggles();
