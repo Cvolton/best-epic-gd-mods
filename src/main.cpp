@@ -183,8 +183,15 @@ public:
         bool newState = !(reinterpret_cast<int>(senderBtn->getUserData()));
         senderBtn->setUserData(reinterpret_cast<void*>(newState));
 
-        if(newState) self->getScheduler()->scheduleSelector(schedule_selector(GamingButton::onInfoLayerSchedule), self, 2, false);
-        else self->getScheduler()->unscheduleSelector(schedule_selector(GamingButton::onInfoLayerSchedule), self);
+        const char* text = "Live Comment Refresh: Enabled";
+        if(newState) {
+            self->getScheduler()->scheduleSelector(schedule_selector(GamingButton::onInfoLayerSchedule), self, 2, false);
+        } else {
+            text = "Live Comment Refresh: Disabled";
+            self->getScheduler()->unscheduleSelector(schedule_selector(GamingButton::onInfoLayerSchedule), self);
+        }
+
+        self->addChild(TextAlertPopup::create(text, 0.5f, 0.6f), 100);
     }
 
     void onLevelInfoNoLoad(CCObject* sender){
