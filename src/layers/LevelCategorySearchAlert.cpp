@@ -52,6 +52,9 @@ void LevelCategorySearchAlert::onTestBtn(CCObject* sender) {
     searchObj.starRangeMax = 7;
     searchObj.unfeatured = true;*/
     searchObj.gameVersionMax = 7;
+    searchObj.difficulty.insert(6);
+    searchObj.demonDifficulty.insert(1);
+    searchObj.star = true;
     //searchObj.copied = true;
 
     auto browserLayer = LevelSearchViewLayer::scene(levelsDeque, searchObj);

@@ -280,7 +280,14 @@ void BetterInfo::debugObjectIndexes(CCNode* node) {
 }
 
 bool BetterInfo::levelMatchesObject(GJGameLevel* level, const BISearchObject& searchObj) {
-        //TODO
+        if(!searchObj.difficulty.empty() && searchObj.difficulty.find(levelDifficultyAsInt(level)) == searchObj.difficulty.end()) return false;
+        if(!searchObj.length.empty() && searchObj.length.find(level->levelLength) == searchObj.length.end()) return false;
+        if(!searchObj.demonDifficulty.empty() && level->demon != 0
+                && searchObj.difficulty.find(6) != searchObj.difficulty.end()
+                && searchObj.demonDifficulty.find(levelDemonDifficultyAsInt(level)) == searchObj.demonDifficulty.end()
+                ) return false;
+
+
         if(searchObj.star && level->stars == 0) return false;
         if(searchObj.noStar && level->stars != 0) return false;
         if(searchObj.uncompleted && level->normalPercent == 100) return false;
@@ -319,4 +326,17 @@ void BetterInfo::writeToDebugFile(const std::string& content) {
         fileStream.open("betterinfo/v2/debug.txt", std::fstream::out | std::fstream::app);
         fileStream << content << "\n";
         fileStream.close();
+}
+
+int BetterInfo::levelDifficultyAsInt(GJGameLevel* level) {
+        if(level->demon != 0) return 6;
+        if(level->autoLevel) return -1;
+        return (level->ratings == 0) ? 0 : (level->ratingsSum / level->ratings);
+}
+
+int BetterInfo::levelDemonDifficultyAsInt(GJGameLevel* level) {
+        int demonDifficulty = 2;
+        if(level->demonDifficulty >= 5) demonDifficulty = level->demonDifficulty - 2;
+        else if(level->demonDifficulty >= 3) demonDifficulty = level->demonDifficulty - 3;
+        return demonDifficulty;
 }

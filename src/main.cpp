@@ -1177,18 +1177,13 @@ CCArray* __fastcall GameLevelManager_getSavedLevels(GameLevelManager* self, void
         auto level = static_cast<GJGameLevel*>(obj);
 
         int password = level->password_rand - level->password_seed;
-        int difficulty = (level->ratings == 0) ? 0 : (level->ratingsSum / level->ratings);
-
-        if(level->demon != 0) difficulty = 6;
-        if(level->autoLevel) difficulty = -1;
+        int difficulty = BetterInfo::levelDifficultyAsInt(level);
         if(!(diff.empty()) && std::find(diff.begin(), diff.end(), difficulty) == diff.end()) continue;
 
         if(!(len.empty()) && std::find(len.begin(), len.end(), level->levelLength) == len.end()) continue;
 
         if(CM->getOption("user_search_diff_06") && level->demon != 0) {
-            int demonDifficulty = 2;
-            if(level->demonDifficulty >= 5) demonDifficulty = level->demonDifficulty - 2;
-            else if(level->demonDifficulty >= 3) demonDifficulty = level->demonDifficulty - 3;
+            int demonDifficulty = BetterInfo::levelDemonDifficultyAsInt(level);
 
             if(!(demonDiff.empty()) && std::find(demonDiff.begin(), demonDiff.end(), demonDifficulty) == demonDiff.end()) continue;
         }

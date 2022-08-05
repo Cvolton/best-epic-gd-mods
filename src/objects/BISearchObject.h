@@ -2,9 +2,9 @@
 
 struct BISearchObject {
     public:
-        std::string difficulty; //TODO
-        std::string length; //TODO
-        int demon; //TODO
+        std::set<int> difficulty;
+        std::set<int> length;
+        std::set<int> demonDifficulty;
         bool star = false;
         bool noStar = false;
         bool uncompleted = false;

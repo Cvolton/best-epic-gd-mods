@@ -45,4 +45,7 @@ namespace BetterInfo {
     void debugObjectIndexes(cocos2d::CCNode* node);
     bool levelMatchesObject(gd::GJGameLevel* level, const BISearchObject& searchObj);
     void writeToDebugFile(const std::string& content);
+
+    int levelDifficultyAsInt(gd::GJGameLevel* level);
+    int levelDemonDifficultyAsInt(gd::GJGameLevel* level);
 }
