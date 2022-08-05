@@ -3,9 +3,10 @@
 #include <gd.h>
 #include <deque>
 #include "LevelSearchListView.h"
+#include "../delegates/BISearchObjectDelegate.h"
 #include "../objects/BISearchObject.h"
 
-class LevelSearchViewLayer : public cocos2d::CCLayer, public gd::OnlineListDelegate {
+class LevelSearchViewLayer : public cocos2d::CCLayer, public gd::OnlineListDelegate, public BISearchObjectDelegate {
     BISearchObject m_searchObj;
     LevelSearchListView* m_listView = nullptr;
     gd::GJListLayer* m_listLayer = nullptr;
@@ -41,4 +42,6 @@ public:
     void loadListFinished(cocos2d::CCArray*, const char*);
     void loadListFailed(const char*);
     void setupPageInfo(std::string, const char*);
+
+    void onSearchObjectFinished(const BISearchObject& searchObj);
 };

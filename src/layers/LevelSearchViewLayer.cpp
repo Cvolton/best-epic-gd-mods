@@ -277,3 +277,8 @@ void LevelSearchViewLayer::keyDown(enumKeyCodes key){
             CCLayer::keyDown(key);
     }
 }
+
+void LevelSearchViewLayer::onSearchObjectFinished(const BISearchObject& searchObj) {
+    m_searchObj = searchObj;
+    reload();
+}
