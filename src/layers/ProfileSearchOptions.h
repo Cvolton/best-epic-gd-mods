@@ -3,6 +3,7 @@
 #include "CvoltonOptionsLayer.h"
 #include "../delegates/DialogCloseDelegate.h"
 #include "../delegates/IDRangeDelegate.h"
+#include "../delegates/BISearchObjectDelegate.h"
 #include "../objects/BISearchObject.h"
 
 class ProfileSearchOptions : public CvoltonOptionsLayer, public DialogCloseDelegate, public IDRangeDelegate {
@@ -14,17 +15,18 @@ class ProfileSearchOptions : public CvoltonOptionsLayer, public DialogCloseDeleg
     cocos2d::extension::CCScale9Sprite* lengthBg = nullptr;
     cocos2d::extension::CCScale9Sprite* diffBg = nullptr;
     cocos2d::extension::CCScale9Sprite* demonDiffBg = nullptr;
+    BISearchObjectDelegate* searchObjDelegate = nullptr;
     std::string prefix;
     int page = 0;
 public:
-    static ProfileSearchOptions* create(gd::LevelBrowserLayer* levelBrowserLayer = nullptr, const std::string& prefix = "");
+    static ProfileSearchOptions* create(gd::LevelBrowserLayer* levelBrowserLayer = nullptr, const std::string& prefix = "", BISearchObjectDelegate* searchObjDelegate = nullptr);
     void onClose(cocos2d::CCObject* sender);
     void onPrev(cocos2d::CCObject* sender);
     void onSong(cocos2d::CCObject* sender);
     void onIdRange(cocos2d::CCObject* sender);
     void onNext(cocos2d::CCObject* sender);
     void onSecondaryInfo(cocos2d::CCObject* sender);
-    bool init(gd::LevelBrowserLayer* levelBrowserLayer = nullptr, const std::string& prefix = "");
+    bool init(gd::LevelBrowserLayer* levelBrowserLayer = nullptr, const std::string& prefix = "", BISearchObjectDelegate* searchObjDelegate = nullptr);
     void destroyToggles();
     void drawToggles();
     void drawTogglesPrimary();

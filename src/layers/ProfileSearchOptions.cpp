@@ -9,9 +9,9 @@
 using namespace cocos2d;
 using namespace gd;
 
-ProfileSearchOptions* ProfileSearchOptions::create(gd::LevelBrowserLayer* levelBrowserLayer, const std::string& prefix){
+ProfileSearchOptions* ProfileSearchOptions::create(gd::LevelBrowserLayer* levelBrowserLayer, const std::string& prefix, BISearchObjectDelegate* searchObjDelegate){
     auto ret = new ProfileSearchOptions();
-    if (ret && ret->init(levelBrowserLayer, prefix)) {
+    if (ret && ret->init(levelBrowserLayer, prefix, searchObjDelegate)) {
         //robert 1 :D
         ret->autorelease();
     } else {
@@ -27,6 +27,7 @@ void ProfileSearchOptions::onClose(cocos2d::CCObject* sender)
     auto CM = CvoltonManager::sharedState();
     CM->save();
     destroyToggles();
+    if(searchObjDelegate != nullptr) searchObjDelegate->onSearchObjectFinished(getSearchObject());
     if(levelBrowserLayer != nullptr) levelBrowserLayer->loadPage(levelBrowserLayer->searchObject);
     if(levelBrowserLayer != nullptr) levelBrowserLayer->release();
     setKeypadEnabled(false);
@@ -70,13 +71,14 @@ void ProfileSearchOptions::onSecondaryInfo(cocos2d::CCObject* sender){
     )->show();
 }
 
-bool ProfileSearchOptions::init(gd::LevelBrowserLayer* levelBrowserLayer, const std::string& prefix){
+bool ProfileSearchOptions::init(gd::LevelBrowserLayer* levelBrowserLayer, const std::string& prefix, BISearchObjectDelegate* searchObjDelegate){
     bool init = createBasics({440.0f, 290.0f}, menu_selector(ProfileSearchOptions::onClose), 1.f, {0x00, 0x00, 0x00, 0x96});
     if(!init) return false;
 
     this->levelBrowserLayer = levelBrowserLayer;
     if(levelBrowserLayer != nullptr) levelBrowserLayer->retain();
     this->prefix = prefix;
+    this->searchObjDelegate = searchObjDelegate;
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
