@@ -57,9 +57,6 @@ bool LevelSearchViewLayer::init(std::deque<gd::GJGameLevel*> allLevels, BISearch
     setTouchEnabled(true);
     setKeypadEnabled(true);
 
-    m_loadedLevels = CCArray::create();
-    m_loadedLevels->retain();
-
     m_allLevels = m_unloadedLevels = allLevels;
 
     //corners
@@ -107,9 +104,41 @@ bool LevelSearchViewLayer::init(std::deque<gd::GJGameLevel*> allLevels, BISearch
     m_searchObj = searchObj;
 
     loadPage(true);
-    startLoading();
+    reload();
 
     return true;
+}
+
+void LevelSearchViewLayer::unload() {
+    m_page = 0;
+    m_shownLevels = 0;
+    m_firstIndex = 0;
+    m_lastIndex = 0;
+    m_totalAmount = 0;
+
+    auto GLM = GameLevelManager::sharedState();
+    GLM->m_pOnlineListDelegate = nullptr;
+
+    if(!m_loadedLevels) return;
+
+    for(size_t i = 0; i < m_loadedLevels->count(); i++) {
+        auto level = static_cast<GJGameLevel*>(m_loadedLevels->objectAtIndex(i));
+        level->release();
+    }
+
+    m_loadedLevels->release();
+    m_loadedLevels = nullptr;
+}
+
+void LevelSearchViewLayer::reload() {
+    unload();
+
+    m_unloadedLevels = m_allLevels;
+
+    m_loadedLevels = CCArray::create();
+    m_loadedLevels->retain();
+
+    startLoading();
 }
 
 void LevelSearchViewLayer::startLoading(){
@@ -179,15 +208,7 @@ void LevelSearchViewLayer::loadPage(bool reload){
 void LevelSearchViewLayer::keyBackClicked() {
     setTouchEnabled(false);
     setKeypadEnabled(false);
-    auto GLM = GameLevelManager::sharedState();
-    GLM->m_pOnlineListDelegate = nullptr;
-    for(size_t i = 0; i < m_loadedLevels->count(); i++) {
-        auto level = static_cast<GJGameLevel*>(m_loadedLevels->objectAtIndex(i));
-        level->release();
-    }
-
-    m_loadedLevels->release();
-    m_loadedLevels = nullptr;
+    unload();
     CCDirector::sharedDirector()->popSceneWithTransition(0.5f, PopTransition::kPopTransitionFade);
 }
 

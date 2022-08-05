@@ -25,6 +25,8 @@ protected:
     virtual bool init(std::deque<gd::GJGameLevel*> allLevels, BISearchObject searchObj = BISearchObject());
     virtual void keyBackClicked();
     void onBack(cocos2d::CCObject*);
+    void unload();
+    void reload();
     void startLoading();
     void setTextStatus(bool finished);
 public:
