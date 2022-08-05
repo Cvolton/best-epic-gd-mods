@@ -1,6 +1,7 @@
 #include "LevelSearchViewLayer.h"
 #include "DailyListView.h"
 #include "JumpToPageLayer.h"
+#include "ProfileSearchOptions.h"
 #include "../managers/CvoltonManager.h"
 #include "../utils.hpp"
 
@@ -96,6 +97,17 @@ bool LevelSearchViewLayer::init(std::deque<gd::GJGameLevel*> allLevels, BISearch
     addChild(m_counter);
 
     m_searchObj = searchObj;
+
+    auto buttonSprite = gd::ButtonSprite::create("Filters", (int)(90*0.5), true, "bigFont.fnt", "GJ_button_01.png", 44*0.5f, 0.5f);
+    auto buttonButton = gd::CCMenuItemSpriteExtra::create(
+        buttonSprite,
+        this,
+        menu_selector(LevelSearchViewLayer::onFilters)
+    );
+    buttonButton->setSizeMult(1.2f);
+    buttonButton->setPosition({- winSize.width / 2, - winSize.height / 2});
+    buttonButton->setAnchorPoint({0,0});
+    menu->addChild(buttonButton);
 
     loadPage(true);
     reload();
@@ -255,6 +267,10 @@ void LevelSearchViewLayer::onNext(cocos2d::CCObject*) {
     m_page++;
     loadPage(true);
     startLoading();
+}
+
+void LevelSearchViewLayer::onFilters(cocos2d::CCObject*) {
+    ProfileSearchOptions::create(nullptr, "", this)->show();
 }
 
 void LevelSearchViewLayer::keyDown(enumKeyCodes key){
