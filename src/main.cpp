@@ -27,6 +27,7 @@
 #include "layers/RewardViewLayer.h"
 #include "layers/RewardTypeSelectLayer.h"
 #include "layers/CustomLevelSearchLayer.h"
+#include "layers/LevelSearchViewLayer.h"
 
 #include "managers/CvoltonManager.h"
 #include "managers/BetterInfoStats.h"
@@ -142,10 +143,15 @@ public:
         BetterInfo::copyToClipboard(self->score->getPlayerName().c_str(), self);
     }
 
-    void onLevelBrowserSavedFilter(CCObject* sender){
+    void onLevelBrowserFilter(CCObject* sender){
         auto self = cast<LevelBrowserLayer*>(this);
 
-        ProfileSearchOptions::create(self, "user_search")->show();
+        if(BetterInfo::isLocal(self->searchObject)) ProfileSearchOptions::create(self, "user_search")->show();
+        else {
+            auto layer = LevelSearchViewLayer::scene(self->searchObject);
+            auto transitionFade = CCTransitionFade::create(0.5, layer);
+            CCDirector::sharedDirector()->pushScene(transitionFade);
+        }
     }
 
     void onCustomSearch(CCObject* sender){
@@ -788,20 +794,20 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
     if((self->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite)){
         if(BetterInfo::isSavedFiltered() && self->countText) self->countText->setString((std::string("(Filtered) ") + self->countText->getString()).c_str());
 
-        if(menu->getChildByTag(filterBtnTag) == nullptr) {
-            auto filterSprite = CCSprite::createWithSpriteFrameName("GJ_plusBtn_001.png");
-            filterSprite->setScale(0.7f);
-            auto filterButton = gd::CCMenuItemSpriteExtra::create(
-                filterSprite,
-                self,
-                menu_selector(GamingButton::onLevelBrowserSavedFilter)
-            );
-            menu->addChild(filterButton);
-            filterButton->setPosition({- (winSize.width / 2) + 64, 92});
-            filterButton->setSizeMult(1.2f);
-            filterButton->setTag(filterBtnTag);
-        }
+    }
 
+    if(menu->getChildByTag(filterBtnTag) == nullptr) {
+        auto filterSprite = CCSprite::createWithSpriteFrameName("GJ_plusBtn_001.png");
+        filterSprite->setScale(0.7f);
+        auto filterButton = gd::CCMenuItemSpriteExtra::create(
+            filterSprite,
+            self,
+            menu_selector(GamingButton::onLevelBrowserFilter)
+        );
+        menu->addChild(filterButton);
+        filterButton->setPosition({- (winSize.width / 2) + 64, 92});
+        filterButton->setSizeMult(1.2f);
+        filterButton->setTag(filterBtnTag);
     }
 
     if(menu->getChildByTag(starBtnTag)) return;

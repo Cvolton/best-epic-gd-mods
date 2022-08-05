@@ -9,7 +9,7 @@ using namespace gd;
 using namespace cocos2d;
 using namespace cocos2d::extension;
 
-LevelSearchViewLayer* LevelSearchViewLayer::create(std::deque<gd::GJGameLevel*> allLevels, BISearchObject searchObj) {
+LevelSearchViewLayer* LevelSearchViewLayer::create(std::deque<GJGameLevel*> allLevels, BISearchObject searchObj) {
     auto ret = new LevelSearchViewLayer();
     if (ret && ret->init(allLevels, searchObj)) {
         ret->autorelease();
@@ -20,7 +20,29 @@ LevelSearchViewLayer* LevelSearchViewLayer::create(std::deque<gd::GJGameLevel*> 
     return ret;
 }
 
-bool LevelSearchViewLayer::init(std::deque<gd::GJGameLevel*> allLevels, BISearchObject searchObj) {
+LevelSearchViewLayer* LevelSearchViewLayer::create(GJSearchObject* gjSearchObj, BISearchObject searchObj) {
+    auto ret = new LevelSearchViewLayer();
+    if (ret && ret->init(gjSearchObj, searchObj)) {
+        ret->autorelease();
+    } else {
+        delete ret;
+        ret = nullptr;
+    }
+    return ret;
+}
+
+bool LevelSearchViewLayer::init(std::deque<GJGameLevel*> allLevels, BISearchObject searchObj) {
+    m_allLevels = m_unloadedLevels = allLevels;
+    return init(searchObj);
+}
+
+bool LevelSearchViewLayer::init(GJSearchObject* gjSearchObj, BISearchObject searchObj) {
+    m_gjSearchObj = gjSearchObj;
+    m_gjSearchObj->retain();
+    return init(searchObj);
+}
+
+bool LevelSearchViewLayer::init(BISearchObject searchObj) {
 
     auto CM = CvoltonManager::sharedState();
     CM->loadTextures();
@@ -40,7 +62,7 @@ bool LevelSearchViewLayer::init(std::deque<gd::GJGameLevel*> allLevels, BISearch
     auto menu = CCMenu::create();
     addChild(menu);
     
-    auto backBtn = gd::CCMenuItemSpriteExtra::create(
+    auto backBtn = CCMenuItemSpriteExtra::create(
         CCSprite::createWithSpriteFrameName("GJ_arrow_01_001.png"),
         this,
         menu_selector(LevelSearchViewLayer::onBack)
@@ -51,8 +73,6 @@ bool LevelSearchViewLayer::init(std::deque<gd::GJGameLevel*> allLevels, BISearch
 
     setTouchEnabled(true);
     setKeypadEnabled(true);
-
-    m_allLevels = m_unloadedLevels = allLevels;
 
     //corners
     auto cornerBL = CCSprite::createWithSpriteFrameName("GJ_sideArt_001.png");
@@ -72,7 +92,7 @@ bool LevelSearchViewLayer::init(std::deque<gd::GJGameLevel*> allLevels, BISearch
     addChild(m_statusText);
 
     auto prevSprite = CCSprite::createWithSpriteFrameName(controllerConnected ? "controllerBtn_DPad_Left_001.png" : "GJ_arrow_03_001.png");
-    m_prevBtn = gd::CCMenuItemSpriteExtra::create(
+    m_prevBtn = CCMenuItemSpriteExtra::create(
         prevSprite,
         this,
         menu_selector(LevelSearchViewLayer::onPrev)
@@ -82,7 +102,7 @@ bool LevelSearchViewLayer::init(std::deque<gd::GJGameLevel*> allLevels, BISearch
 
     auto nextSprite = CCSprite::createWithSpriteFrameName(controllerConnected ? "controllerBtn_DPad_Right_001.png" : "GJ_arrow_03_001.png");
     if(!controllerConnected) nextSprite->setFlipX(true);
-    m_nextBtn = gd::CCMenuItemSpriteExtra::create(
+    m_nextBtn = CCMenuItemSpriteExtra::create(
         nextSprite,
         this,
         menu_selector(LevelSearchViewLayer::onNext)
@@ -98,8 +118,8 @@ bool LevelSearchViewLayer::init(std::deque<gd::GJGameLevel*> allLevels, BISearch
 
     m_searchObj = searchObj;
 
-    auto buttonSprite = gd::ButtonSprite::create("Filters", (int)(90*0.5), true, "bigFont.fnt", "GJ_button_01.png", 44*0.5f, 0.5f);
-    auto buttonButton = gd::CCMenuItemSpriteExtra::create(
+    auto buttonSprite = ButtonSprite::create("Filters", (int)(90*0.5), true, "bigFont.fnt", "GJ_button_01.png", 44*0.5f, 0.5f);
+    auto buttonButton = CCMenuItemSpriteExtra::create(
         buttonSprite,
         this,
         menu_selector(LevelSearchViewLayer::onFilters)
@@ -123,6 +143,8 @@ void LevelSearchViewLayer::unload() {
 
     auto GLM = GameLevelManager::sharedState();
     GLM->m_pOnlineListDelegate = nullptr;
+
+    if(m_gjSearchObj) m_gjSearchObj->m_nPage = 0;
 
     if(!m_loadedLevels) return;
 
@@ -148,26 +170,33 @@ void LevelSearchViewLayer::reload() {
 }
 
 void LevelSearchViewLayer::startLoading(){
-    if(m_unloadedLevels.empty() || (m_page + 2) * 10 < m_loadedLevels->count()) {
+    if((m_unloadedLevels.empty() && !m_gjSearchObj) || (m_page + 2) * 10 < m_loadedLevels->count()) {
         setTextStatus(true);
         return;
     }
 
     setTextStatus(false);
+    GJSearchObject* searchObj = nullptr;
 
-    bool starFilter = m_searchObj.star || m_searchObj.starRangeMin > 0;
-    size_t levelsPerRequest = (starFilter) ? 300 : 10;
+    if(!m_unloadedLevels.empty()) {
+        bool starFilter = m_searchObj.star || m_searchObj.starRangeMin > 0;
+        size_t levelsPerRequest = (starFilter) ? 300 : 10;
 
-    std::stringstream toDownload;
-    bool first = true;
-    for(size_t i = 0; i < ((m_unloadedLevels.size() < levelsPerRequest) ? m_unloadedLevels.size() : levelsPerRequest); i++) {
-        if(!first) toDownload << ",";
-        toDownload << m_unloadedLevels[0]->levelID;
-        m_unloadedLevels.pop_front();
-        first = false;
+        std::stringstream toDownload;
+        bool first = true;
+        for(size_t i = 0; i < ((m_unloadedLevels.size() < levelsPerRequest) ? m_unloadedLevels.size() : levelsPerRequest); i++) {
+            if(!first) toDownload << ",";
+            toDownload << m_unloadedLevels[0]->levelID;
+            m_unloadedLevels.pop_front();
+            first = false;
+        }
+
+        searchObj = GJSearchObject::create(starFilter ? kSearchTypeMapPackList : kSearchType19, toDownload.str());
+
+    } else if(m_gjSearchObj) {
+        searchObj = m_gjSearchObj;
     }
 
-    auto searchObj = GJSearchObject::create(starFilter ? kSearchTypeMapPackList : kSearchType19, toDownload.str());
     auto GLM = GameLevelManager::sharedState();
     auto storedLevels = GLM->getStoredOnlineLevels(searchObj->getKey());
     if(storedLevels) loadListFinished(storedLevels, "");
@@ -175,6 +204,8 @@ void LevelSearchViewLayer::startLoading(){
         GLM->m_pOnlineListDelegate = this;
         GLM->getOnlineLevels(searchObj);
     }
+
+    searchObj->m_nPage += 1;
 }
 
 void LevelSearchViewLayer::loadPage(bool reload){
@@ -215,6 +246,7 @@ void LevelSearchViewLayer::keyBackClicked() {
     setTouchEnabled(false);
     setKeypadEnabled(false);
     unload();
+    if(m_gjSearchObj) m_gjSearchObj->release();
     CCDirector::sharedDirector()->popSceneWithTransition(0.5f, PopTransition::kPopTransitionFade);
 }
 
@@ -223,8 +255,15 @@ void LevelSearchViewLayer::onBack(CCObject* object) {
     keyBackClicked();
 }
 
-CCScene* LevelSearchViewLayer::scene(std::deque<gd::GJGameLevel*> allLevels, BISearchObject searchObj) {
+CCScene* LevelSearchViewLayer::scene(std::deque<GJGameLevel*> allLevels, BISearchObject searchObj) {
     auto layer = LevelSearchViewLayer::create(allLevels, searchObj);
+    auto scene = CCScene::create();
+    scene->addChild(layer);
+    return scene;
+}
+
+CCScene* LevelSearchViewLayer::scene(GJSearchObject* gjSearchObj, BISearchObject searchObj) {
+    auto layer = LevelSearchViewLayer::create(gjSearchObj, searchObj);
     auto scene = CCScene::create();
     scene->addChild(layer);
     return scene;

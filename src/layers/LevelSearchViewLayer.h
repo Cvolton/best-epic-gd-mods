@@ -8,6 +8,7 @@
 
 class LevelSearchViewLayer : public cocos2d::CCLayer, public gd::OnlineListDelegate, public BISearchObjectDelegate {
     BISearchObject m_searchObj;
+    gd::GJSearchObject* m_gjSearchObj;
     LevelSearchListView* m_listView = nullptr;
     gd::GJListLayer* m_listLayer = nullptr;
     gd::CCMenuItemSpriteExtra* m_prevBtn = nullptr;
@@ -24,6 +25,8 @@ class LevelSearchViewLayer : public cocos2d::CCLayer, public gd::OnlineListDeleg
     size_t m_totalAmount = 0;
 protected:
     virtual bool init(std::deque<gd::GJGameLevel*> allLevels, BISearchObject searchObj = BISearchObject());
+    virtual bool init(gd::GJSearchObject* gjSearchObj, BISearchObject searchObj = BISearchObject());
+    virtual bool init(BISearchObject searchObj = BISearchObject());
     virtual void keyBackClicked();
     void onBack(cocos2d::CCObject*);
     void unload();
@@ -33,7 +36,9 @@ protected:
 public:
     void loadPage(bool reload);
     static LevelSearchViewLayer* create(std::deque<gd::GJGameLevel*> allLevels, BISearchObject searchObj = BISearchObject());
+    static LevelSearchViewLayer* create(gd::GJSearchObject* gjSearchObj, BISearchObject searchObj = BISearchObject());
     static cocos2d::CCScene* scene(std::deque<gd::GJGameLevel*> allLevels, BISearchObject searchObj = BISearchObject());
+    static cocos2d::CCScene* scene(gd::GJSearchObject* gjSearchObj, BISearchObject searchObj = BISearchObject());
     
     void onPrev(cocos2d::CCObject*);
     void onNext(cocos2d::CCObject*);
