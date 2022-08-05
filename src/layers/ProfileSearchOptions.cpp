@@ -277,11 +277,15 @@ void ProfileSearchOptions::onIDRangeFinished(int min, int max) {
 }
 
 bool ProfileSearchOptions::getOption(const std::string& option) {
-    return CvoltonManager::sharedState()->getOption(std::format("{}_{}", prefix, option));
+    if(!prefix.empty()) return CvoltonManager::sharedState()->getOption(std::format("{}_{}", prefix, option));
+
+    return options[option];
 }
 
 int ProfileSearchOptions::getOptionInt(const std::string& option) {
-    return CvoltonManager::sharedState()->getOptionInt(std::format("{}_{}", prefix, option));
+    if(!prefix.empty()) return CvoltonManager::sharedState()->getOptionInt(std::format("{}_{}", prefix, option));
+
+    return optionInts[option];
 }
 
 void ProfileSearchOptions::onToggle(cocos2d::CCObject* sender)
@@ -297,15 +301,21 @@ void ProfileSearchOptions::onToggle(cocos2d::CCObject* sender)
 }
 
 bool ProfileSearchOptions::toggleOption(const std::string& option) {
-    return CvoltonManager::sharedState()->toggleOption(std::format("{}_{}", prefix, option));
+    if(!prefix.empty()) return CvoltonManager::sharedState()->toggleOption(std::format("{}_{}", prefix, option));
+
+    return options[option] = !options[option];
 }
 
 void ProfileSearchOptions::setOption(const std::string& option, bool value) {
-    CvoltonManager::sharedState()->setOption(std::format("{}_{}", prefix, option), value);
+    if(!prefix.empty()) CvoltonManager::sharedState()->setOption(std::format("{}_{}", prefix, option), value);
+
+    options[option] = value;
 }
 
 void ProfileSearchOptions::setOptionInt(const std::string& option, int value) {
-    CvoltonManager::sharedState()->setOptionInt(std::format("{}_{}", prefix, option), value);
+    if(!prefix.empty()) CvoltonManager::sharedState()->setOptionInt(std::format("{}_{}", prefix, option), value);
+
+    optionInts[option] = value;
 }
 
 BISearchObject ProfileSearchOptions::getSearchObject() {
