@@ -197,15 +197,18 @@ void LevelSearchViewLayer::startLoading(){
         searchObj = m_gjSearchObj;
     }
 
+    if(!searchObj) return;
+
     auto GLM = GameLevelManager::sharedState();
     auto storedLevels = GLM->getStoredOnlineLevels(searchObj->getKey());
-    if(storedLevels) loadListFinished(storedLevels, "");
-    else {
+    if(storedLevels) {
+        searchObj->m_nPage += 1;
+        loadListFinished(storedLevels, "");
+    } else {
         GLM->m_pOnlineListDelegate = this;
         GLM->getOnlineLevels(searchObj);
+        searchObj->m_nPage += 1;
     }
-
-    searchObj->m_nPage += 1;
 }
 
 void LevelSearchViewLayer::loadPage(bool reload){
