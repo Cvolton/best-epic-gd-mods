@@ -109,7 +109,6 @@ bool LevelSearchViewLayer::init(std::deque<gd::GJGameLevel*> allLevels, BISearch
     buttonButton->setAnchorPoint({0,0});
     menu->addChild(buttonButton);
 
-    loadPage(true);
     reload();
 
     return true;
@@ -144,6 +143,7 @@ void LevelSearchViewLayer::reload() {
     m_loadedLevels = CCArray::create();
     m_loadedLevels->retain();
 
+    loadPage(true);
     startLoading();
 }
 
