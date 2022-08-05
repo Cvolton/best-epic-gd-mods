@@ -270,7 +270,9 @@ void LevelSearchViewLayer::onNext(cocos2d::CCObject*) {
 }
 
 void LevelSearchViewLayer::onFilters(cocos2d::CCObject*) {
-    ProfileSearchOptions::create(nullptr, "", this)->show();
+    auto searchOptions = ProfileSearchOptions::create(nullptr, "", this);
+    searchOptions->setSearchObject(m_searchObj);
+    searchOptions->show();
 }
 
 void LevelSearchViewLayer::keyDown(enumKeyCodes key){
