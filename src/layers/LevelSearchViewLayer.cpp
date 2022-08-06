@@ -289,8 +289,11 @@ void LevelSearchViewLayer::loadListFinished(cocos2d::CCArray* levels, const char
 }
 
 void LevelSearchViewLayer::loadListFailed(const char*) {
-    //setTextStatus(true);
-    startLoading();
+    if(!m_gjSearchObj) startLoading();
+    else {
+        setTextStatus(true);
+        m_gjSearchObj->m_nPage -= 1;
+    }
 }
 
 void LevelSearchViewLayer::setupPageInfo(std::string, const char*) {
