@@ -1222,6 +1222,13 @@ CCArray* __fastcall GameLevelManager_getSavedLevels(GameLevelManager* self, void
             if(max != 0 && level->levelID > max) continue;
         }
 
+        if(CM->getOption("user_search_starrange")) {
+            int min = CM->getOptionInt("user_search_starrange_min");
+            int max = CM->getOptionInt("user_search_starrange_max");
+            if(min != 0 && level->stars < min) continue;
+            if(max != 0 && level->stars > max) continue;
+        }
+
         pRet->addObject(level);
     }
 

@@ -49,8 +49,12 @@ void ProfileSearchOptions::onSong(cocos2d::CCObject* sender)
 
 void ProfileSearchOptions::onIdRange(cocos2d::CCObject* sender)
 {
-    auto CM = CvoltonManager::sharedState();
     IDRangePopup::create(this, getOptionInt("idrange_min"), getOptionInt("idrange_max"), "ID Range")->show();
+}
+
+void ProfileSearchOptions::onStarRange(cocos2d::CCObject* sender)
+{
+    IDRangePopup::create(this, getOptionInt("starrange_min"), getOptionInt("starrange_max"), "Star Range", 1)->show();
 }
 
 void ProfileSearchOptions::onNext(cocos2d::CCObject* sender)
@@ -265,6 +269,7 @@ void ProfileSearchOptions::drawTogglesSecondary(){
     if(!prefix.empty()) createToggle("copy_free", "Free Copy", 90, 35);
     createToggle("nofeatured", "Not Featured", -170, -10);
     createToggle("noepic", "Not Epic", -40, -10);
+    createToggle("starrange", "Star Range", 90, -10, menu_selector(ProfileSearchOptions::onStarRange));
     
 }
 
@@ -273,8 +278,15 @@ void ProfileSearchOptions::onDialogClosed(){
 }
 
 void ProfileSearchOptions::onIDRangeFinished(int min, int max, int additional) {
-    setOptionInt("idrange_min", min);
-    setOptionInt("idrange_max", max);
+    const char* option = "idrange";
+    switch(additional) {
+        case 1:
+            option = "starrange";
+            break;
+    }
+
+    setOptionInt(std::format("{}_min", option), min);
+    setOptionInt(std::format("{}_max", option), max);
     if(levelBrowserLayer != nullptr) levelBrowserLayer->loadPage(levelBrowserLayer->searchObject);
 }
 
@@ -351,8 +363,8 @@ BISearchObject ProfileSearchOptions::getSearchObject() {
     searchObj.freeCopy = getOption("copy_free");
     searchObj.unfeatured = getOption("nofeatured");
     searchObj.unepic = getOption("noepic");
-    searchObj.starRangeMin = 0;
-    searchObj.starRangeMax = 0;
+    searchObj.starRangeMin = getOptionInt("starrange_min");
+    searchObj.starRangeMax = getOptionInt("starrange_max");
     searchObj.gameVersionMin = 0;
     searchObj.gameVersionMax = 0;
 
@@ -405,9 +417,9 @@ void ProfileSearchOptions::setSearchObject(const BISearchObject& searchObj) {
     setOption("copy_free", searchObj.freeCopy);
     setOption("nofeatured", searchObj.unfeatured);
     setOption("noepic", searchObj.unepic);
-    /*searchObj.starRangeMin = 0;
-    searchObj.starRangeMax = 0;
-    searchObj.gameVersionMin = 0;
+    setOptionInt("starrange_min", searchObj.starRangeMin);
+    setOptionInt("starrange_max", searchObj.starRangeMin);
+    /*searchObj.gameVersionMin = 0;
     searchObj.gameVersionMax = 0;*/
 
     destroyToggles();
