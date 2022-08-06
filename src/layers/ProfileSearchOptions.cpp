@@ -421,4 +421,7 @@ void ProfileSearchOptions::setSearchObject(const BISearchObject& searchObj) {
     searchObj.starRangeMax = 0;
     searchObj.gameVersionMin = 0;
     searchObj.gameVersionMax = 0;*/
+
+    destroyToggles();
+    drawToggles();
 }
