@@ -221,8 +221,8 @@ void ProfileSearchOptions::drawTogglesPrimary(){
     }
     createButtonToggle("diff_auto", CCSprite::createWithSpriteFrameName("difficulty_auto_btn_001.png"), 187, -70, .9f);
 
-    if(!prefix.empty()) createToggle("uncompleted", "Uncompleted", -170, 80); //40 -60, 170 -60, 300 -60, 40 -110
-    if(!prefix.empty()) createToggle("completed", "Completed", -40, 80);
+    createToggle("uncompleted", "Uncompleted", -170, 80); //40 -60, 170 -60, 300 -60, 40 -110
+    createToggle("completed", "Completed", -40, 80);
     createToggle("featured", "Featured", 90, 80);
     createToggle("original", "Original", -170, 35);
     createToggle("epic", "Epic", -40, 35);
@@ -258,7 +258,7 @@ void ProfileSearchOptions::drawTogglesSecondary(){
     createButton("GJ_infoIcon_001.png", {203, 128}, menu_selector(ProfileSearchOptions::onSecondaryInfo));
 
     createToggle("copied", "Copied", -170, 80);
-    if(!prefix.empty()) createToggle("downloaded", "Downloaded", -40, 80);
+    createToggle("downloaded", "Downloaded", -40, 80);
     if(!prefix.empty()) createToggle("ldm", "LDM", 90, 80);
     createToggle("idrange", "ID Range", -170, 35, menu_selector(ProfileSearchOptions::onIdRange));
     if(!prefix.empty()) createToggle("copy", "Copyable", -40, 35);

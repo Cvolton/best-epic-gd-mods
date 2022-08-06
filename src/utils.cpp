@@ -280,6 +280,7 @@ void BetterInfo::debugObjectIndexes(CCNode* node) {
 }
 
 bool BetterInfo::levelMatchesObject(GJGameLevel* level, const BISearchObject& searchObj) {
+
         if(!searchObj.difficulty.empty() && searchObj.difficulty.find(levelDifficultyAsInt(level)) == searchObj.difficulty.end()) return false;
         if(!searchObj.length.empty() && searchObj.length.find(level->levelLength) == searchObj.length.end()) return false;
         if(!searchObj.demonDifficulty.empty() && level->demon != 0
@@ -290,10 +291,6 @@ bool BetterInfo::levelMatchesObject(GJGameLevel* level, const BISearchObject& se
 
         if(searchObj.star && level->stars == 0) return false;
         if(searchObj.noStar && level->stars != 0) return false;
-        if(searchObj.uncompleted && level->normalPercent == 100) return false;
-        if(searchObj.completed && level->normalPercent != 100) return false; //this doesnt work?
-        if(searchObj.completedOrbs && level->orbCompletion != 100) return false;
-        if(searchObj.completedLeaderboard && level->newNormalPercent2 != 100) return false;
         if(searchObj.featured && level->featured <= 0) return false;
         if(searchObj.original && level->originalLevel > 0) return false;
         if(searchObj.twoPlayer && !level->twoPlayerMode) return false;
@@ -305,7 +302,6 @@ bool BetterInfo::levelMatchesObject(GJGameLevel* level, const BISearchObject& se
                 if(searchObj.songCustom && level->songID != searchObj.songID) return false;
         }
         if(searchObj.copied && level->originalLevel <= 0) return false;
-        //TODO. searchObj.downloaded
         //TODO: searchObj.ldm
         if(searchObj.idRangeMin > 0 && level->levelID < searchObj.idRangeMin) return false;
         if(searchObj.idRangeMax > 0 && level->levelID > searchObj.idRangeMax) return false;
@@ -317,6 +313,13 @@ bool BetterInfo::levelMatchesObject(GJGameLevel* level, const BISearchObject& se
         if(searchObj.starRangeMax > 0 && level->stars > searchObj.starRangeMax) return false;
         if(searchObj.gameVersionMin > 0 && level->gameVersion < searchObj.gameVersionMin) return false;
         if(searchObj.gameVersionMax > 0 && level->gameVersion > searchObj.gameVersionMax) return false;
+
+        auto levelFromSaved = static_cast<GJGameLevel*>(GameLevelManager::sharedState()->m_onlineLevels->objectForKey(std::to_string(level->levelID)));
+        if(searchObj.uncompleted && (levelFromSaved && levelFromSaved->normalPercent == 100)) return false;
+        if(searchObj.completed && (!levelFromSaved || levelFromSaved->normalPercent != 100)) return false; //this doesnt work?
+        if(searchObj.completedOrbs && (!levelFromSaved || levelFromSaved->orbCompletion != 100)) return false;
+        if(searchObj.completedLeaderboard && (levelFromSaved || levelFromSaved->newNormalPercent2 != 100)) return false;
+        if(searchObj.downloaded && (!levelFromSaved || levelFromSaved->levelString.empty())) return false;
 
         return true;
 }
