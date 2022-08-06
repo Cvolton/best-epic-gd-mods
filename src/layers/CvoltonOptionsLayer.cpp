@@ -54,8 +54,7 @@ void CvoltonOptionsLayer::onToggle(cocos2d::CCObject* sender)
 {
     sender->retain();
     auto button = static_cast<CCMenuItemSpriteExtra*>(sender);
-    auto CM = CvoltonManager::sharedState();
-    CM->toggleOption(static_cast<CCString*>(button->getUserData())->getCString());
+    toggleOption(static_cast<CCString*>(button->getUserData())->getCString());
 
     destroyToggles();
     drawToggles();
@@ -63,9 +62,8 @@ void CvoltonOptionsLayer::onToggle(cocos2d::CCObject* sender)
 }
 
 void CvoltonOptionsLayer::createToggle(const char* option, const char* name){
-    auto CM = CvoltonManager::sharedState();
-
-    auto buttonSprite = CCSprite::createWithSpriteFrameName(CM->getOption(option) ? "GJ_checkOn_001.png" : "GJ_checkOff_001.png");
+    
+    auto buttonSprite = CCSprite::createWithSpriteFrameName(getOption(option) ? "GJ_checkOn_001.png" : "GJ_checkOff_001.png");
     buttonSprite->setScale(0.8f);
     auto button = gd::CCMenuItemSpriteExtra::create(
         buttonSprite,
@@ -85,9 +83,7 @@ void CvoltonOptionsLayer::createToggle(const char* option, const char* name){
 }
 
 void CvoltonOptionsLayer::createButtonToggle(const char* option, CCNode* sprite, float x, float y, float scale){
-    auto CM = CvoltonManager::sharedState();
-
-    //auto buttonSprite = CCSprite::createWithSpriteFrameName(sprite);
+    
     sprite->setScale(scale);
     auto button = gd::CCMenuItemSpriteExtra::create(
         sprite,
@@ -96,7 +92,7 @@ void CvoltonOptionsLayer::createButtonToggle(const char* option, CCNode* sprite,
     );
     m_pButtonMenu->addChild(button);
     button->setPosition({x, y});
-    if(!CM->getOption(option)) button->setColor({125,125,125});
+    if(!getOption(option)) button->setColor({125,125,125});
     auto optionString = CCString::create(option);
     optionString->retain();
     button->setUserData(optionString);
@@ -124,4 +120,24 @@ void CvoltonOptionsLayer::drawToggles(){
     createToggle("white_id", "White Level ID text");
     createToggle("auto_submit", "Auto submit to level leaderboards");
     createToggle("alt_button", "Alt BI button texture (req. restart)");
+}
+
+bool CvoltonOptionsLayer::getOption(const std::string& option) {
+    return CvoltonManager::sharedState()->getOption(option);
+}
+
+int CvoltonOptionsLayer::getOptionInt(const std::string& option) {
+    return CvoltonManager::sharedState()->getOptionInt(option);
+}
+
+bool CvoltonOptionsLayer::toggleOption(const std::string& option) {
+    return CvoltonManager::sharedState()->toggleOption(option);
+}
+
+void CvoltonOptionsLayer::setOption(const std::string& option, bool value) {
+    CvoltonManager::sharedState()->setOption(option, value);
+}
+
+void CvoltonOptionsLayer::setOptionInt(const std::string& option, int value) {
+    CvoltonManager::sharedState()->setOptionInt(option, value);
 }

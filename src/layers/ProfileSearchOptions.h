@@ -38,7 +38,6 @@ public:
     bool getOption(const std::string& option);
     int getOptionInt(const std::string& option);
     bool toggleOption(const std::string& option);
-    void onToggle(cocos2d::CCObject* sender);
     void setOption(const std::string& option, bool value);
     void setOptionInt(const std::string& option, int value);
     BISearchObject getSearchObject();
