@@ -2,5 +2,5 @@
 
 class IDRangeDelegate {
 public:
-	virtual void onIDRangeFinished(int min, int max) = 0;
+	virtual void onIDRangeFinished(int min, int max, int additional) = 0;
 };

@@ -272,7 +272,7 @@ void ProfileSearchOptions::onDialogClosed(){
     if(levelBrowserLayer != nullptr) levelBrowserLayer->loadPage(levelBrowserLayer->searchObject);
 }
 
-void ProfileSearchOptions::onIDRangeFinished(int min, int max) {
+void ProfileSearchOptions::onIDRangeFinished(int min, int max, int additional) {
     setOptionInt("idrange_min", min);
     setOptionInt("idrange_max", max);
     if(levelBrowserLayer != nullptr) levelBrowserLayer->loadPage(levelBrowserLayer->searchObject);

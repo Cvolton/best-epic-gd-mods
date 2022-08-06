@@ -18,5 +18,5 @@ public:
     void onPercentageRange(cocos2d::CCObject* sender);
     static std::string getCompletedString();
 
-    void onIDRangeFinished(int min, int max);
+    void onIDRangeFinished(int min, int max, int additional);
 };

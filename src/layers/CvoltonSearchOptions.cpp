@@ -144,7 +144,7 @@ std::string CvoltonSearchOptions::getCompletedString(){
     return std::to_string(type) + ": " + types[type % completedMax];
 }
 
-void CvoltonSearchOptions::onIDRangeFinished(int min, int max) {
+void CvoltonSearchOptions::onIDRangeFinished(int min, int max, int additional) {
     auto CM = CvoltonManager::sharedState();
     CM->setOptionInt("search_completed_percentage_min", min);
     CM->setOptionInt("search_completed_percentage_max", max);

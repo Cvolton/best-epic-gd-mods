@@ -34,7 +34,7 @@ public:
     void createToggle(const char* option, const char* name, float x, float y);
     void createToggle(const char* option, const char* name, float x, float y, cocos2d::SEL_MenuHandler additional);
     void onDialogClosed();
-    void onIDRangeFinished(int min, int max);
+    void onIDRangeFinished(int min, int max, int additional);
     bool getOption(const std::string& option);
     int getOptionInt(const std::string& option);
     bool toggleOption(const std::string& option);

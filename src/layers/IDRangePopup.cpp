@@ -7,9 +7,9 @@
 using namespace cocos2d;
 using namespace gd;
 
-IDRangePopup* IDRangePopup::create(IDRangeDelegate* delegate, int min, int max, const char* text){
+IDRangePopup* IDRangePopup::create(IDRangeDelegate* delegate, int min, int max, const char* text, int additional){
     auto ret = new IDRangePopup();
-    if (ret && ret->init(delegate, min, max, text)) {
+    if (ret && ret->init(delegate, min, max, text, additional)) {
         //robert 1 :D
         ret->autorelease();
     } else {
@@ -22,12 +22,12 @@ IDRangePopup* IDRangePopup::create(IDRangeDelegate* delegate, int min, int max, 
 
 void IDRangePopup::onClose(cocos2d::CCObject* sender)
 {
-    if(delegate) delegate->onIDRangeFinished(minID(), maxID());
+    if(delegate) delegate->onIDRangeFinished(minID(), maxID(), additional);
     setKeypadEnabled(false);
     removeFromParentAndCleanup(true);
 }
 
-bool IDRangePopup::init(IDRangeDelegate* delegate, int min, int max, const char* text){
+bool IDRangePopup::init(IDRangeDelegate* delegate, int min, int max, const char* text, int additional){
     bool init = createBasics({240.0f, 150.0f}, menu_selector(IDRangePopup::onClose), .8f, {0x00, 0x00, 0x00, 0x96});
     if(!init) return false;
 
@@ -68,6 +68,7 @@ bool IDRangePopup::init(IDRangeDelegate* delegate, int min, int max, const char*
     maxBg->setPosition({0,-37});
     maxBg->setScale(0.6f);
     //createTextLabel("Advanced Options", {(winSize.width / 2), (winSize.height / 2) + 125}, 1.f, m_pLayer, "bigFont.fnt");
+    this->additional = additional;
 
     return true;
 }
