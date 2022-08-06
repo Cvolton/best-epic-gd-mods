@@ -221,12 +221,12 @@ void ProfileSearchOptions::drawTogglesPrimary(){
     }
     createButtonToggle("diff_auto", CCSprite::createWithSpriteFrameName("difficulty_auto_btn_001.png"), 187, -70, .9f);
 
-    createToggle("uncompleted", "Uncompleted", -170, 80); //40 -60, 170 -60, 300 -60, 40 -110
-    createToggle("completed", "Completed", -40, 80);
+    if(!prefix.empty()) createToggle("uncompleted", "Uncompleted", -170, 80); //40 -60, 170 -60, 300 -60, 40 -110
+    if(!prefix.empty()) createToggle("completed", "Completed", -40, 80);
     createToggle("featured", "Featured", 90, 80);
     createToggle("original", "Original", -170, 35);
     createToggle("epic", "Epic", -40, 35);
-    createToggle("song", "Song", 90, 35, menu_selector(ProfileSearchOptions::onSong));
+    if(!prefix.empty()) createToggle("song", "Song", 90, 35, menu_selector(ProfileSearchOptions::onSong));
     createToggle("nostar", "No Star", -170, -10);
     createToggle("coins", "Coins", -40, -10);
     createToggle("twoplayer", "2-Player", 90, -10);
@@ -258,11 +258,11 @@ void ProfileSearchOptions::drawTogglesSecondary(){
     createButton("GJ_infoIcon_001.png", {203, 128}, menu_selector(ProfileSearchOptions::onSecondaryInfo));
 
     createToggle("copied", "Copied", -170, 80);
-    createToggle("downloaded", "Downloaded", -40, 80);
-    createToggle("ldm", "LDM", 90, 80);
+    if(!prefix.empty()) createToggle("downloaded", "Downloaded", -40, 80);
+    if(!prefix.empty()) createToggle("ldm", "LDM", 90, 80);
     createToggle("idrange", "ID Range", -170, 35, menu_selector(ProfileSearchOptions::onIdRange));
-    createToggle("copy", "Copyable", -40, 35);
-    createToggle("copy_free", "Free Copy", 90, 35);
+    if(!prefix.empty()) createToggle("copy", "Copyable", -40, 35);
+    if(!prefix.empty()) createToggle("copy_free", "Free Copy", 90, 35);
     createToggle("nofeatured", "Not Featured", -170, -10);
     createToggle("noepic", "Not Epic", -40, -10);
     
@@ -288,18 +288,6 @@ int ProfileSearchOptions::getOptionInt(const std::string& option) {
     if(!prefix.empty()) return CvoltonManager::sharedState()->getOptionInt(std::format("{}_{}", prefix, option));
 
     return optionInts[option];
-}
-
-void ProfileSearchOptions::onToggle(cocos2d::CCObject* sender)
-{
-    sender->retain();
-    auto button = static_cast<CCMenuItemSpriteExtra*>(sender);
-    auto CM = CvoltonManager::sharedState();
-    toggleOption(static_cast<CCString*>(button->getUserData())->getCString());
-
-    destroyToggles();
-    drawToggles();
-    sender->release();
 }
 
 bool ProfileSearchOptions::toggleOption(const std::string& option) {
