@@ -1,6 +1,6 @@
 #include "LevelCategorySearchAlert.h"
 #include "LevelSearchViewLayer.h"
-#include <deque>
+#include "../utils.hpp"
 
 using namespace cocos2d;
 using namespace gd;
@@ -25,41 +25,47 @@ void LevelCategorySearchAlert::onClose(cocos2d::CCObject* sender)
 }
 
 void LevelCategorySearchAlert::onPlayed(CCObject* sender) {
-    std::deque<GJGameLevel*> levelsDeque;
-    auto levels = GameLevelManager::sharedState()->m_onlineLevels;
-    CCDictElement* obj;
-    CCDICT_FOREACH(levels, obj){
-        auto currentLvl = static_cast<GJGameLevel*>(obj->getObject());
-        levelsDeque.push_back(currentLvl);
-    }
-
-    auto browserLayer = LevelSearchViewLayer::scene(levelsDeque);
+    auto browserLayer = LevelSearchViewLayer::scene(BetterInfo::completedDeque());
     auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
     CCDirector::sharedDirector()->pushScene(transitionFade);
 }
 
-void LevelCategorySearchAlert::onTestBtn(CCObject* sender) {
-    std::deque<GJGameLevel*> levelsDeque;
-    auto levels = GameLevelManager::sharedState()->m_onlineLevels;
-    CCDictElement* obj;
-    CCDICT_FOREACH(levels, obj){
-        auto currentLvl = static_cast<GJGameLevel*>(obj->getObject());
-        levelsDeque.push_back(currentLvl);
-    }
+void LevelCategorySearchAlert::onPercentage(cocos2d::CCObject* sender) {
+    //TODO
+}
 
+void LevelCategorySearchAlert::onCompleted(cocos2d::CCObject* sender) {
     BISearchObject searchObj;
-    /*searchObj.starRangeMin = 4;
-    searchObj.starRangeMax = 7;
-    searchObj.unfeatured = true;*/
-    searchObj.gameVersionMax = 7;
-    searchObj.difficulty.insert(6);
-    searchObj.demonDifficulty.insert(1);
-    searchObj.star = true;
-    //searchObj.copied = true;
+    searchObj.completed = true;
 
-    auto browserLayer = LevelSearchViewLayer::scene(levelsDeque, searchObj);
+    auto browserLayer = LevelSearchViewLayer::scene(BetterInfo::completedDeque(), searchObj);
     auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
     CCDirector::sharedDirector()->pushScene(transitionFade);
+}
+
+void LevelCategorySearchAlert::onOrbs(cocos2d::CCObject* sender) {
+    BISearchObject searchObj;
+    searchObj.completedOrbs = true;
+
+    auto browserLayer = LevelSearchViewLayer::scene(BetterInfo::completedDeque(), searchObj);
+    auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
+    CCDirector::sharedDirector()->pushScene(transitionFade);
+}
+void LevelCategorySearchAlert::onLeaderboard(cocos2d::CCObject* sender) {
+    BISearchObject searchObj;
+    searchObj.completedLeaderboard = true;
+
+    auto browserLayer = LevelSearchViewLayer::scene(BetterInfo::completedDeque(), searchObj);
+    auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
+    CCDirector::sharedDirector()->pushScene(transitionFade);
+}
+
+void LevelCategorySearchAlert::onCoins(cocos2d::CCObject* sender) {
+    //TODO
+}
+
+void LevelCategorySearchAlert::onNoCoins(cocos2d::CCObject* sender) {
+    //TODO
 }
 
 bool LevelCategorySearchAlert::init(){
@@ -78,7 +84,7 @@ bool LevelCategorySearchAlert::init(){
     this->addChild(m_pLayer);
 
     cocos2d::extension::CCScale9Sprite* bg = cocos2d::extension::CCScale9Sprite::create("GJ_square01.png", { 0.0f, 0.0f, 80.0f, 80.0f });
-    bg->setContentSize({ 360.0f, 180.0f });
+    bg->setContentSize({ 360.0f, 190.0f });
     m_pLayer->addChild(bg, -1);
     bg->setPosition({ winSize.width / 2, winSize.height / 2 });
 
@@ -95,12 +101,12 @@ bool LevelCategorySearchAlert::init(){
     closeButton->setSizeMult(1.2f);
 
     auto searchTitle = CCLabelBMFont::create("Search", "bigFont.fnt");
-    searchTitle->setPosition({0,66});
+    searchTitle->setPosition({0,71});
 
     m_pButtonMenu->addChild(searchTitle);
 
     auto separator = CCSprite::createWithSpriteFrameName("floorLine_001.png");
-    separator->setPosition({285,202});
+    separator->setPosition({285,207});
     separator->setScaleX(0.75f);
     separator->setOpacity(100);
     m_pLayer->addChild(separator);
@@ -108,8 +114,13 @@ bool LevelCategorySearchAlert::init(){
     /*auto neighborButton = createButton(m_pButtonMenu, "Neighbors", menu_selector(LevelCategorySearchAlert::onNeighbors), 0, 4, (int)(120*0.6), 44*0.6f, 0.6f);
     auto similarButton = createButton(m_pButtonMenu, "Similar", menu_selector(LevelCategorySearchAlert::onSimilar), 0, -48, (int)(120*0.6), 44*0.6f, 0.6f);*/
 
-    auto similarButton = createButton(m_pButtonMenu, "Played", menu_selector(LevelCategorySearchAlert::onPlayed), -75, 8, (int)(120*0.6), 44*0.6f, 0.6f);
-    auto neighborButton = createButton(m_pButtonMenu, "Test btn", menu_selector(LevelCategorySearchAlert::onTestBtn), 75, 8, (int)(120*0.6), 44*0.6f, 0.6f);
+    auto similarButton = createButton(m_pButtonMenu, "Played", menu_selector(LevelCategorySearchAlert::onPlayed), -57, 18, (int)(120*0.6), 44*0.6f, 0.6f);
+    auto percentageButton = createButton(m_pButtonMenu, "Percentage", menu_selector(LevelCategorySearchAlert::onPercentage), 57, 18, (int)(120*0.6), 44*0.6f, 0.6f);
+    auto completedButton = createButton(m_pButtonMenu, "Completed", menu_selector(LevelCategorySearchAlert::onCompleted), -114, -22, (int)(120*0.6), 44*0.6f, 0.6f);
+    auto orbsButton = createButton(m_pButtonMenu, "C. With Orbs", menu_selector(LevelCategorySearchAlert::onOrbs), 0, -22, (int)(120*0.6), 44*0.6f, 0.6f);
+    auto leaderboardButton = createButton(m_pButtonMenu, "C. Leaderboard", menu_selector(LevelCategorySearchAlert::onLeaderboard), 114, -22, (int)(120*0.6), 44*0.6f, 0.6f);
+    auto coinsButton = createButton(m_pButtonMenu, "With Coins", menu_selector(LevelCategorySearchAlert::onCoins), -57, -64, (int)(120*0.6), 44*0.6f, 0.6f);
+    auto noCoinsButton = createButton(m_pButtonMenu, "Without Coins", menu_selector(LevelCategorySearchAlert::onNoCoins), 57, -64, (int)(120*0.6), 44*0.6f, 0.6f);
     /*auto songButton = createButton(m_pButtonMenu, "Leaderboard", menu_selector(LevelCategorySearchAlert::onLeaderboard), 0, -48, (int)(120*0.6), 44*0.6f, 0.6f);*/
 
     return true;

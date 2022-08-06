@@ -318,7 +318,7 @@ bool BetterInfo::levelMatchesObject(GJGameLevel* level, const BISearchObject& se
         if(searchObj.uncompleted && (levelFromSaved && levelFromSaved->normalPercent == 100)) return false;
         if(searchObj.completed && (!levelFromSaved || levelFromSaved->normalPercent != 100)) return false; //this doesnt work?
         if(searchObj.completedOrbs && (!levelFromSaved || levelFromSaved->orbCompletion != 100)) return false;
-        if(searchObj.completedLeaderboard && (levelFromSaved || levelFromSaved->newNormalPercent2 != 100)) return false;
+        if(searchObj.completedLeaderboard && (!levelFromSaved || levelFromSaved->newNormalPercent2 != 100)) return false;
         if(searchObj.downloaded && (!levelFromSaved || levelFromSaved->levelString.empty())) return false;
 
         return true;
@@ -342,4 +342,15 @@ int BetterInfo::levelDemonDifficultyAsInt(GJGameLevel* level) {
         if(level->demonDifficulty >= 5) demonDifficulty = level->demonDifficulty - 2;
         else if(level->demonDifficulty >= 3) demonDifficulty = level->demonDifficulty - 3;
         return demonDifficulty;
+}
+
+std::deque<gd::GJGameLevel*> BetterInfo::completedDeque() {
+        std::deque<GJGameLevel*> levelsDeque;
+        auto levels = GameLevelManager::sharedState()->m_onlineLevels;
+        CCDictElement* obj;
+        CCDICT_FOREACH(levels, obj){
+                auto currentLvl = static_cast<GJGameLevel*>(obj->getObject());
+                levelsDeque.push_back(currentLvl);
+        }
+        return levelsDeque;
 }

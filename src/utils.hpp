@@ -1,5 +1,7 @@
 #pragma once
 
+#include <deque>
+
 template <typename R, typename T>
 inline R cast(T value) { return reinterpret_cast<R>(value); }
 
@@ -48,4 +50,6 @@ namespace BetterInfo {
 
     int levelDifficultyAsInt(gd::GJGameLevel* level);
     int levelDemonDifficultyAsInt(gd::GJGameLevel* level);
+
+    std::deque<gd::GJGameLevel*> completedDeque();
 }
