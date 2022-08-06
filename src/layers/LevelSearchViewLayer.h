@@ -50,4 +50,5 @@ public:
     void setupPageInfo(std::string, const char*);
 
     void onSearchObjectFinished(const BISearchObject& searchObj);
+    void showInfoDialog();
 };

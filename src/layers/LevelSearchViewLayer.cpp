@@ -131,6 +131,8 @@ bool LevelSearchViewLayer::init(BISearchObject searchObj) {
 
     reload();
 
+    if(m_gjSearchObj && !(CM->getOption("lsvl_seen_info"))) showInfoDialog();
+
     return true;
 }
 
@@ -339,4 +341,22 @@ void LevelSearchViewLayer::keyDown(enumKeyCodes key){
 void LevelSearchViewLayer::onSearchObjectFinished(const BISearchObject& searchObj) {
     m_searchObj = searchObj;
     reload();
+}
+
+void LevelSearchViewLayer::showInfoDialog() {
+    auto alert = FLAlertLayer::create(
+        nullptr, 
+        "Filtered Level Search", 
+        "OK", 
+        nullptr,
+        400,
+        "This allows you to further filter search results in ways the server usually wouldn't allow you.\n"
+        "\n"
+        "All of the filtering is done <cg>client-side</c>.\n"
+        "As a result it may take a while to load all results depending on the filter combinations."
+    );
+    alert->m_pParent = this;
+    alert->show();
+
+    CvoltonManager::sharedState()->setOption("lsvl_seen_info", true);
 }
