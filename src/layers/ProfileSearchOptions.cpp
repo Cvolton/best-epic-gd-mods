@@ -357,14 +357,14 @@ BISearchObject ProfileSearchOptions::getSearchObject() {
     searchObj.copied = getOption("copied");
     searchObj.downloaded = getOption("downloaded");
     searchObj.ldm = getOption("ldm");
-    searchObj.idRangeMin = getOptionInt("idrange_min");
-    searchObj.idRangeMax = getOptionInt("idrange_max");
+    searchObj.idRangeMin = getOption("idrange") ? getOptionInt("idrange_min") : 0;
+    searchObj.idRangeMax = getOption("idrange") ? getOptionInt("idrange_max") : 0;
     searchObj.copyable = getOption("copy");
     searchObj.freeCopy = getOption("copy_free");
     searchObj.unfeatured = getOption("nofeatured");
     searchObj.unepic = getOption("noepic");
-    searchObj.starRangeMin = getOptionInt("starrange_min");
-    searchObj.starRangeMax = getOptionInt("starrange_max");
+    searchObj.starRangeMin = getOption("starrange") ? getOptionInt("starrange_min") : 0;
+    searchObj.starRangeMax = getOption("starrange") ? getOptionInt("starrange_max") : 0;
     searchObj.gameVersionMin = 0;
     searchObj.gameVersionMax = 0;
 
@@ -411,14 +411,16 @@ void ProfileSearchOptions::setSearchObject(const BISearchObject& searchObj) {
     setOption("copied", searchObj.copied);
     setOption("downloaded", searchObj.downloaded);
     setOption("ldm", searchObj.ldm);
+    setOption("idrange", searchObj.idRangeMin > 0 || searchObj.idRangeMax > 0);
     setOptionInt("idrange_min", searchObj.idRangeMin);
     setOptionInt("idrange_max", searchObj.idRangeMax);
     setOption("copy", searchObj.copyable);
     setOption("copy_free", searchObj.freeCopy);
     setOption("nofeatured", searchObj.unfeatured);
     setOption("noepic", searchObj.unepic);
+    setOption("starrange", searchObj.starRangeMin > 0 || searchObj.starRangeMax > 0);
     setOptionInt("starrange_min", searchObj.starRangeMin);
-    setOptionInt("starrange_max", searchObj.starRangeMin);
+    setOptionInt("starrange_max", searchObj.starRangeMax);
     /*searchObj.gameVersionMin = 0;
     searchObj.gameVersionMax = 0;*/
 
