@@ -296,7 +296,11 @@ void LevelSearchViewLayer::setupPageInfo(std::string, const char*) {
 }
 
 void LevelSearchViewLayer::setTextStatus(bool finished) {
-    if(m_statusText) m_statusText->setString(finished ? "Finished" : (m_loadedLevels->count() > m_lastIndex ? "Loading (next page)" : "Loading (current page)"));
+    if(m_statusText) m_statusText->setString(
+        finished ? "Finished" : 
+        m_gjSearchObj ? std::format("Loading (online page {})", m_gjSearchObj->m_nPage).c_str() :
+        (m_loadedLevels->count() > m_lastIndex ? "Loading (next page)" : "Loading (current page)")
+    );
 }
 
 void LevelSearchViewLayer::onPrev(cocos2d::CCObject*) {
