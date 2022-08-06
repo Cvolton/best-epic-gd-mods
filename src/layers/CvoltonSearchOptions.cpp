@@ -122,6 +122,7 @@ void CvoltonSearchOptions::onCompletedPrev(cocos2d::CCObject* sender)
     CM->setOptionInt("search_completed", value);
     destroyToggles();
     drawToggles();
+    GameLevelManager::sharedState()->m_pTimerDict->removeAllObjects();
 }
 
 void CvoltonSearchOptions::onCompletedNext(cocos2d::CCObject* sender)
@@ -130,11 +131,13 @@ void CvoltonSearchOptions::onCompletedNext(cocos2d::CCObject* sender)
     CM->setOptionInt("search_completed", (CM->getOptionInt("search_completed") + 1) % completedMax);
     destroyToggles();
     drawToggles();
+    GameLevelManager::sharedState()->m_pTimerDict->removeAllObjects();
 }
 
 void CvoltonSearchOptions::onPercentageRange(CCObject* sender) {
     auto CM = CvoltonManager::sharedState();
     IDRangePopup::create(this, CM->getOptionInt("search_completed_percentage_min"), CM->getOptionInt("search_completed_percentage_max"), "Percentage")->show();
+    GameLevelManager::sharedState()->m_pTimerDict->removeAllObjects();
 }
 
 std::string CvoltonSearchOptions::getCompletedString(){
