@@ -5,6 +5,7 @@ struct BISearchObject {
         std::set<int> difficulty;
         std::set<int> length;
         std::set<int> demonDifficulty;
+        std::string str;
         bool star = false;
         bool noStar = false;
         bool uncompleted = false;

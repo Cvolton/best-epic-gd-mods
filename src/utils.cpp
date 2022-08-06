@@ -288,6 +288,13 @@ bool BetterInfo::levelMatchesObject(GJGameLevel* level, const BISearchObject& se
                 && searchObj.demonDifficulty.find(levelDemonDifficultyAsInt(level)) == searchObj.demonDifficulty.end()
                 ) return false;
 
+        std::string query = searchObj.str;
+        std::string name = level->levelName;
+        strToLower(query);
+        strToLower(name);
+
+        if(name.find(query) == std::string::npos) return false;
+
 
         if(searchObj.star && level->stars == 0) return false;
         if(searchObj.noStar && level->stars != 0) return false;
@@ -353,4 +360,8 @@ std::deque<gd::GJGameLevel*> BetterInfo::completedDeque() {
                 levelsDeque.push_back(currentLvl);
         }
         return levelsDeque;
+}
+
+void BetterInfo::strToLower(std::string& str) {
+        for(auto& c : str) c = tolower(c);
 }

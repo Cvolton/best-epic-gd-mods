@@ -52,4 +52,5 @@ namespace BetterInfo {
     int levelDemonDifficultyAsInt(gd::GJGameLevel* level);
 
     std::deque<gd::GJGameLevel*> completedDeque();
+    void strToLower(std::string& str);
 }
