@@ -112,7 +112,7 @@ bool ProfileSearchOptions::init(gd::LevelBrowserLayer* levelBrowserLayer, const 
     auto sprite = CCSprite::createWithSpriteFrameName("GJ_arrow_01_001.png");
     sprite->setFlipX(true);
 
-    prevBtn = createButton("GJ_arrow_03_001.png", {- (winSize.width / 2) + 30, 0}, menu_selector(ProfileSearchOptions::onPrev));
+    prevBtn = createButton("GJ_arrow_01_001.png", {- (winSize.width / 2) + 30, 0}, menu_selector(ProfileSearchOptions::onPrev));
     nextBtn = gd::CCMenuItemSpriteExtra::create(
         sprite,
         this,
