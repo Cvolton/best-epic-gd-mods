@@ -57,6 +57,21 @@ void ProfileSearchOptions::onStarRange(cocos2d::CCObject* sender)
     IDRangePopup::create(this, getOptionInt("starrange_min"), getOptionInt("starrange_max"), "Star Range", 1)->show();
 }
 
+void ProfileSearchOptions::onPercentage(cocos2d::CCObject* sender)
+{
+    IDRangePopup::create(this, getOptionInt("percentage_min"), getOptionInt("percentage_max"), "Percentage", 2)->show();
+}
+
+void ProfileSearchOptions::onPercentageOrbs(cocos2d::CCObject* sender)
+{
+    IDRangePopup::create(this, getOptionInt("percentageorbs_min"), getOptionInt("percentageorbs_max"), "% Orbs", 3)->show();
+}
+
+void ProfileSearchOptions::onPercentageLeaderboard(cocos2d::CCObject* sender)
+{
+    IDRangePopup::create(this, getOptionInt("percentageleaderboard_min"), getOptionInt("percentageleaderboard_max"), "% Leaderboard", 4)->show();
+}
+
 void ProfileSearchOptions::onNext(cocos2d::CCObject* sender)
 {
     page += 1;
@@ -296,9 +311,9 @@ void ProfileSearchOptions::drawTogglesTerciary(){
     createToggle("uncompletedorbs", "Uc. Orbs", -40, 35);
     createToggle("uncompletedleaderboard", "Uc. Leaderboard", 90, 35);
 
-    createToggle("percentage", "Percentage", -170, -10, menu_selector(ProfileSearchOptions::onStarRange));
-    createToggle("percentageorbs", "% Orbs", -40, -10, menu_selector(ProfileSearchOptions::onStarRange));
-    createToggle("percentageleaderboard", "% Leaderboard", 90, -10, menu_selector(ProfileSearchOptions::onStarRange));
+    createToggle("percentage", "Percentage", -170, -10, menu_selector(ProfileSearchOptions::onPercentage));
+    createToggle("percentageorbs", "% Orbs", -40, -10, menu_selector(ProfileSearchOptions::onPercentageOrbs));
+    createToggle("percentageleaderboard", "% Leaderboard", 90, -10, menu_selector(ProfileSearchOptions::onPercentageLeaderboard));
 }
 
 void ProfileSearchOptions::onDialogClosed(){
@@ -310,6 +325,15 @@ void ProfileSearchOptions::onIDRangeFinished(int min, int max, int additional) {
     switch(additional) {
         case 1:
             option = "starrange";
+            break;
+        case 2:
+            option = "percentage";
+            break;
+        case 3:
+            option = "percentageorbs";
+            break;
+        case 4:
+            option = "percentageleaderboard";
             break;
     }
 
@@ -370,9 +394,17 @@ BISearchObject ProfileSearchOptions::getSearchObject() {
     searchObj.star = getOption("star");
     searchObj.noStar = getOption("nostar");
     searchObj.uncompleted = getOption("uncompleted");
+    searchObj.uncompletedOrbs = getOption("uncompletedorbs");
+    searchObj.uncompletedLeaderboard = getOption("uncompletedleaderboard");
     searchObj.completed = getOption("completed");
-    searchObj.completedOrbs = false;
-    searchObj.completedLeaderboard = false;
+    searchObj.completedOrbs = getOption("completedorbs");
+    searchObj.completedLeaderboard = getOption("completedleaderboard");
+    searchObj.percentageMin = getOption("percentage") ? getOptionInt("percentage_min") : 0;
+    searchObj.percentageMax = getOption("percentage") ? getOptionInt("percentage_max") : 0;
+    searchObj.percentageOrbsMin = getOption("percentageorbs") ? getOptionInt("percentageorbs_min") : 0;
+    searchObj.percentageOrbsMax = getOption("percentageorbs") ? getOptionInt("percentageorbs_max") : 0;
+    searchObj.percentageLeaderboardMin = getOption("percentageleaderboard") ? getOptionInt("percentageleaderboard_min") : 0;
+    searchObj.percentageLeaderboardMax = getOption("percentageleaderboard") ? getOptionInt("percentageleaderboard_max") : 0;
     searchObj.featured = getOption("featured");
     searchObj.original = getOption("original");
     searchObj.twoPlayer = getOption("twoplayer");
@@ -400,6 +432,8 @@ BISearchObject ProfileSearchOptions::getSearchObject() {
 }
 
 void ProfileSearchOptions::setSearchObject(const BISearchObject& searchObj) {
+    //this is slowly getting into ObjectToolbox::init territory...
+
     for(int i = -1; i <= 6; i++) {
         setOption(
             i == -1 ? "diff_auto" : CCString::createWithFormat("diff_%02i", i)->getCString(),
@@ -424,9 +458,17 @@ void ProfileSearchOptions::setSearchObject(const BISearchObject& searchObj) {
     setOption("star", searchObj.star);
     setOption("nostar", searchObj.noStar);
     setOption("uncompleted", searchObj.uncompleted);
+    setOption("uncompletedorbs", searchObj.uncompletedOrbs);
+    setOption("uncompletedleaderboard", searchObj.uncompletedLeaderboard);
     setOption("completed", searchObj.completed);
-    //searchObj.completedOrbs = false;
-    //searchObj.completedLeaderboard = false;
+    setOption("completedorbs", searchObj.completedOrbs);
+    setOption("completedleaderboard", searchObj.completedLeaderboard);
+    setOptionInt("percentage_min", searchObj.percentageMin);
+    setOptionInt("percentage_max", searchObj.percentageMax);
+    setOptionInt("percentageorbs_min", searchObj.percentageOrbsMin);
+    setOptionInt("percentageorbs_max", searchObj.percentageOrbsMax);
+    setOptionInt("percentageleaderboard_min", searchObj.percentageLeaderboardMin);
+    setOptionInt("percentageleaderboard_max", searchObj.percentageLeaderboardMax);
     setOption("featured", searchObj.featured);
     setOption("original", searchObj.original);
     setOption("twoplayer", searchObj.twoPlayer);

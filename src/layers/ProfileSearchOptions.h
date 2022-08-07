@@ -25,6 +25,9 @@ public:
     void onSong(cocos2d::CCObject* sender);
     void onIdRange(cocos2d::CCObject* sender);
     void onStarRange(cocos2d::CCObject* sender);
+    void onPercentage(cocos2d::CCObject* sender);
+    void onPercentageOrbs(cocos2d::CCObject* sender);
+    void onPercentageLeaderboard(cocos2d::CCObject* sender);
     void onNext(cocos2d::CCObject* sender);
     void onSecondaryInfo(cocos2d::CCObject* sender);
     bool init(gd::LevelBrowserLayer* levelBrowserLayer = nullptr, const std::string& prefix = "", BISearchObjectDelegate* searchObjDelegate = nullptr);

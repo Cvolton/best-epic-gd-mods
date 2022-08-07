@@ -14,6 +14,12 @@ struct BISearchObject {
         bool completed = false;
         bool completedOrbs = false;
         bool completedLeaderboard = false;
+        int percentageMin = 0;
+        int percentageMax = 0;
+        int percentageOrbsMin = 0;
+        int percentageOrbsMax = 0;
+        int percentageLeaderboardMin = 0;
+        int percentageLeaderboardMax = 0;
         bool featured = false;
         bool original = false;
         bool twoPlayer = false;
