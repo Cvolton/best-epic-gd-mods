@@ -32,6 +32,7 @@ public:
     void drawToggles();
     void drawTogglesPrimary();
     void drawTogglesSecondary();
+    void drawTogglesTerciary();
     void createToggle(const char* option, const char* name, float x, float y);
     void createToggle(const char* option, const char* name, float x, float y, cocos2d::SEL_MenuHandler additional);
     void onDialogClosed();

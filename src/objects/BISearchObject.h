@@ -9,6 +9,8 @@ struct BISearchObject {
         bool star = false;
         bool noStar = false;
         bool uncompleted = false;
+        bool uncompletedOrbs = false;
+        bool uncompletedLeaderboard = false;
         bool completed = false;
         bool completedOrbs = false;
         bool completedLeaderboard = false;

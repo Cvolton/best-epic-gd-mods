@@ -790,8 +790,9 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
     CCMenu* menu = cast<CCMenu*>(self->nextBtn->getParent());
     auto winSize = CCDirector::sharedDirector()->getWinSize();
     bool isLocal = BetterInfo::isLocal(self->searchObject);
+    bool isSavedWithPlus = self->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite;
 
-    if((self->searchObject->m_nScreenID == SearchType::kSearchTypeSavedLevels || self->searchObject->m_nScreenID == SearchType::kSearchTypeFavorite)){
+    if(isSavedWithPlus){
         if(BetterInfo::isSavedFiltered() && self->countText) self->countText->setString((std::string("(Filtered) ") + self->countText->getString()).c_str());
 
     }
@@ -805,7 +806,7 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
             menu_selector(GamingButton::onLevelBrowserFilter)
         );
         menu->addChild(filterButton);
-        filterButton->setPosition({- (winSize.width / 2) + 64, 92});
+        filterButton->setPosition({- (winSize.width / 2) + (isSavedWithPlus ? 64 : 26), 92});
         filterButton->setSizeMult(1.2f);
         filterButton->setTag(filterBtnTag);
     }

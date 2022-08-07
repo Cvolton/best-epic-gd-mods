@@ -59,7 +59,7 @@ void ProfileSearchOptions::onStarRange(cocos2d::CCObject* sender)
 
 void ProfileSearchOptions::onNext(cocos2d::CCObject* sender)
 {
-    page = (page + 1) % 2;
+    page += 1;
     destroyToggles();
     drawToggles();
 }
@@ -187,8 +187,17 @@ void ProfileSearchOptions::destroyToggles(){
 }
 
 void ProfileSearchOptions::drawToggles(){
-    if(page % 2 == 0) drawTogglesPrimary();
-    else drawTogglesSecondary();
+    switch(page % 3) {
+        default:
+            drawTogglesPrimary();
+            break;
+        case 1:
+            drawTogglesSecondary();
+            break;
+        case 2:
+            drawTogglesTerciary();
+            break;
+    }
 
     if(levelBrowserLayer != nullptr) levelBrowserLayer->loadPage(levelBrowserLayer->searchObject);
 }
@@ -225,8 +234,9 @@ void ProfileSearchOptions::drawTogglesPrimary(){
     }
     createButtonToggle("diff_auto", CCSprite::createWithSpriteFrameName("difficulty_auto_btn_001.png"), 187, -70, .9f);
 
-    createToggle("uncompleted", "Uncompleted", -170, 80); //40 -60, 170 -60, 300 -60, 40 -110
-    createToggle("completed", "Completed", -40, 80);
+    //40 -60, 170 -60, 300 -60, 40 -110
+    createToggle("nofeatured", "Not Featured", -170, 80);
+    createToggle("noepic", "Not Epic", -40, 80);
     createToggle("featured", "Featured", 90, 80);
     createToggle("original", "Original", -170, 35);
     createToggle("epic", "Epic", -40, 35);
@@ -239,7 +249,7 @@ void ProfileSearchOptions::drawTogglesPrimary(){
 void ProfileSearchOptions::drawTogglesSecondary(){
     lengthBg->setVisible(false);
     prevBtn->setVisible(true);
-    nextBtn->setVisible(false);
+    nextBtn->setVisible(true);
     demonDiffBg->setVisible(true);
     diffBg->setVisible(false);
 
@@ -267,10 +277,28 @@ void ProfileSearchOptions::drawTogglesSecondary(){
     createToggle("idrange", "ID Range", -170, 35, menu_selector(ProfileSearchOptions::onIdRange));
     if(!prefix.empty()) createToggle("copy", "Copyable", -40, 35);
     if(!prefix.empty()) createToggle("copy_free", "Free Copy", 90, 35);
-    createToggle("nofeatured", "Not Featured", -170, -10);
-    createToggle("noepic", "Not Epic", -40, -10);
     createToggle("starrange", "Star Range", 90, -10, menu_selector(ProfileSearchOptions::onStarRange));
     
+}
+
+void ProfileSearchOptions::drawTogglesTerciary(){
+    lengthBg->setVisible(false);
+    prevBtn->setVisible(true);
+    nextBtn->setVisible(false);
+    demonDiffBg->setVisible(false);
+    diffBg->setVisible(false);
+
+    createToggle("completed", "Completed", -170, 80); 
+    createToggle("completedorbs", "C. Orbs", -40, 80);
+    createToggle("completedleaderboard", "C. Leaderboard", 90, 80);
+
+    createToggle("uncompleted", "Uncompleted", -170, 35); 
+    createToggle("uncompletedorbs", "Uc. Orbs", -40, 35);
+    createToggle("uncompletedleaderboard", "Uc. Leaderboard", 90, 35);
+
+    createToggle("percentage", "Percentage", -170, -10, menu_selector(ProfileSearchOptions::onStarRange));
+    createToggle("percentageorbs", "% Orbs", -40, -10, menu_selector(ProfileSearchOptions::onStarRange));
+    createToggle("percentageleaderboard", "% Leaderboard", 90, -10, menu_selector(ProfileSearchOptions::onStarRange));
 }
 
 void ProfileSearchOptions::onDialogClosed(){
