@@ -310,16 +310,16 @@ bool BetterInfo::levelMatchesObject(GJGameLevel* level, const BISearchObject& se
         }
         if(searchObj.copied && level->originalLevel <= 0) return false;
         //TODO: searchObj.ldm
-        if(searchObj.idRangeMin > 0 && level->levelID < searchObj.idRangeMin) return false;
-        if(searchObj.idRangeMax > 0 && level->levelID > searchObj.idRangeMax) return false;
+        if(searchObj.idRange.min > 0 && level->levelID < searchObj.idRange.min) return false;
+        if(searchObj.idRange.max > 0 && level->levelID > searchObj.idRange.max) return false;
         //TODO: searchObj.copyable
         //TODO: searchObj.freeCopy
         if(searchObj.unfeatured && level->featured > 0) return false;
         if(searchObj.unepic && level->isEpic) return false;
-        if(searchObj.starRangeMin > 0 && level->stars < searchObj.starRangeMin) return false;
-        if(searchObj.starRangeMax > 0 && level->stars > searchObj.starRangeMax) return false;
-        if(searchObj.gameVersionMin > 0 && level->gameVersion < searchObj.gameVersionMin) return false;
-        if(searchObj.gameVersionMax > 0 && level->gameVersion > searchObj.gameVersionMax) return false;
+        if(searchObj.starRange.enabled && searchObj.starRange.min > 0 && level->stars < searchObj.starRange.min) return false;
+        if(searchObj.starRange.enabled && searchObj.starRange.max > 0 && level->stars > searchObj.starRange.max) return false;
+        if(searchObj.gameVersion.enabled && searchObj.gameVersion.min > 0 && level->gameVersion < searchObj.gameVersion.min) return false;
+        if(searchObj.gameVersion.enabled && searchObj.gameVersion.max > 0 && level->gameVersion > searchObj.gameVersion.max) return false;
 
         auto levelFromSaved = static_cast<GJGameLevel*>(GameLevelManager::sharedState()->m_onlineLevels->objectForKey(std::to_string(level->levelID)));
         if(searchObj.uncompleted && (levelFromSaved && levelFromSaved->normalPercent == 100)) return false;

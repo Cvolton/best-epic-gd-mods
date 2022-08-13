@@ -40,11 +40,13 @@ public:
     void createToggle(const char* option, const char* name, float x, float y, cocos2d::SEL_MenuHandler additional);
     void onDialogClosed();
     void onIDRangeFinished(int min, int max, int additional);
-    bool getOption(const std::string& option);
-    int getOptionInt(const std::string& option);
+    bool getOption(const std::string& option) const;
+    int getOptionInt(const std::string& option) const;
     bool toggleOption(const std::string& option);
     void setOption(const std::string& option, bool value);
     void setOptionInt(const std::string& option, int value);
     BISearchObject getSearchObject();
     void setSearchObject(const BISearchObject& searchObj);
+    void setFromRangeItem(const std::string& option, const BISearchObject::RangeItem& item);
+    void setToRangeItem(BISearchObject::RangeItem& item, const std::string& option) const;
 };

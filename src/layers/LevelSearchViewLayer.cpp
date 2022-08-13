@@ -181,7 +181,7 @@ void LevelSearchViewLayer::startLoading(){
     GJSearchObject* searchObj = nullptr;
 
     if(!m_unloadedLevels.empty()) {
-        bool starFilter = m_searchObj.star || m_searchObj.starRangeMin > 0;
+        bool starFilter = m_searchObj.star || m_searchObj.starRange.min > 0;
         size_t levelsPerRequest = (starFilter) ? 300 : 10;
 
         std::stringstream toDownload;

@@ -399,12 +399,11 @@ BISearchObject ProfileSearchOptions::getSearchObject() {
     searchObj.completed = getOption("completed");
     searchObj.completedOrbs = getOption("completedorbs");
     searchObj.completedLeaderboard = getOption("completedleaderboard");
-    searchObj.percentageMin = getOption("percentage") ? getOptionInt("percentage_min") : 0;
-    searchObj.percentageMax = getOption("percentage") ? getOptionInt("percentage_max") : 0;
-    searchObj.percentageOrbsMin = getOption("percentageorbs") ? getOptionInt("percentageorbs_min") : 0;
-    searchObj.percentageOrbsMax = getOption("percentageorbs") ? getOptionInt("percentageorbs_max") : 0;
-    searchObj.percentageLeaderboardMin = getOption("percentageleaderboard") ? getOptionInt("percentageleaderboard_min") : 0;
-    searchObj.percentageLeaderboardMax = getOption("percentageleaderboard") ? getOptionInt("percentageleaderboard_max") : 0;
+
+    setToRangeItem(searchObj.percentage, "percentage");
+    setToRangeItem(searchObj.percentageOrbs, "percentageorbs");
+    setToRangeItem(searchObj.percentageLeaderboard, "percentageleaderboard");
+
     searchObj.featured = getOption("featured");
     searchObj.original = getOption("original");
     searchObj.twoPlayer = getOption("twoplayer");
@@ -417,16 +416,14 @@ BISearchObject ProfileSearchOptions::getSearchObject() {
     searchObj.copied = getOption("copied");
     searchObj.downloaded = getOption("downloaded");
     searchObj.ldm = getOption("ldm");
-    searchObj.idRangeMin = getOption("idrange") ? getOptionInt("idrange_min") : 0;
-    searchObj.idRangeMax = getOption("idrange") ? getOptionInt("idrange_max") : 0;
+    setToRangeItem(searchObj.idRange, "idrange");
     searchObj.copyable = getOption("copy");
     searchObj.freeCopy = getOption("copy_free");
     searchObj.unfeatured = getOption("nofeatured");
     searchObj.unepic = getOption("noepic");
-    searchObj.starRangeMin = getOption("starrange") ? getOptionInt("starrange_min") : 0;
-    searchObj.starRangeMax = getOption("starrange") ? getOptionInt("starrange_max") : 0;
-    searchObj.gameVersionMin = 0;
-    searchObj.gameVersionMax = 0;
+    setToRangeItem(searchObj.starRange, "starrange");
+    /*searchObj.gameVersionMin = 0;
+    searchObj.gameVersionMax = 0;*/
 
     return searchObj;
 }
@@ -463,12 +460,9 @@ void ProfileSearchOptions::setSearchObject(const BISearchObject& searchObj) {
     setOption("completed", searchObj.completed);
     setOption("completedorbs", searchObj.completedOrbs);
     setOption("completedleaderboard", searchObj.completedLeaderboard);
-    setOptionInt("percentage_min", searchObj.percentageMin);
-    setOptionInt("percentage_max", searchObj.percentageMax);
-    setOptionInt("percentageorbs_min", searchObj.percentageOrbsMin);
-    setOptionInt("percentageorbs_max", searchObj.percentageOrbsMax);
-    setOptionInt("percentageleaderboard_min", searchObj.percentageLeaderboardMin);
-    setOptionInt("percentageleaderboard_max", searchObj.percentageLeaderboardMax);
+    setFromRangeItem("percentage", searchObj.percentage);
+    setFromRangeItem("percentageOrbs", searchObj.percentageOrbs);
+    setFromRangeItem("percentageLeaderboard", searchObj.percentageLeaderboard);
     setOption("featured", searchObj.featured);
     setOption("original", searchObj.original);
     setOption("twoplayer", searchObj.twoPlayer);
@@ -481,19 +475,25 @@ void ProfileSearchOptions::setSearchObject(const BISearchObject& searchObj) {
     setOption("copied", searchObj.copied);
     setOption("downloaded", searchObj.downloaded);
     setOption("ldm", searchObj.ldm);
-    setOption("idrange", searchObj.idRangeMin > 0 || searchObj.idRangeMax > 0);
-    setOptionInt("idrange_min", searchObj.idRangeMin);
-    setOptionInt("idrange_max", searchObj.idRangeMax);
+    setFromRangeItem("idrange", searchObj.idRange);
     setOption("copy", searchObj.copyable);
     setOption("copy_free", searchObj.freeCopy);
     setOption("nofeatured", searchObj.unfeatured);
     setOption("noepic", searchObj.unepic);
-    setOption("starrange", searchObj.starRangeMin > 0 || searchObj.starRangeMax > 0);
-    setOptionInt("starrange_min", searchObj.starRangeMin);
-    setOptionInt("starrange_max", searchObj.starRangeMax);
+    setFromRangeItem("starrange", searchObj.starRange);
     /*searchObj.gameVersionMin = 0;
     searchObj.gameVersionMax = 0;*/
 
     destroyToggles();
     drawToggles();
+}
+
+void ProfileSearchOptions::setFromRangeItem(const std::string& option, const BISearchObject::RangeItem& item) {
+    setOption(option, item.enabled);
+    setOptionInt(std::format("{}_min", option), item.min);
+    setOptionInt(std::format("{}_max", option), item.max);
+}
+
+void ProfileSearchOptions::setToRangeItem(BISearchObject::RangeItem& item, const std::string& option) const {
+    item = {getOption(option), std::format("{}_min", option), std::format("{}_max", option)};
 }
