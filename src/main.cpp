@@ -797,7 +797,8 @@ void __fastcall LevelBrowserLayer_updateLevelsLabel(LevelBrowserLayer* self, voi
 
     }
 
-    if(menu->getChildByTag(filterBtnTag) == nullptr) {
+    bool isScreenWithoutFilterBtn = self->searchObject->m_nScreenID == SearchType::kSearchTypeFindUsers || self->searchObject->m_nScreenID == SearchType::kSearchTypeMapPacks || self->searchObject->m_nScreenID == SearchType::kSearchTypeMyLevels;
+    if(menu->getChildByTag(filterBtnTag) == nullptr && !isScreenWithoutFilterBtn) {
         auto filterSprite = CCSprite::createWithSpriteFrameName("GJ_plusBtn_001.png");
         filterSprite->setScale(0.7f);
         auto filterButton = gd::CCMenuItemSpriteExtra::create(
