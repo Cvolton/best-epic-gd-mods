@@ -342,16 +342,24 @@ void ProfileSearchOptions::onIDRangeFinished(int min, int max, int additional) {
     if(levelBrowserLayer != nullptr) levelBrowserLayer->loadPage(levelBrowserLayer->searchObject);
 }
 
-bool ProfileSearchOptions::getOption(const std::string& option) {
+bool ProfileSearchOptions::getOption(const std::string& option) const {
     if(!prefix.empty()) return CvoltonManager::sharedState()->getOption(std::format("{}_{}", prefix, option));
 
-    return options[option];
+    try {
+        return options.at(option);
+    } catch(...) {
+        return false;
+    }
 }
 
-int ProfileSearchOptions::getOptionInt(const std::string& option) {
+int ProfileSearchOptions::getOptionInt(const std::string& option) const {
     if(!prefix.empty()) return CvoltonManager::sharedState()->getOptionInt(std::format("{}_{}", prefix, option));
 
-    return optionInts[option];
+    try {
+        return optionInts.at(option);
+    } catch(...) {
+        return 0;
+    }
 }
 
 bool ProfileSearchOptions::toggleOption(const std::string& option) {
@@ -461,8 +469,8 @@ void ProfileSearchOptions::setSearchObject(const BISearchObject& searchObj) {
     setOption("completedorbs", searchObj.completedOrbs);
     setOption("completedleaderboard", searchObj.completedLeaderboard);
     setFromRangeItem("percentage", searchObj.percentage);
-    setFromRangeItem("percentageOrbs", searchObj.percentageOrbs);
-    setFromRangeItem("percentageLeaderboard", searchObj.percentageLeaderboard);
+    setFromRangeItem("percentageorbs", searchObj.percentageOrbs);
+    setFromRangeItem("percentageleaderboard", searchObj.percentageLeaderboard);
     setOption("featured", searchObj.featured);
     setOption("original", searchObj.original);
     setOption("twoplayer", searchObj.twoPlayer);
@@ -495,5 +503,5 @@ void ProfileSearchOptions::setFromRangeItem(const std::string& option, const BIS
 }
 
 void ProfileSearchOptions::setToRangeItem(BISearchObject::RangeItem& item, const std::string& option) const {
-    item = {getOption(option), std::format("{}_min", option), std::format("{}_max", option)};
+    item = {getOption(option), getOptionInt(std::format("{}_min", option)), getOptionInt(std::format("{}_max", option))};
 }

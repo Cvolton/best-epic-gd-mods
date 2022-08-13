@@ -122,11 +122,11 @@ void CvoltonOptionsLayer::drawToggles(){
     createToggle("alt_button", "Alt BI button texture (req. restart)");
 }
 
-bool CvoltonOptionsLayer::getOption(const std::string& option) {
+bool CvoltonOptionsLayer::getOption(const std::string& option) const {
     return CvoltonManager::sharedState()->getOption(option);
 }
 
-int CvoltonOptionsLayer::getOptionInt(const std::string& option) {
+int CvoltonOptionsLayer::getOptionInt(const std::string& option) const {
     return CvoltonManager::sharedState()->getOptionInt(option);
 }
 
