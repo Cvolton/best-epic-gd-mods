@@ -107,6 +107,15 @@ bool CustomCreatorLayer::init() {
     searchBtn->setPosition({120,57.5f}); //i have no idea why the texture is misaligned theyre the same res
     searchBtn->setSizeMult(1.2f);
 
+    auto searchIDBtn = gd::CCMenuItemSpriteExtra::create(
+        BetterInfo::createBISprite("BI_searchID_001.png"),
+        this,
+        menu_selector(CustomCreatorLayer::onSearchID)
+    );
+    menu->addChild(searchIDBtn);
+    searchIDBtn->setPosition({120,-57.5f}); //i have no idea why the texture is misaligned theyre the same res
+    searchIDBtn->setSizeMult(1.2f);
+
     auto dailyBtn = gd::CCMenuItemSpriteExtra::create(
         CCSprite::createWithSpriteFrameName("GJ_dailyBtn_001.png"),
         this,
@@ -208,9 +217,11 @@ void CustomCreatorLayer::onInfo(CCObject* object) {
 }
 
 void CustomCreatorLayer::onSearch(CCObject* object) {
-    //LevelIDLayer::create()->show();
-
     LevelCategorySearchAlert::create()->show();
+}
+
+void CustomCreatorLayer::onSearchID(CCObject* object) {
+    LevelIDLayer::create()->show();
 }
 
 void CustomCreatorLayer::onFeatured(CCObject* object) {
