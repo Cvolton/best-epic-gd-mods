@@ -172,7 +172,7 @@ void LevelSearchViewLayer::reload() {
 }
 
 void LevelSearchViewLayer::startLoading(){
-    if((m_unloadedLevels.empty() && !m_gjSearchObj) || (m_page + 2) * 10 < m_loadedLevels->count()) {
+    if((m_unloadedLevels.empty() && !m_gjSearchObj) || (m_page + 2) * 10 < m_loadedLevels->count() || (m_gjSearchObj && m_gjSearchObj->m_nScreenID == SearchType::kSearchTypeMapPackList && m_gjSearchObj->m_nPage > 0)) {
         setTextStatus(true);
         return;
     }
