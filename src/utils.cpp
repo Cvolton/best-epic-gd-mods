@@ -279,6 +279,13 @@ void BetterInfo::debugObjectIndexes(CCNode* node) {
         node->addChild(menu);
 }
 
+bool BetterInfo::validateRangeItem(const BISearchObject::RangeItem& rangeItem, int value) {
+        if(!rangeItem.enabled) return true;
+        if(rangeItem.min != 0 && rangeItem.min > value) return false;
+        if(rangeItem.max != 0 && rangeItem.max < value) return false;
+        return true;
+}
+
 bool BetterInfo::levelMatchesObject(GJGameLevel* level, const BISearchObject& searchObj) {
 
         if(!searchObj.difficulty.empty() && searchObj.difficulty.find(levelDifficultyAsInt(level)) == searchObj.difficulty.end()) return false;
@@ -310,22 +317,27 @@ bool BetterInfo::levelMatchesObject(GJGameLevel* level, const BISearchObject& se
         }
         if(searchObj.copied && level->originalLevel <= 0) return false;
         //TODO: searchObj.ldm
-        if(searchObj.idRange.min > 0 && level->levelID < searchObj.idRange.min) return false;
-        if(searchObj.idRange.max > 0 && level->levelID > searchObj.idRange.max) return false;
+        if(!validateRangeItem(searchObj.idRange, level->levelID)) return false;
         //TODO: searchObj.copyable
         //TODO: searchObj.freeCopy
         if(searchObj.unfeatured && level->featured > 0) return false;
         if(searchObj.unepic && level->isEpic) return false;
-        if(searchObj.starRange.enabled && searchObj.starRange.min > 0 && level->stars < searchObj.starRange.min) return false;
-        if(searchObj.starRange.enabled && searchObj.starRange.max > 0 && level->stars > searchObj.starRange.max) return false;
-        if(searchObj.gameVersion.enabled && searchObj.gameVersion.min > 0 && level->gameVersion < searchObj.gameVersion.min) return false;
-        if(searchObj.gameVersion.enabled && searchObj.gameVersion.max > 0 && level->gameVersion > searchObj.gameVersion.max) return false;
+        if(!validateRangeItem(searchObj.starRange, level->stars)) return false;
+        if(!validateRangeItem(searchObj.gameVersion, level->gameVersion)) return false;
 
         auto levelFromSaved = static_cast<GJGameLevel*>(GameLevelManager::sharedState()->m_onlineLevels->objectForKey(std::to_string(level->levelID)));
         if(searchObj.uncompleted && (levelFromSaved && levelFromSaved->normalPercent == 100)) return false;
-        if(searchObj.completed && (!levelFromSaved || levelFromSaved->normalPercent != 100)) return false; //this doesnt work?
+        if(searchObj.uncompletedOrbs && (!levelFromSaved || levelFromSaved->orbCompletion == 100)) return false;
+        if(searchObj.uncompletedLeaderboard && (!levelFromSaved || levelFromSaved->newNormalPercent2 == 100)) return false;
+
+        if(searchObj.completed && (!levelFromSaved || levelFromSaved->normalPercent != 100)) return false;
         if(searchObj.completedOrbs && (!levelFromSaved || levelFromSaved->orbCompletion != 100)) return false;
         if(searchObj.completedLeaderboard && (!levelFromSaved || levelFromSaved->newNormalPercent2 != 100)) return false;
+
+        if(!validateRangeItem(searchObj.percentage, (levelFromSaved ? levelFromSaved->normalPercent : 0))) return false;
+        if(!validateRangeItem(searchObj.percentageOrbs, (levelFromSaved ? levelFromSaved->orbCompletion : 0))) return false;
+        if(!validateRangeItem(searchObj.percentageLeaderboard, (levelFromSaved ? levelFromSaved->newNormalPercent2 : 0))) return false;
+
         if(searchObj.downloaded && (!levelFromSaved || levelFromSaved->levelString.empty())) return false;
 
         return true;
