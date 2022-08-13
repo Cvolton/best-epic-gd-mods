@@ -115,12 +115,12 @@ bool LevelCategorySearchAlert::init(){
     auto similarButton = createButton(m_pButtonMenu, "Similar", menu_selector(LevelCategorySearchAlert::onSimilar), 0, -48, (int)(120*0.6), 44*0.6f, 0.6f);*/
 
     auto similarButton = createButton(m_pButtonMenu, "Played", menu_selector(LevelCategorySearchAlert::onPlayed), -57, 18, (int)(120*0.6), 44*0.6f, 0.6f);
-    auto percentageButton = createButton(m_pButtonMenu, "Percentage", menu_selector(LevelCategorySearchAlert::onPercentage), 57, 18, (int)(120*0.6), 44*0.6f, 0.6f);
+    //auto percentageButton = createButton(m_pButtonMenu, "Percentage", menu_selector(LevelCategorySearchAlert::onPercentage), 57, 18, (int)(120*0.6), 44*0.6f, 0.6f);
     auto completedButton = createButton(m_pButtonMenu, "Completed", menu_selector(LevelCategorySearchAlert::onCompleted), -114, -22, (int)(120*0.6), 44*0.6f, 0.6f);
     auto orbsButton = createButton(m_pButtonMenu, "C. With Orbs", menu_selector(LevelCategorySearchAlert::onOrbs), 0, -22, (int)(120*0.6), 44*0.6f, 0.6f);
     auto leaderboardButton = createButton(m_pButtonMenu, "C. Leaderboard", menu_selector(LevelCategorySearchAlert::onLeaderboard), 114, -22, (int)(120*0.6), 44*0.6f, 0.6f);
-    auto coinsButton = createButton(m_pButtonMenu, "With Coins", menu_selector(LevelCategorySearchAlert::onCoins), -57, -64, (int)(120*0.6), 44*0.6f, 0.6f);
-    auto noCoinsButton = createButton(m_pButtonMenu, "Without Coins", menu_selector(LevelCategorySearchAlert::onNoCoins), 57, -64, (int)(120*0.6), 44*0.6f, 0.6f);
+    //auto coinsButton = createButton(m_pButtonMenu, "With Coins", menu_selector(LevelCategorySearchAlert::onCoins), -57, -64, (int)(120*0.6), 44*0.6f, 0.6f);
+    //auto noCoinsButton = createButton(m_pButtonMenu, "Without Coins", menu_selector(LevelCategorySearchAlert::onNoCoins), 57, -64, (int)(120*0.6), 44*0.6f, 0.6f);
     /*auto songButton = createButton(m_pButtonMenu, "Leaderboard", menu_selector(LevelCategorySearchAlert::onLeaderboard), 0, -48, (int)(120*0.6), 44*0.6f, 0.6f);*/
 
     return true;
