@@ -253,7 +253,10 @@ bool BetterInfo::isSavedFiltered() {
                 "user_search_epic", "user_search_noepic", "user_search_song",
                 "user_search_nostar", "user_search_coins", "user_search_twoplayer",
                 "user_search_copied", "user_search_downloaded", "user_search_ldm",
-                "user_search_copy", "user_search_copy_free", "user_search_idrange"
+                "user_search_copy", "user_search_copy_free", "user_search_idrange",
+                "user_search_completedorbs", "user_search_completedleaderboard", "user_search_uncompletedorbs",
+                "user_search_uncompletedleaderboard", "user_search_percentage", "user_search_percentageorbs",
+                "user_search_percentageleaderboard", "user_search_starrange"
         };
 
         for(auto option : options) {
