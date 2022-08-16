@@ -385,11 +385,6 @@ void LevelSearchViewLayer::optimizeSearchObject() {
         int m_nTotal;
         bool m_bUncompletedFilter; //264 android
         bool m_bCompletedFilter;
-        bool m_bFeaturedFilter;
-        bool m_bOriginalFilter;
-        bool m_bTwoPlayerFilter;
-        bool m_bCoinsFilter;
-        bool m_bEpicFilter;
         int m_eDemonFilter;
         int currentFolder; // might be unsigned, but then again its robtop
         int m_nSongID;
@@ -404,13 +399,15 @@ void LevelSearchViewLayer::optimizeSearchObject() {
 
     if(m_searchObj.star || m_searchObj.starRange.enabled && m_searchObj.starRange.min > 0) m_gjSearchObjOptimized->m_bStarFilter = true;
 
-    //if NOT OPTIMIZABLE SEARCH OBJECT: return
+    if(!BetterInfo::isAdvancedEnabled(m_gjSearchObjOptimized)) return;
+
     //TODO: if star min > 0, filter diff based on star values
     if(m_searchObj.featured) m_gjSearchObjOptimized->m_bFeaturedFilter = true;
     if(m_searchObj.original) m_gjSearchObjOptimized->m_bOriginalFilter = true;
     if(m_searchObj.twoPlayer) m_gjSearchObjOptimized->m_bTwoPlayerFilter = true;
     if(m_searchObj.coins) m_gjSearchObjOptimized->m_bCoinsFilter = true;
     if(m_searchObj.epic) m_gjSearchObjOptimized->m_bEpicFilter = true;
+    if(m_searchObj.noStar) m_gjSearchObjOptimized->m_bNoStarFilter = true;
     //TODO: song filters
     //TODO: if filters DEMON && DEMON DIFF only!! - filter demon diff server-side
     //TODO: filter diff based on diff values IF auto && demon NOT SET

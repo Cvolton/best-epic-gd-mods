@@ -88,6 +88,17 @@ bool BetterInfo::isStarUseless(GJSearchObject* searchObject){
                 || isLocal(searchObject);
 }
 
+bool BetterInfo::isAdvancedEnabled(GJSearchObject* searchObject) {
+        return searchObject->m_nScreenID == SearchType::kSearchTypeSearch
+                || searchObject->m_nScreenID == SearchType::kSearchTypeMostDownloaded
+                || searchObject->m_nScreenID == SearchType::kSearchTypeMostLiked
+                || searchObject->m_nScreenID == SearchType::kSearchTypeTrending
+                || searchObject->m_nScreenID == SearchType::kSearchTypeRecent
+                || searchObject->m_nScreenID == SearchType::kSearchTypeAwarded
+                || searchObject->m_nScreenID == SearchType::kSearchTypeFollowed
+                || searchObject->m_nScreenID == SearchType::kSearchTypeFriends;
+}
+
 int BetterInfo::levelsPerPage(GJSearchObject* searchObject){
         return ((isLocal(searchObject) && GameManager::sharedState()->getGameVariable("0093")) ? levelsPerPageHigh : levelsPerPageLow);
 }
