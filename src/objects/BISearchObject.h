@@ -17,9 +17,11 @@ struct BISearchObject {
         bool uncompleted = false;
         bool uncompletedOrbs = false;
         bool uncompletedLeaderboard = false;
+        bool uncompletedCoins = false;
         bool completed = false;
         bool completedOrbs = false;
         bool completedLeaderboard = false;
+        bool completedCoins = false;
         RangeItem percentage;
         RangeItem percentageOrbs;
         RangeItem percentageLeaderboard;

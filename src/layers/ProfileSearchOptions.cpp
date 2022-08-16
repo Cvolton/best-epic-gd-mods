@@ -314,6 +314,9 @@ void ProfileSearchOptions::drawTogglesTerciary(){
     createToggle("percentage", "Percentage", -170, -10, menu_selector(ProfileSearchOptions::onPercentage));
     createToggle("percentageorbs", "% Orbs", -40, -10, menu_selector(ProfileSearchOptions::onPercentageOrbs));
     createToggle("percentageleaderboard", "% Leaderboard", 90, -10, menu_selector(ProfileSearchOptions::onPercentageLeaderboard));
+
+    createToggle("completedcoins", "C. Coins", -170, -50); 
+    createToggle("uncompletedcoins", "Uc. Coins", -40, -50);
 }
 
 void ProfileSearchOptions::onDialogClosed(){
@@ -404,9 +407,11 @@ BISearchObject ProfileSearchOptions::getSearchObject() {
     searchObj.uncompleted = getOption("uncompleted");
     searchObj.uncompletedOrbs = getOption("uncompletedorbs");
     searchObj.uncompletedLeaderboard = getOption("uncompletedleaderboard");
+    searchObj.uncompletedCoins = getOption("uncompletedcoins");
     searchObj.completed = getOption("completed");
     searchObj.completedOrbs = getOption("completedorbs");
     searchObj.completedLeaderboard = getOption("completedleaderboard");
+    searchObj.completedCoins = getOption("completedcoins");
 
     setToRangeItem(searchObj.percentage, "percentage");
     setToRangeItem(searchObj.percentageOrbs, "percentageorbs");
@@ -465,9 +470,11 @@ void ProfileSearchOptions::setSearchObject(const BISearchObject& searchObj) {
     setOption("uncompleted", searchObj.uncompleted);
     setOption("uncompletedorbs", searchObj.uncompletedOrbs);
     setOption("uncompletedleaderboard", searchObj.uncompletedLeaderboard);
+    setOption("uncompletedcoins", searchObj.uncompletedCoins);
     setOption("completed", searchObj.completed);
     setOption("completedorbs", searchObj.completedOrbs);
     setOption("completedleaderboard", searchObj.completedLeaderboard);
+    setOption("completedcoins", searchObj.completedCoins);
     setFromRangeItem("percentage", searchObj.percentage);
     setFromRangeItem("percentageorbs", searchObj.percentageOrbs);
     setFromRangeItem("percentageleaderboard", searchObj.percentageLeaderboard);

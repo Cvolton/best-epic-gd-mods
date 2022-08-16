@@ -1239,6 +1239,10 @@ CCArray* __fastcall GameLevelManager_getSavedLevels(GameLevelManager* self, void
         if(!validateRangeOption("user_search_percentageorbs", level->orbCompletion)) continue;
         if(!validateRangeOption("user_search_percentageleaderboard", level->newNormalPercent2)) continue;
 
+        bool hasAllCoins = BetterInfo::levelHasCollectedCoins(level);
+        if(CM->getOption("user_search_completedcoins") && (!hasAllCoins || level->coins == 0)) continue;
+        if(CM->getOption("user_search_uncompletedcoins") && (hasAllCoins || level->coins == 0)) continue;
+
         pRet->addObject(level);
     }
 

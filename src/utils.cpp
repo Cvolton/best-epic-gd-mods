@@ -267,7 +267,8 @@ bool BetterInfo::isSavedFiltered() {
                 "user_search_copy", "user_search_copy_free", "user_search_idrange",
                 "user_search_completedorbs", "user_search_completedleaderboard", "user_search_uncompletedorbs",
                 "user_search_uncompletedleaderboard", "user_search_percentage", "user_search_percentageorbs",
-                "user_search_percentageleaderboard", "user_search_starrange"
+                "user_search_percentageleaderboard", "user_search_starrange", "user_search_completedcoins",
+                "user_search_uncompletedcoins"
         };
 
         for(auto option : options) {
@@ -354,6 +355,10 @@ bool BetterInfo::levelMatchesObject(GJGameLevel* level, const BISearchObject& se
 
         if(searchObj.downloaded && (!levelFromSaved || levelFromSaved->levelString.empty())) return false;
 
+        bool hasAllCoins = levelHasCollectedCoins(level);
+        if(searchObj.completedCoins && (!hasAllCoins || level->coins == 0)) return false;
+        if(searchObj.uncompletedCoins && (hasAllCoins || level->coins == 0)) return false;
+
         return true;
 }
 
@@ -375,6 +380,17 @@ int BetterInfo::levelDemonDifficultyAsInt(GJGameLevel* level) {
         if(level->demonDifficulty >= 5) demonDifficulty = level->demonDifficulty - 2;
         else if(level->demonDifficulty >= 3) demonDifficulty = level->demonDifficulty - 3;
         return demonDifficulty;
+}
+
+bool BetterInfo::levelHasCollectedCoins(gd::GJGameLevel* level) {
+        auto coinDict = GameStatsManager::sharedState()->m_verifiedUserCoins;
+        auto coinDict2 = GameStatsManager::sharedState()->m_pendingUserCoins;
+        bool hasAllCoins = true;
+        for(int i = 0; i < level->coins; i++){
+                bool hasntCoin = coinDict->objectForKey(level->getCoinKey(i + 1)) == nullptr && coinDict2->objectForKey(level->getCoinKey(i + 1)) == nullptr;
+                if(hasntCoin) hasAllCoins = false;
+        }
+        return hasAllCoins;
 }
 
 std::deque<gd::GJGameLevel*> BetterInfo::completedDeque() {
