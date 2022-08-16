@@ -1139,6 +1139,17 @@ CCArray* __fastcall GameLevelManager_getCompletedLevels(GameLevelManager* self, 
     return pRet;
 }
 
+bool validateRangeOption(const std::string& option, int value) {
+    auto CM = CvoltonManager::sharedState();
+    if(CM->getOption(option)) {
+        int min = CM->getOptionInt(std::format("{}_min", option));
+        int max = CM->getOptionInt(std::format("{}_max", option));
+        if(min != 0 && value < min) return false;
+        if(max != 0 && value > max) return false;
+    }
+    return true;
+}
+
 CCArray* __fastcall GameLevelManager_getSavedLevels(GameLevelManager* self, void* a, bool filter, int folderID){
     auto CM = CvoltonManager::sharedState();
     CCArray* original = MHook::getOriginal(GameLevelManager_getSavedLevels)(self, a, filter, folderID);
@@ -1200,6 +1211,10 @@ CCArray* __fastcall GameLevelManager_getSavedLevels(GameLevelManager* self, void
         //TODO: respect completed mode
         if(CM->getOption("user_search_uncompleted") && level->normalPercent == 100) continue;
         if(CM->getOption("user_search_completed") && level->normalPercent != 100) continue;
+        if(CM->getOption("user_search_uncompletedorbs") && level->orbCompletion == 100) continue;
+        if(CM->getOption("user_search_completedorbs") && level->orbCompletion != 100) continue;
+        if(CM->getOption("user_search_uncompletedleaderboard") && level->newNormalPercent2 == 100) continue;
+        if(CM->getOption("user_search_completedleaderboard") && level->newNormalPercent2 != 100) continue;
         if(CM->getOption("user_search_featured") && level->featured < 1) continue;
         if(CM->getOption("user_search_nofeatured") && level->featured >= 1) continue;
         if(CM->getOption("user_search_original") && level->originalLevel != 0) continue;
@@ -1217,19 +1232,12 @@ CCArray* __fastcall GameLevelManager_getSavedLevels(GameLevelManager* self, void
         if(CM->getOption("user_search_ldm") && !(level->lowDetailMode)) continue;
         if(CM->getOption("user_search_copy") && password == 0) continue;
         if(CM->getOption("user_search_copy_free") && password != 1) continue;
-        if(CM->getOption("user_search_idrange")) {
-            int min = CM->getOptionInt("user_search_idrange_min");
-            int max = CM->getOptionInt("user_search_idrange_max");
-            if(min != 0 && level->levelID < min) continue;
-            if(max != 0 && level->levelID > max) continue;
-        }
 
-        if(CM->getOption("user_search_starrange")) {
-            int min = CM->getOptionInt("user_search_starrange_min");
-            int max = CM->getOptionInt("user_search_starrange_max");
-            if(min != 0 && level->stars < min) continue;
-            if(max != 0 && level->stars > max) continue;
-        }
+        if(!validateRangeOption("user_search_idrange", level->levelID)) continue;
+        if(!validateRangeOption("user_search_starrange", level->stars)) continue;
+        if(!validateRangeOption("user_search_percentage", level->normalPercent)) continue;
+        if(!validateRangeOption("user_search_percentageorbs", level->orbCompletion)) continue;
+        if(!validateRangeOption("user_search_percentageleaderboard", level->newNormalPercent2)) continue;
 
         pRet->addObject(level);
     }
