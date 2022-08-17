@@ -294,7 +294,7 @@ FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
     versions.push_back(
         "<cg>BetterInfo has updated!</c>\n"
         "\n"
-        "<cy>Changelog:</c> <cg>(v2.4.0 - 2022-08-xx)</c>\n"
+        "<cy>Changelog:</c> <cg>(v2.4.0 - 2022-08-17)</c>\n"
         "- <cg>Added</c> <co>custom</c> <cj>level search filtering</c>\n"
         "- <cg>Added</c> <co>played & completed</c> <cj>level search</c>\n"
         "- <cj>No ID search</c> <cg>can</c> now be <co>combined</c> with other BI filters\n"
