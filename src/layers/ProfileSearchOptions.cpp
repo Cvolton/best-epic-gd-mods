@@ -288,11 +288,11 @@ void ProfileSearchOptions::drawTogglesSecondary(){
 
     createToggle("copied", "Copied", -170, 80);
     createToggle("downloaded", "Downloaded", -40, 80);
-    if(!prefix.empty()) createToggle("ldm", "LDM", 90, 80);
+    createToggle("starrange", "Star Range", 90, 80, menu_selector(ProfileSearchOptions::onStarRange));
     createToggle("idrange", "ID Range", -170, 35, menu_selector(ProfileSearchOptions::onIdRange));
     if(!prefix.empty()) createToggle("copy", "Copyable", -40, 35);
     if(!prefix.empty()) createToggle("copy_free", "Free Copy", 90, 35);
-    createToggle("starrange", "Star Range", 90, -10, menu_selector(ProfileSearchOptions::onStarRange));
+    if(!prefix.empty()) createToggle("ldm", "LDM", -170, -10);
     
 }
 
