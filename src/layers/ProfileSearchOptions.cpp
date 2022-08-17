@@ -82,7 +82,7 @@ void ProfileSearchOptions::onNext(cocos2d::CCObject* sender)
 void ProfileSearchOptions::onSecondaryInfo(cocos2d::CCObject* sender){
     FLAlertLayer::create(
         nullptr, 
-        "Saved Level Filters", 
+        "Level Filters", 
         "OK", 
         nullptr,
         350,
@@ -101,7 +101,7 @@ bool ProfileSearchOptions::init(gd::LevelBrowserLayer* levelBrowserLayer, const 
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
-    createTextLabel("Saved Level Filters", {(winSize.width / 2), (winSize.height / 2) + 125}, 1.f, m_pLayer, "bigFont.fnt");
+    createTextLabel("Level Filters", {(winSize.width / 2), (winSize.height / 2) + 125}, 1.f, m_pLayer, "bigFont.fnt");
 
     lengthBg = cocos2d::extension::CCScale9Sprite::create("square02b_001.png", { 0.0f, 0.0f, 80.0f, 80.0f });
     lengthBg->setContentSize({700,55});
