@@ -99,12 +99,12 @@ bool CustomCreatorLayer::init() {
     mostLikedBtn->setSizeMult(1.2f);
 
     auto searchBtn = gd::CCMenuItemSpriteExtra::create(
-        CCSprite::createWithSpriteFrameName("GJ_searchBtn_001.png"),
+        BetterInfo::createBISprite("BI_searchLevel_001.png"),
         this,
         menu_selector(CustomCreatorLayer::onSearch)
     );
     menu->addChild(searchBtn);
-    searchBtn->setPosition({120,57.5f}); //i have no idea why the texture is misaligned theyre the same res
+    searchBtn->setPosition({120,55});
     searchBtn->setSizeMult(1.2f);
 
     auto searchIDBtn = gd::CCMenuItemSpriteExtra::create(
@@ -113,7 +113,7 @@ bool CustomCreatorLayer::init() {
         menu_selector(CustomCreatorLayer::onSearchID)
     );
     menu->addChild(searchIDBtn);
-    searchIDBtn->setPosition({120,-57.5f}); //i have no idea why the texture is misaligned theyre the same res
+    searchIDBtn->setPosition({120,-57.5f});
     searchIDBtn->setSizeMult(1.2f);
 
     auto dailyBtn = gd::CCMenuItemSpriteExtra::create(
@@ -212,7 +212,7 @@ void CustomCreatorLayer::onInfo(CCObject* object) {
         "OK", 
         nullptr,
         450,
-        "This is the main menu for all features related to the mod.\n\n<cy>Featured:</c> Levels featured in Geometry Dash World\n<cg>Most liked:</c> \"Most Liked\" in Geometry Dash World,\nreal purpose unknown.\n<cj>Search:</c> View comments of any level ID.\n\n<cl>Settings:</c> Opens the mod settings\n<cr>Update:</c> Opens the mod update menu"
+        "This is the main menu for all features related to the mod.\n\n<cy>Featured:</c> Levels featured in Geometry Dash World\n<cg>Most liked:</c> \"Most Liked\" in Geometry Dash World,\nreal purpose unknown.\n<cj>Search (ID):</c> View comments of any level ID.\n\n<cl>Settings:</c> Opens the mod settings\n<cr>Update:</c> Opens the mod update menu"
     )->show();
 }
 
