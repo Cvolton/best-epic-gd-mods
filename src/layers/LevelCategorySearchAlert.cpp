@@ -63,6 +63,7 @@ void LevelCategorySearchAlert::onLeaderboard(cocos2d::CCObject* sender) {
 void LevelCategorySearchAlert::onCoins(cocos2d::CCObject* sender) {
     BISearchObject searchObj;
     searchObj.completedCoins = true;
+    searchObj.completed = true;
 
     auto browserLayer = LevelSearchViewLayer::scene(BetterInfo::completedDeque(), searchObj);
     auto transitionFade = CCTransitionFade::create(0.5, browserLayer);

@@ -402,7 +402,7 @@ void LevelSearchViewLayer::optimizeSearchObject() {
     if(!BetterInfo::isAdvancedEnabled(m_gjSearchObjOptimized)) return;
 
     //TODO: if star min > 0, filter diff based on star values
-    if(m_searchObj.featured && m_gjSearchObjOptimized->m_bStarFilter = true) m_gjSearchObjOptimized->m_bFeaturedFilter = true; (disabled bc of featured no star levels)
+    if(m_searchObj.featured && m_gjSearchObjOptimized->m_bStarFilter == true) m_gjSearchObjOptimized->m_bFeaturedFilter = true;
     if(m_searchObj.original) m_gjSearchObjOptimized->m_bOriginalFilter = true;
     if(m_searchObj.twoPlayer) m_gjSearchObjOptimized->m_bTwoPlayerFilter = true;
     if(m_searchObj.coins) m_gjSearchObjOptimized->m_bCoinsFilter = true;
