@@ -32,7 +32,7 @@ LevelSearchViewLayer* LevelSearchViewLayer::create(GJSearchObject* gjSearchObj, 
 }
 
 bool LevelSearchViewLayer::init(std::deque<GJGameLevel*> allLevels, BISearchObject searchObj) {
-    m_allLevels = m_unloadedLevels = allLevels;
+    m_allLevels = allLevels;
     return init(searchObj);
 }
 
@@ -167,7 +167,7 @@ void LevelSearchViewLayer::unload() {
 void LevelSearchViewLayer::reload() {
     unload();
 
-    m_unloadedLevels = m_allLevels;
+    resetUnloadedLevels();
 
     m_loadedLevels = CCArray::create();
     m_loadedLevels->retain();
@@ -414,4 +414,23 @@ void LevelSearchViewLayer::optimizeSearchObject() {
     //TODO: filter length based on length values
     //TODO: completed
 
+}
+
+void LevelSearchViewLayer::resetUnloadedLevels() {
+    /*if(m_allLevels.empty() || 
+        (
+            !m_searchObj.completed && !m_searchObj.completedOrbs && !m_searchObj.completedLeaderboard &&
+            !m_searchObj.uncompleted && !m_searchObj.uncompletedOrbs && !m_searchObj.uncompletedLeaderboard &&
+            !m_searchObj.percentage.enabled && !m_searchObj.percentageOrbs.enabled && !m_searchObj.percentageLeaderboard.enabled &&
+            !m_searchObj.idRange.enabled
+        )
+    ) {
+        m_unloadedLevels = m_allLevels;
+    } else {
+        m_unloadedLevels.clear();
+        for(const auto& level : m_allLevels) {
+            if(m_searchObj.completed && )
+        }
+    }*/
+    m_unloadedLevels = m_allLevels;
 }

@@ -54,4 +54,5 @@ public:
     void showInfoDialog();
 
     void optimizeSearchObject();
+    void resetUnloadedLevels();
 };

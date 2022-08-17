@@ -332,13 +332,25 @@ bool BetterInfo::levelMatchesObject(GJGameLevel* level, const BISearchObject& se
         }
         if(searchObj.copied && level->originalLevel <= 0) return false;
         //TODO: searchObj.ldm
-        if(!validateRangeItem(searchObj.idRange, level->levelID)) return false;
+        
         //TODO: searchObj.copyable
         //TODO: searchObj.freeCopy
         if(searchObj.unfeatured && level->featured > 0) return false;
         if(searchObj.unepic && level->isEpic) return false;
         if(!validateRangeItem(searchObj.starRange, level->stars)) return false;
         if(!validateRangeItem(searchObj.gameVersion, level->gameVersion)) return false;
+
+        if(!levelProgressMatchesObject(level, searchObj)) return false;
+
+        bool hasAllCoins = levelHasCollectedCoins(level);
+        if(searchObj.completedCoins && (!hasAllCoins || level->coins == 0)) return false;
+        if(searchObj.uncompletedCoins && (hasAllCoins || level->coins == 0)) return false;
+
+        return true;
+}
+
+bool BetterInfo::levelProgressMatchesObject(GJGameLevel* level, const BISearchObject& searchObj) {
+        if(!validateRangeItem(searchObj.idRange, level->levelID)) return false;
 
         auto levelFromSaved = static_cast<GJGameLevel*>(GameLevelManager::sharedState()->m_onlineLevels->objectForKey(std::to_string(level->levelID)));
         if(searchObj.uncompleted && (levelFromSaved && levelFromSaved->normalPercent == 100)) return false;
@@ -354,10 +366,6 @@ bool BetterInfo::levelMatchesObject(GJGameLevel* level, const BISearchObject& se
         if(!validateRangeItem(searchObj.percentageLeaderboard, (levelFromSaved ? levelFromSaved->newNormalPercent2 : 0))) return false;
 
         if(searchObj.downloaded && (!levelFromSaved || levelFromSaved->levelString.empty())) return false;
-
-        bool hasAllCoins = levelHasCollectedCoins(level);
-        if(searchObj.completedCoins && (!hasAllCoins || level->coins == 0)) return false;
-        if(searchObj.uncompletedCoins && (hasAllCoins || level->coins == 0)) return false;
 
         return true;
 }
