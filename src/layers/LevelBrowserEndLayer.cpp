@@ -47,6 +47,7 @@ void LevelBrowserEndLayer::onOK(cocos2d::CCObject* sender){
     circle->setPosition({0, -55});
     circle->setScale(.475f);
     circle->show();
+    circle->setZOrder(999);
 
     goBtn->setVisible(false);
 }
