@@ -417,7 +417,7 @@ void LevelSearchViewLayer::optimizeSearchObject() {
 }
 
 void LevelSearchViewLayer::resetUnloadedLevels() {
-    /*if(m_allLevels.empty() || 
+    if(m_allLevels.empty() || 
         (
             !m_searchObj.completed && !m_searchObj.completedOrbs && !m_searchObj.completedLeaderboard &&
             !m_searchObj.uncompleted && !m_searchObj.uncompletedOrbs && !m_searchObj.uncompletedLeaderboard &&
@@ -429,8 +429,9 @@ void LevelSearchViewLayer::resetUnloadedLevels() {
     } else {
         m_unloadedLevels.clear();
         for(const auto& level : m_allLevels) {
-            if(m_searchObj.completed && )
+            if(!BetterInfo::levelProgressMatchesObject(level, m_searchObj)) continue;
+
+            m_unloadedLevels.push_back(level);
         }
-    }*/
-    m_unloadedLevels = m_allLevels;
+    }
 }
