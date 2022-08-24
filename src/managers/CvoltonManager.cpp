@@ -294,6 +294,14 @@ FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
     versions.push_back(
         "<cg>BetterInfo has updated!</c>\n"
         "\n"
+        "<cy>Changelog:</c> <cg>(v2.4.1 - 2022-08-24)</c>\n"
+        "- <cg>Fixed</c> <cr>spacebar crash</c> in <cj>paginated alerts</c>\n"
+        "- <cg>Added</c> the ability to <co>change pages</c> using <cy>left/right keys</c> in <cj>paginated alerts</c>\n"
+        "- Click <cy>level IDs</c> in <co>created levels</c> to go to the <cj>uploaded version</c> of the level\n"
+        "- Bugfixes & improvements"
+    );
+
+    versions.push_back(
         "<cy>Changelog:</c> <cg>(v2.4.0 - 2022-08-17)</c>\n"
         "- <cg>Added</c> <co>custom</c> <cj>level search filtering</c>\n"
         "- <cg>Added</c> <co>played & completed</c> <cj>level search</c>\n"
