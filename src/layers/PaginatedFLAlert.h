@@ -14,4 +14,6 @@ public:
     void onNext(cocos2d::CCObject* sender);
     void onPrev(cocos2d::CCObject* sender);
     void loadPage(size_t page);
+
+    void keyDown(cocos2d::enumKeyCodes key);
 };

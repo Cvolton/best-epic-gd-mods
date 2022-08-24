@@ -64,10 +64,12 @@ void PaginatedFLAlert::keyBackClicked() {
 }
 
 void PaginatedFLAlert::onNext(cocos2d::CCObject* sender) {
+    if(m_page+1 >= m_content.size()) return;
     loadPage(m_page+1);
 }
 
 void PaginatedFLAlert::onPrev(cocos2d::CCObject* sender) {
+    if(m_page == 0) return;
     loadPage(m_page-1);
 }
 
@@ -77,4 +79,23 @@ void PaginatedFLAlert::loadPage(size_t page) {
     if(!m_pParent) CCDirector::sharedDirector()->getRunningScene()->addChild(newAlert);
     else static_cast<CCNode*>(m_pParent)->addChild(newAlert);
     onClose(this);
+}
+
+void PaginatedFLAlert::keyDown(cocos2d::enumKeyCodes key) {
+    switch(key) {
+        case KEY_Space:
+        case CONTROLLER_X:
+            keyBackClicked(); //no confirm button support yet
+            break;
+        case KEY_Left:
+        case CONTROLLER_Left:
+            onPrev(nullptr);
+            break;
+        case KEY_Right:
+        case CONTROLLER_Right:
+            onNext(nullptr);
+            break;
+        default:
+            CCLayer::keyDown(key);
+    }
 }
