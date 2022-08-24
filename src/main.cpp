@@ -42,6 +42,7 @@ const int randomBtnTag = 863390893;
 const int firstBtnTag = 863390894;
 const int filterBtnTag = 863390895;
 const int starBtnTag = 863390896;
+const int levelPageIDTag = 863390897;
 
 class StaticStringHelper {
 public:
@@ -717,6 +718,29 @@ void __fastcall EditLevelLayer_onLevelInfo(EditLevelLayer* self, void* a, CCObje
     ExtendedLevelInfo::showProgressDialog(self->m_pLevel);
 }
 
+//This function is also funny - on Android it is LevelPage::init(GJGameLevel* level) but the level argument is never used, so on Windows it got completely optimized out
+bool __fastcall LevelPage_init(LevelPage* self) {
+    if(!MHook::getOriginal(LevelPage_init)(self)) return false;
+
+    auto winSize = CCDirector::sharedDirector()->getWinSize();
+    auto label = CCLabelBMFont::create(self->m_pLevel ? std::to_string(self->m_pLevel->levelID).c_str() : "nullptr", "goldFont.fnt");
+    //auto label = CCLabelBMFont::create("mogus", "goldFont.fnt");
+    label->setPosition({winSize.width / 2, winSize.height / 2 + 35});
+    label->setTag(levelPageIDTag);
+    self->addChild(label);
+
+    return true;
+}
+
+void __fastcall LevelPage_updateDynamicPage(LevelPage* self, void* a, GJGameLevel* level) {
+    MHook::getOriginal(LevelPage_updateDynamicPage)(self, a, level);
+
+    auto label = static_cast<CCLabelBMFont*>(self->getChildByTag(levelPageIDTag));
+    if(!label) return;
+
+    label->setString(std::format("ID: {}", self->m_pLevel->levelID).c_str());
+}
+
 void __fastcall LevelPage_onInfo(LevelPage* self, void* a, CCObject* sender) {
     ExtendedLevelInfo::showProgressDialog(self->m_pLevel);
 }
@@ -1382,6 +1406,8 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x17AC90, LevelInfoLayer_onViewProfile);
     MHook::registerHook(base + 0x17ACF0, LevelInfoLayer_onLevelInfo);
     MHook::registerHook(base + 0x70660, EditLevelLayer_onLevelInfo);
+    MHook::registerHook(base + 0x186790, LevelPage_init);
+    MHook::registerHook(base + 0x187220, LevelPage_updateDynamicPage);
     MHook::registerHook(base + 0x189070, LevelPage_onInfo);
     MHook::registerHook(base + 0x5C790, LevelCell_onViewProfile);
     MHook::registerHook(base + 0x5A020, LevelCell_loadCustomLevelCell);
