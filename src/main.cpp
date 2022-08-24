@@ -320,6 +320,17 @@ public:
         RewardTypeSelectLayer::create()->show();
     }
 
+    void onEditLevelGoToLevel(CCObject* sender) {
+        auto self = cast<EditLevelLayer*>(this);
+
+        auto searchObject = gd::GJSearchObject::create(SearchType::kSearchTypeSearch, std::to_string(self->m_pLevel->levelID));
+        auto browserLayer = LevelBrowserLayer::scene(searchObject);
+
+        auto transitionFade = CCTransitionFade::create(0.5, browserLayer);
+
+        CCDirector::sharedDirector()->pushScene(transitionFade);
+    }
+
 };
 
 bool __fastcall InfoLayer_init(CCLayer* self, void* a, gd::GJGameLevel* level, void* c) {
@@ -712,6 +723,36 @@ void __fastcall CommentCell_likedItem(uint8_t* self, void* a, LikeItemType* type
 
 void __fastcall LevelInfoLayer_onLevelInfo(LevelInfoLayer* self, void* a, CCObject* sender) {
     ExtendedLevelInfo::showProgressDialog(self->level);
+}
+
+bool __fastcall EditLevelLayer_init(EditLevelLayer* self, void* a, GJGameLevel* level) {
+    if(!MHook::getOriginal(EditLevelLayer_init)(self, a, level)) return false;
+
+    if(self->m_pLevel->levelID > 0) for(size_t i = 0; i < self->getChildrenCount(); i++) {
+        if(self->getChildren()->objectAtIndex(i) == nullptr) continue;
+
+        auto winSize = CCDirector::sharedDirector()->getWinSize();
+        auto node = dynamic_cast<CCLabelBMFont*>(self->getChildren()->objectAtIndex(i));
+        if(node == nullptr || node->getPositionX() != ((winSize.width / 2) + 75) || node->getPositionY() != 14) continue;
+
+        node->setVisible(false);
+
+        auto newBMFont = CCLabelBMFont::create(node->getString(), "goldFont.fnt");
+        newBMFont->setScale(.6f);
+
+        auto newBMFontBtn = gd::CCMenuItemSpriteExtra::create(
+            newBMFont,
+            self,
+            menu_selector(GamingButton::onEditLevelGoToLevel)
+        );
+        newBMFontBtn->setPosition(75, - winSize.height / 2 + 14);
+
+        auto newMenu = CCMenu::create();
+        newMenu->addChild(newBMFontBtn);
+        self->addChild(newMenu);
+    }
+
+    return true;
 }
 
 void __fastcall EditLevelLayer_onLevelInfo(EditLevelLayer* self, void* a, CCObject* sender) {
@@ -1406,6 +1447,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x17AC90, LevelInfoLayer_onViewProfile);
     MHook::registerHook(base + 0x17ACF0, LevelInfoLayer_onLevelInfo);
     MHook::registerHook(base + 0x70660, EditLevelLayer_onLevelInfo);
+    MHook::registerHook(base + 0x6F5D0, EditLevelLayer_init);
     //MHook::registerHook(base + 0x186790, LevelPage_init);
     //MHook::registerHook(base + 0x187220, LevelPage_updateDynamicPage);
     MHook::registerHook(base + 0x189070, LevelPage_onInfo);
