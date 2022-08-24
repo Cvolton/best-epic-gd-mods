@@ -1406,8 +1406,8 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x17AC90, LevelInfoLayer_onViewProfile);
     MHook::registerHook(base + 0x17ACF0, LevelInfoLayer_onLevelInfo);
     MHook::registerHook(base + 0x70660, EditLevelLayer_onLevelInfo);
-    MHook::registerHook(base + 0x186790, LevelPage_init);
-    MHook::registerHook(base + 0x187220, LevelPage_updateDynamicPage);
+    //MHook::registerHook(base + 0x186790, LevelPage_init);
+    //MHook::registerHook(base + 0x187220, LevelPage_updateDynamicPage);
     MHook::registerHook(base + 0x189070, LevelPage_onInfo);
     MHook::registerHook(base + 0x5C790, LevelCell_onViewProfile);
     MHook::registerHook(base + 0x5A020, LevelCell_loadCustomLevelCell);
