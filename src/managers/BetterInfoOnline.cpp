@@ -16,17 +16,24 @@ bool BetterInfoOnline::init(){
 BetterInfoOnline::BetterInfoOnline(){}
 
 
-void BetterInfoOnline::loadScores(int accountID, BILeaderboardDelegate* delegate) {
+void BetterInfoOnline::loadScores(int accountID, bool force, BILeaderboardDelegate* delegate) {
     m_scoreDelegate = delegate;
-    loadScores(accountID);
+    loadScores(accountID, force);
 }
 
-void BetterInfoOnline::loadScores(int accountID, ProfilePage* profilePage) {
+void BetterInfoOnline::loadScores(int accountID, bool force, ProfilePage* profilePage) {
     m_scoreProfilePage = profilePage;
-    loadScores(accountID);
+    loadScores(accountID, force);
 }
 
-void BetterInfoOnline::loadScores(int accountID){
+void BetterInfoOnline::loadScores(int accountID, bool force){
+    //cache optimization
+    if(!force && m_scoreDict.contains(accountID)) {
+        sendScores(m_scoreDict[accountID]);
+        return;
+    }
+
+    //only on forced reload or if we dont have cached
     CCHttpRequest* request = new CCHttpRequest;
     request->setUrl("http://www.boomlings.com/database/getGJScores20.php");
     request->setRequestType(CCHttpRequest::HttpRequestType::kHttpPost);
@@ -50,12 +57,8 @@ void BetterInfoOnline::onScoresFinished(CCHttpClient* client, CCHttpResponse* re
     int accountID = (int) (response->getHttpRequest()->getUserData());
     generateScores(responseString, accountID);
 
-    if(m_scoreDelegate) {
-        m_scoreDelegate->onLeaderboardFinished(m_scoreDict[accountID]);
-        m_scoreDelegate = nullptr;
-    }
+    sendScores(m_scoreDict[accountID]);
 }
-
 
 void BetterInfoOnline::generateScores(const std::string& response, int accountID){
 
@@ -82,5 +85,12 @@ void BetterInfoOnline::generateScores(const std::string& response, int accountID
         );
 
         scores->addObject(score);
+    }
+}
+
+void BetterInfoOnline::sendScores(cocos2d::CCArray* scores){
+    if(m_scoreDelegate) {
+        m_scoreDelegate->onLeaderboardFinished(scores);
+        m_scoreDelegate = nullptr;
     }
 }

@@ -23,9 +23,10 @@ public:
 	    return m_instance;
 	}
 
-    void loadScores(int accountID);
-    void loadScores(int accountID, BILeaderboardDelegate* delegate);
-    void loadScores(int accountID, gd::ProfilePage* profilePage);
+    void loadScores(int accountID, bool force);
+    void loadScores(int accountID, bool force, BILeaderboardDelegate* delegate);
+    void loadScores(int accountID, bool force, gd::ProfilePage* profilePage);
     void onScoresFinished(cocos2d::extension::CCHttpClient* client, cocos2d::extension::CCHttpResponse* response);
     void generateScores(const std::string& response, int accountID);
+    void sendScores(cocos2d::CCArray* scores);
 };

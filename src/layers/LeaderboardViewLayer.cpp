@@ -75,7 +75,7 @@ bool LeaderboardViewLayer::init(int accountID) {
     addChild(cornerBR, -1);
 
     loadPage();
-    BetterInfoOnline::sharedState()->loadScores(m_accountID, this);
+    BetterInfoOnline::sharedState()->loadScores(m_accountID, false, this);
 
     return true;
 }
