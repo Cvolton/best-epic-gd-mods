@@ -614,6 +614,12 @@ bool __fastcall ProfilePage_init(ProfilePage* self, void* a, int id, bool a2){
     return true;
 }
 
+void __fastcall ProfilePage_getUserInfoFailed(ProfilePage* self, void* a, int id){
+    MHook::getOriginal(ProfilePage_getUserInfoFailed)(self, a, id);
+
+    FLAlertLayer::create(nullptr, "getUserInfoFailed", "OK", nullptr, std::to_string(id))->show();
+}
+
 void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJComment* b) {
     MHook::getOriginal(CommentCell_loadFromComment)(self, a, b);
 
@@ -1460,6 +1466,7 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x61070, CommentCell_likedItem);
     MHook::registerHook(base + 0x210040, ProfilePage_loadPageFromUserInfo);
     MHook::registerHook(base + 0x20EF00, ProfilePage_init); //onMyLevels 0x211BB0; getUserInfoFailed 0x2133E0
+    MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed); //onMyLevels 0x211BB0; getUserInfoFailed 0x2133E0
     MHook::registerHook(base + 0xA1C20, GameLevelManager_userNameForUserID);
     MHook::registerHook(base + 0x4DE40, CreatorLayer_init);
     MHook::registerHook(base + 0x4F1B0, CreatorLayer_onChallenge); //onBack 0x4FAE0

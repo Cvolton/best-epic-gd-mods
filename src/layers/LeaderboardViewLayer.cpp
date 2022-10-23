@@ -2,6 +2,7 @@
 #include "DailyListView.h"
 #include "JumpToPageLayer.h"
 #include "../managers/CvoltonManager.h"
+#include "../managers/BetterInfoOnline.h"
 
 using namespace gd;
 using namespace cocos2d;
@@ -23,7 +24,7 @@ bool LeaderboardViewLayer::init(int accountID) {
     auto CM = CvoltonManager::sharedState();
     CM->loadTextures();
     CM->setOption("has_viewed_as", true);
-    this->accountID = accountID;
+    m_accountID = accountID;
 
     auto GLM = gd::GameLevelManager::sharedState();
     auto winSize = CCDirector::sharedDirector()->getWinSize();
@@ -58,8 +59,8 @@ bool LeaderboardViewLayer::init(int accountID) {
     setTouchEnabled(true);
     setKeypadEnabled(true);
 
-    scores = CCArray::create();
-    scores->retain();
+    m_scores = CCArray::create();
+    m_scores->retain();
 
     //corners
     auto cornerBL = CCSprite::createWithSpriteFrameName("GJ_sideArt_001.png");
@@ -74,61 +75,29 @@ bool LeaderboardViewLayer::init(int accountID) {
     addChild(cornerBR, -1);
 
     loadPage();
-    startLoading();
+    BetterInfoOnline::sharedState()->loadScores(m_accountID, this);
 
     return true;
 }
 
-void LeaderboardViewLayer::startLoading(){
-    CCHttpRequest* request = new CCHttpRequest;
-    request->setUrl("http://www.boomlings.com/database/getGJScores20.php");
-    request->setRequestType(CCHttpRequest::HttpRequestType::kHttpPost);
-    request->setResponseCallback(this, httpresponse_selector(LeaderboardViewLayer::onLoadFinished));
-    //TODO: make this slightly more dynamic
-    auto postData = CCString::createWithFormat("gameVersion=21&binaryVersion=35&gdw=0&accountID=%i&type=relative&secret=Wmfd2893gb7", accountID);
-    request->setRequestData(
-        postData->getCString(), strlen(postData->getCString())
-    );
-    CCHttpClient::getInstance()->send(request);
-    //request->release();
-}
-
-void LeaderboardViewLayer::onLoadFinished(CCHttpClient* client, CCHttpResponse* response){
-    if(!(response->isSucceed())) return;
-
-    std::vector<char>* responseData = response->getResponseData();
-    std::string responseString(responseData->begin(), responseData->end());
-
-    generateScores(responseString);
-
-    //auto test = CCLabelBMFont::create(responseString.c_str(), "goldFont.fnt");
-    //addChild(test);
-
-    //scores = GameLevelManager::sharedState()->createAndGetScores(responseString, 0);
-    //scores->retain();
-    loadPage();
-    //FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, 300, responseString.c_str())->show();
-    //FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, 300, "mogus")->show();
-}
-
 void LeaderboardViewLayer::loadPage(){
-    if(!scores) return;
+    if(!m_scores) return;
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
-    if(listLayer != nullptr) listLayer->removeFromParentAndCleanup(true);
+    if(m_listLayer != nullptr) m_listLayer->removeFromParentAndCleanup(true);
 
-    leaderboardView = LeaderboardListView::create(scores, 356.f, 220.f);
-    listLayer = GJListLayer::create(leaderboardView, "Scores", {191, 114, 62, 255}, 356.f, 220.f);
-    listLayer->setPosition(winSize / 2 - listLayer->getScaledContentSize() / 2 - CCPoint(0,5));
-    addChild(listLayer);
+    m_leaderboardView = LeaderboardListView::create(m_scores, 356.f, 220.f);
+    m_listLayer = GJListLayer::create(m_leaderboardView, "Scores", {191, 114, 62, 255}, 356.f, 220.f);
+    m_listLayer->setPosition(winSize / 2 - m_listLayer->getScaledContentSize() / 2 - CCPoint(0,5));
+    addChild(m_listLayer);
 }
 
 void LeaderboardViewLayer::keyBackClicked() {
     setTouchEnabled(false);
     setKeypadEnabled(false);
-    if(scores) scores->release();
-    scores = nullptr;
+    if(m_scores) m_scores->release();
+    m_scores = nullptr;
     CCDirector::sharedDirector()->popSceneWithTransition(0.5f, PopTransition::kPopTransitionFade);
 }
 
@@ -144,23 +113,8 @@ CCScene* LeaderboardViewLayer::scene(int accountID) {
     return scene;
 }
 
-void LeaderboardViewLayer::generateScores(const std::string& response){
-    if(!scores) { scores = CCArray::create(); scores->retain(); };
-
-    if(response == "-1") return;
-
-    std::stringstream responseStream(response);
-    std::string current;
-
-    while(getline(responseStream, current, '|')){
-        
-        auto CM = CvoltonManager::sharedState();
-
-        auto score = GJUserScore::create(
-            CM->responseToDict(current)
-        );
-
-        scores->addObject(score);
-    }
-
+void LeaderboardViewLayer::onLeaderboardFinished(cocos2d::CCArray* scores) {
+    m_scores = scores;
+    m_scores->retain();
+    loadPage();
 }
