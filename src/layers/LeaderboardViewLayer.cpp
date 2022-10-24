@@ -94,6 +94,8 @@ void LeaderboardViewLayer::loadPage(){
 }
 
 void LeaderboardViewLayer::keyBackClicked() {
+    BetterInfoOnline::sharedState()->m_scoreDelegate = nullptr;
+    
     setTouchEnabled(false);
     setKeypadEnabled(false);
     if(m_scores) m_scores->release();
