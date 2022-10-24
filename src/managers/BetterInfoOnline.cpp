@@ -104,6 +104,31 @@ void BetterInfoOnline::sendScoreToProfilePage(cocos2d::CCArray* scores, int acco
     CCARRAY_FOREACH(scores, obj){
         auto score = static_cast<GJUserScore*>(obj);
         if(score->accountID_ == accountID) {
+            score->globalRank_ = score->playerRank_;
+            switch(score->iconType_) {
+                case kIconTypeCube:
+                    score->playerCube_ = score->iconID_;
+                    break;
+                case kIconTypeShip:
+                    score->playerShip_ = score->iconID_;
+                    break;
+                case kIconTypeBall:
+                    score->playerBall_ = score->iconID_;
+                    break;
+                case kIconTypeUfo:
+                    score->playerUfo_ = score->iconID_;
+                    break;
+                case kIconTypeWave:
+                    score->playerWave_ = score->iconID_;
+                    break;
+                case kIconTypeRobot:
+                    score->playerRobot_ = score->iconID_;
+                    break;
+                case kIconTypeSpider:
+                    score->playerSpider_ = score->iconID_;
+                    break;
+            }
+
             m_scoreProfilePage->getUserInfoChanged(score);
             m_scoreProfilePage = nullptr;
             break;
