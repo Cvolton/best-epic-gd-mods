@@ -31,6 +31,7 @@
 
 #include "managers/CvoltonManager.h"
 #include "managers/BetterInfoStats.h"
+#include "managers/BetterInfoOnline.h"
 
 using namespace cocos2d;
 using namespace gd;
@@ -614,10 +615,11 @@ bool __fastcall ProfilePage_init(ProfilePage* self, void* a, int id, bool a2){
     return true;
 }
 
-void __fastcall ProfilePage_getUserInfoFailed(ProfilePage* self, void* a, int id){
+void __fastcall ProfilePage_getUserInfoFailed(uint8_t* self, void* a, int id){
     MHook::getOriginal(ProfilePage_getUserInfoFailed)(self, a, id);
 
-    FLAlertLayer::create(nullptr, "getUserInfoFailed", "OK", nullptr, std::to_string(id))->show();
+    BetterInfoOnline::sharedState()->loadScores(id, false, reinterpret_cast<ProfilePage*>(self - sizeof(CommentUploadDelegate) - sizeof(LevelCommentDelegate) - sizeof(FLAlertLayerProtocol) - sizeof(FLAlertLayer)));
+    //FLAlertLayer::create(nullptr, "getUserInfoFailed", "OK", nullptr, std::to_string(id))->show();
 }
 
 void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJComment* b) {

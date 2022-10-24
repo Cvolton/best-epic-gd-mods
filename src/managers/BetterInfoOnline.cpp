@@ -29,7 +29,7 @@ void BetterInfoOnline::loadScores(int accountID, bool force, ProfilePage* profil
 void BetterInfoOnline::loadScores(int accountID, bool force){
     //cache optimization
     if(!force && m_scoreDict.contains(accountID)) {
-        sendScores(m_scoreDict[accountID]);
+        sendScores(m_scoreDict[accountID], accountID);
         return;
     }
 
@@ -57,7 +57,7 @@ void BetterInfoOnline::onScoresFinished(CCHttpClient* client, CCHttpResponse* re
     int accountID = (int) (response->getHttpRequest()->getUserData());
     generateScores(responseString, accountID);
 
-    sendScores(m_scoreDict[accountID]);
+    sendScores(m_scoreDict[accountID], accountID);
 }
 
 void BetterInfoOnline::generateScores(const std::string& response, int accountID){
@@ -88,9 +88,25 @@ void BetterInfoOnline::generateScores(const std::string& response, int accountID
     }
 }
 
-void BetterInfoOnline::sendScores(cocos2d::CCArray* scores){
+void BetterInfoOnline::sendScores(cocos2d::CCArray* scores, int accountID){
     if(m_scoreDelegate) {
         m_scoreDelegate->onLeaderboardFinished(scores);
         m_scoreDelegate = nullptr;
+    }else if(m_scoreProfilePage) {
+        sendScoreToProfilePage(scores, accountID);
+    }
+}
+
+void BetterInfoOnline::sendScoreToProfilePage(cocos2d::CCArray* scores, int accountID){
+    if(!m_scoreProfilePage) return;
+
+    CCObject* obj;
+    CCARRAY_FOREACH(scores, obj){
+        auto score = static_cast<GJUserScore*>(obj);
+        if(score->accountID_ == accountID) {
+            m_scoreProfilePage->getUserInfoChanged(score);
+            m_scoreProfilePage = nullptr;
+            break;
+        }
     }
 }
