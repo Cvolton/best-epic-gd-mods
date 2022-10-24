@@ -622,6 +622,18 @@ void __fastcall ProfilePage_getUserInfoFailed(uint8_t* self, void* a, int id){
     //FLAlertLayer::create(nullptr, "getUserInfoFailed", "OK", nullptr, std::to_string(id))->show();
 }
 
+void __fastcall ProfilePage_onClose(ProfilePage* self, void* a, CCObject* b) {
+    BetterInfoOnline::sharedState()->m_scoreProfilePage = nullptr;
+
+    MHook::getOriginal(ProfilePage_onClose)(self, a, b);
+}
+
+void __fastcall ProfilePage_keyBackClicked(ProfilePage* self) {
+    BetterInfoOnline::sharedState()->m_scoreProfilePage = nullptr;
+
+    MHook::getOriginal(ProfilePage_keyBackClicked)(self);
+}
+
 void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJComment* b) {
     MHook::getOriginal(CommentCell_loadFromComment)(self, a, b);
 
@@ -1466,6 +1478,8 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x61260, CommentCell_FLAlert_Clicked);
     MHook::registerHook(base + 0x60F90, CommentCell_onLike);
     MHook::registerHook(base + 0x61070, CommentCell_likedItem);
+    MHook::registerHook(base + 0x49C60, ProfilePage_onClose);
+    MHook::registerHook(base + 0x49C80, ProfilePage_keyBackClicked);
     MHook::registerHook(base + 0x210040, ProfilePage_loadPageFromUserInfo);
     MHook::registerHook(base + 0x20EF00, ProfilePage_init); //onMyLevels 0x211BB0; getUserInfoFailed 0x2133E0
     MHook::registerHook(base + 0x2133E0, ProfilePage_getUserInfoFailed); //onMyLevels 0x211BB0; getUserInfoFailed 0x2133E0
