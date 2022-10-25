@@ -294,6 +294,14 @@ FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
     versions.push_back(
         "<cg>BetterInfo has updated!</c>\n"
         "\n"
+        "<cy>Changelog:</c> <cg>(v2.4.2 - 2022-10-26)</c>\n"
+        "- <co>RobTop Bug Fix:</c> Made <cr>unloadable</c> profiles <cg>loadable</c>\n(but still not searchable)\n"
+        "- <cy>Delayed</c> <cj>auto submit to leaderboards</c> to <co>level exit</c> (+1s)\n"
+        "- <cg>Added</c> a <co>time left indicator</c> to <cj>Finding Last Page</c>\n"
+        "- Bugfixes & improvements"
+    );
+
+    versions.push_back(
         "<cy>Changelog:</c> <cg>(v2.4.1 - 2022-08-24)</c>\n"
         "- <cg>Fixed</c> <cr>spacebar crash</c> in <cj>paginated alerts</c>\n"
         "- <cg>Added</c> the ability to <co>change pages</c> using <cy>left/right keys</c> in <cj>paginated alerts</c>\n"
