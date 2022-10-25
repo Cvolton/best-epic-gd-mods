@@ -21,6 +21,6 @@ public:
 	}
 
     void submitLevel(gd::GJGameLevel*);
-    void onLevelSubmit(cocos2d::CCObject* sender);
+    void onLevelSubmit(float dt);
 
 };

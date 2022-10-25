@@ -19,7 +19,7 @@ void BetterInfoScheduler::submitLevel(GJGameLevel* level){
     this->getScheduler()->scheduleSelector(schedule_selector(BetterInfoScheduler::onLevelSubmit), this, 1, 0, 1, false);
 }
 
-void BetterInfoScheduler::onLevelSubmit(CCObject* sender){
+void BetterInfoScheduler::onLevelSubmit(float dt){
     while(!m_levelsToSubmit.empty()) {
         auto level = m_levelsToSubmit.front();
         m_levelsToSubmit.pop();

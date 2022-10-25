@@ -166,7 +166,7 @@ public:
         layer->show();
     }
 
-    void onInfoLayerSchedule(CCObject* sender){
+    void onInfoLayerSchedule(float dt){
         auto self = cast<InfoLayer*>(this);
 
         bool prevVisible = self->m_pPrevPageBtn->isVisible();
@@ -184,7 +184,7 @@ public:
     }
 
     void onInfoLayerToggleSchedule(CCObject* sender){
-        onInfoLayerSchedule(sender);
+        onInfoLayerSchedule(0);
 
         auto self = cast<InfoLayer*>(this);
         auto senderBtn = static_cast<CCMenuItemToggler*>(sender);
