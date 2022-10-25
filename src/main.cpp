@@ -32,6 +32,7 @@
 #include "managers/CvoltonManager.h"
 #include "managers/BetterInfoStats.h"
 #include "managers/BetterInfoOnline.h"
+#include "managers/BetterInfoScheduler.h"
 
 using namespace cocos2d;
 using namespace gd;
@@ -1366,7 +1367,9 @@ void __fastcall PlayLayer_levelComplete(PlayLayer* self){
 
     auto stats = BetterInfoStats::sharedState();
     stats->logCompletion(self->m_level, self->m_isPracticeMode);
-    if(CvoltonManager::sharedState()->getOption("auto_submit") && self->m_level->levelType == kGJLevelTypeSaved) GameLevelManager::sharedState()->getLevelLeaderboard(self->m_level, 0);
+    //if(CvoltonManager::sharedState()->getOption("auto_submit") && self->m_level->levelType == kGJLevelTypeSaved) GameLevelManager::sharedState()->getLevelLeaderboard(self->m_level, 0);
+
+    //BetterInfoScheduler::sharedState()->submitLevel(self->m_level->levelID);
 }
 
 bool __fastcall PlayLayer_init(PlayLayer* self, void* a, GJGameLevel* level){
@@ -1374,7 +1377,7 @@ bool __fastcall PlayLayer_init(PlayLayer* self, void* a, GJGameLevel* level){
 
     auto stats = BetterInfoStats::sharedState();
     stats->logPlay(self->m_level);
-    if(CvoltonManager::sharedState()->getOption("auto_submit") && self->m_level->levelType == kGJLevelTypeSaved) GameLevelManager::sharedState()->getLevelLeaderboard(self->m_level, 0);
+    //if(CvoltonManager::sharedState()->getOption("auto_submit") && self->m_level->levelType == kGJLevelTypeSaved) GameLevelManager::sharedState()->getLevelLeaderboard(self->m_level, 0);
 
     return true;
 }
@@ -1383,15 +1386,8 @@ void __fastcall PlayLayer_onQuit(PlayLayer* self){
     auto stats = BetterInfoStats::sharedState();
     stats->logPlay(self->m_level);
 
+    if(CvoltonManager::sharedState()->getOption("auto_submit") && self->m_level->levelType == kGJLevelTypeSaved) BetterInfoScheduler::sharedState()->submitLevel(self->m_level);
     MHook::getOriginal(PlayLayer_onQuit)(self);
-}
-
-void __fastcall PlayLayer_destroyPlayer(PlayLayer* self, void* a, PlayerObject* a1, GameObject* a2){
-    int best = self->m_level->newNormalPercent2;
-
-    MHook::getOriginal(PlayLayer_destroyPlayer)(self, a, a1, a2);
-    if(CvoltonManager::sharedState()->getOption("auto_submit") && self->m_level->levelType == kGJLevelTypeSaved && self->m_level->newNormalPercent2 != best) GameLevelManager::sharedState()->getLevelLeaderboard(self->m_level, 0);
-
 }
 
 void __fastcall PlayLayer_resetLevel(PlayLayer* self){
@@ -1501,7 +1497,6 @@ DWORD WINAPI my_thread(void* hModule) {
     MHook::registerHook(base + 0x1FD3D0, PlayLayer_levelComplete);
     MHook::registerHook(base + 0x1FB780, PlayLayer_init);
     MHook::registerHook(base + 0x20D810, PlayLayer_onQuit);
-    MHook::registerHook(base + 0x20A1A0, PlayLayer_destroyPlayer);
     MHook::registerHook(base + 0x20BF00, PlayLayer_resetLevel);
     //GJGameLevel: savePercentage 0xBD5C0
 

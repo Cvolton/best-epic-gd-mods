@@ -48,6 +48,7 @@ namespace BetterInfo {
     void debugObjectIndexes(cocos2d::CCNode* node);
     bool validateRangeItem(const BISearchObject::RangeItem& rangeItem, int value);
     bool levelMatchesObject(gd::GJGameLevel* level, const BISearchObject& searchObj);
+    gd::GJGameLevel* getLevelFromSaved(int levelID);
     bool levelProgressMatchesObject(gd::GJGameLevel* level, const BISearchObject& searchObj);
     void writeToDebugFile(const std::string& content);
 

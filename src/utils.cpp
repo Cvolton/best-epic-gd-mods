@@ -349,10 +349,14 @@ bool BetterInfo::levelMatchesObject(GJGameLevel* level, const BISearchObject& se
         return true;
 }
 
+GJGameLevel* BetterInfo::getLevelFromSaved(int levelID) {
+        return static_cast<GJGameLevel*>(GameLevelManager::sharedState()->m_onlineLevels->objectForKey(std::to_string(levelID)));
+}
+
 bool BetterInfo::levelProgressMatchesObject(GJGameLevel* level, const BISearchObject& searchObj) {
         if(!validateRangeItem(searchObj.idRange, level->levelID)) return false;
 
-        auto levelFromSaved = static_cast<GJGameLevel*>(GameLevelManager::sharedState()->m_onlineLevels->objectForKey(std::to_string(level->levelID)));
+        auto levelFromSaved = getLevelFromSaved(level->levelID);
         if(searchObj.uncompleted && (levelFromSaved && levelFromSaved->normalPercent == 100)) return false;
         if(searchObj.uncompletedOrbs && (!levelFromSaved || levelFromSaved->orbCompletion == 100)) return false;
         if(searchObj.uncompletedLeaderboard && (!levelFromSaved || levelFromSaved->newNormalPercent2 == 100)) return false;
