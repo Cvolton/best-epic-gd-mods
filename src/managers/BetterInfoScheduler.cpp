@@ -20,9 +20,11 @@ void BetterInfoScheduler::submitLevel(GJGameLevel* level){
 }
 
 void BetterInfoScheduler::onLevelSubmit(CCObject* sender){
-    auto level = m_levelsToSubmit.front();
-    m_levelsToSubmit.pop();
+    while(!m_levelsToSubmit.empty()) {
+        auto level = m_levelsToSubmit.front();
+        m_levelsToSubmit.pop();
 
-    LevelLeaderboard::create(level, 0)->show();
-    level->release();
+        GameLevelManager::sharedState()->getLevelLeaderboard(level, 0);
+        level->release();
+    }
 }
