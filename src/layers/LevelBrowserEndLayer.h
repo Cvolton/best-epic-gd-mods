@@ -7,10 +7,15 @@ class LevelBrowserEndLayer : public CvoltonAlertLayerStub, public gd::OnlineList
     gd::TextArea* textLabel = nullptr;
     gd::CCMenuItemSpriteExtra* goBtn = nullptr;
     gd::LoadingCircle* circle = nullptr;
+    cocos2d::CCLabelBMFont* timer = nullptr;
 
     int min = 0;
     int max = 0;
     int requests = 0;
+    int requestsToMax = 0;
+
+    time_t maxReached = 0;
+    time_t lastLoad = 0;
 
     bool updateLabel = false;
 public:
@@ -25,5 +30,6 @@ public:
     void setupPageInfo(std::string, const char*);
 
     void updateDisplay();
+    void onTimer(float dt);
     void getOnlineLevels(gd::GJSearchObject* searchObj);
 };

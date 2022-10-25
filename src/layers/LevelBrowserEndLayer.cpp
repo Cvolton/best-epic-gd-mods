@@ -50,6 +50,9 @@ void LevelBrowserEndLayer::onOK(cocos2d::CCObject* sender){
     circle->setZOrder(999);
 
     goBtn->setVisible(false);
+
+    this->getScheduler()->scheduleSelector(schedule_selector(LevelBrowserEndLayer::onTimer), this, 1, false);
+    timer->setVisible(false);
 }
 
 bool LevelBrowserEndLayer::init(){
@@ -93,6 +96,12 @@ bool LevelBrowserEndLayer::init(){
     goBtn->setPosition({0,-55});
     m_pButtonMenu->addChild(goBtn);
 
+    timer = CCLabelBMFont::create("99", "bigFont.fnt");
+    timer->setPosition({110,-73});
+    timer->setAnchorPoint({1,0});
+    timer->setScale(.5f);
+    m_pButtonMenu->addChild(timer);
+
     return true;
 }
 
@@ -129,6 +138,11 @@ void LevelBrowserEndLayer::loadListFinished(cocos2d::CCArray*, const char* test)
 }
 void LevelBrowserEndLayer::loadListFailed(const char* test){
     max = levelBrowserLayer->searchObject->m_nPage;
+    if(requestsToMax == 0) {
+        requestsToMax = requests;
+        //maxReached = std::time(nullptr);
+        maxReached = lastLoad;
+    }
 
     if(max - min == 1) {
         onClose(nullptr);
@@ -148,13 +162,25 @@ void LevelBrowserEndLayer::setupPageInfo(std::string, const char*){
 void LevelBrowserEndLayer::updateDisplay(){
     if(!updateLabel) return;
 
+    lastLoad = std::time(nullptr);
+
+    auto maximumStr = requestsToMax <= 0 ? "" : CCString::createWithFormat(" / %i", requestsToMax * 2)->getCString();
+
     textLabel->setString(
-        CCString::createWithFormat("<cg>Minimum</c>: %i\n<cy>Current</c>: %i\n<cr>Maximum</c>: %i\n<cl>Requests</c>: %i", min, levelBrowserLayer->searchObject->m_nPage, max, ++requests)->getCString()
+        CCString::createWithFormat("<cg>Minimum</c>: %i\n<cy>Current</c>: %i\n<cr>Maximum</c>: %i\n<cl>Requests</c>: %i%s", min, levelBrowserLayer->searchObject->m_nPage, max, ++requests, maximumStr)->getCString()
     );
     textLabel->setScale(1.f);
 }
 
-
+void LevelBrowserEndLayer::onTimer(float dt) {
+    if(requests > requestsToMax && requestsToMax > 0) {
+        double timePerRequest = (double) (lastLoad - maxReached) / (requests - requestsToMax);
+        int requestsRemaining = (requestsToMax * 2) - requests;
+        time_t timeElapsed = std::time(nullptr) - lastLoad;
+        timer->setString(std::format("{:.0f}", (timePerRequest * requestsRemaining) - timeElapsed).c_str());
+        timer->setVisible(true);
+    }
+}
 
 void LevelBrowserEndLayer::getOnlineLevels(GJSearchObject* searchObj) {
     auto GLM = GameLevelManager::sharedState();
