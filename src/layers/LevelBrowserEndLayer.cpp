@@ -191,6 +191,12 @@ void LevelBrowserEndLayer::getOnlineLevels(GJSearchObject* searchObj) {
         loadListFinished(storedLevels, "");
     } else {
         updateLabel = true;
-        GLM->getOnlineLevels(levelBrowserLayer->searchObject);
+        this->getScheduler()->scheduleSelector(schedule_selector(LevelBrowserEndLayer::onQueueDownload), this, 1, 0, 0.25f, false);
     }
+}
+
+void LevelBrowserEndLayer::onQueueDownload(float dt) {
+    auto GLM = GameLevelManager::sharedState();
+    GLM->getOnlineLevels(levelBrowserLayer->searchObject);
+    addChild(TextAlertPopup::create("Loading", 0.5f, 0.6f), 100);
 }

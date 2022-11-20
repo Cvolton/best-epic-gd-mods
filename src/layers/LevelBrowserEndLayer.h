@@ -32,4 +32,5 @@ public:
     void updateDisplay();
     void onTimer(float dt);
     void getOnlineLevels(gd::GJSearchObject* searchObj);
+    void onQueueDownload(float dt);
 };
