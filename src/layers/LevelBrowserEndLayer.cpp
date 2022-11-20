@@ -52,7 +52,6 @@ void LevelBrowserEndLayer::onOK(cocos2d::CCObject* sender){
     goBtn->setVisible(false);
 
     this->getScheduler()->scheduleSelector(schedule_selector(LevelBrowserEndLayer::onTimer), this, 1, false);
-    timer->setVisible(false);
 }
 
 bool LevelBrowserEndLayer::init(){
@@ -101,6 +100,7 @@ bool LevelBrowserEndLayer::init(){
     timer->setAnchorPoint({1,0});
     timer->setScale(.5f);
     m_pButtonMenu->addChild(timer);
+    timer->setVisible(false);
 
     return true;
 }
