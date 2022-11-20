@@ -10,6 +10,7 @@ class LevelSearchViewLayer : public cocos2d::CCLayer, public gd::OnlineListDeleg
     BISearchObject m_searchObj;
     gd::GJSearchObject* m_gjSearchObj = nullptr;
     gd::GJSearchObject* m_gjSearchObjOptimized = nullptr;
+    gd::GJSearchObject* m_gjSearchObjLoaded = nullptr;
     LevelSearchListView* m_listView = nullptr;
     gd::GJListLayer* m_listLayer = nullptr;
     gd::CCMenuItemSpriteExtra* m_prevBtn = nullptr;
@@ -55,4 +56,6 @@ public:
 
     void optimizeSearchObject();
     void resetUnloadedLevels();
+
+    void queueLoad(float dt);
 };
