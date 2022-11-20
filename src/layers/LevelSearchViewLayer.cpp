@@ -215,6 +215,7 @@ void LevelSearchViewLayer::startLoading(){
         loadListFinished(storedLevels, "");
     } else {
         m_gjSearchObjLoaded = searchObj;
+        searchObj->retain();
         this->getScheduler()->scheduleSelector(schedule_selector(LevelSearchViewLayer::queueLoad), this, 1, 0, 0.5f, false);
     }
 }
@@ -224,6 +225,7 @@ void LevelSearchViewLayer::queueLoad(float dt) {
     GLM->m_pOnlineListDelegate = this;
     GLM->getOnlineLevels(m_gjSearchObjLoaded);
     m_gjSearchObjLoaded->m_nPage += 1;
+    m_gjSearchObjLoaded->release();
 }
 
 void LevelSearchViewLayer::loadPage(bool reload){
