@@ -103,6 +103,8 @@ void BetterInfoOnline::sendScoreToProfilePage(cocos2d::CCArray* scores, int acco
     CCObject* obj;
     CCARRAY_FOREACH(scores, obj){
         auto score = static_cast<GJUserScore*>(obj);
+        score->messageState_ = 2;
+        score->friendStatus_ = 1;
         if(score->accountID_ == accountID) {
             score->globalRank_ = score->playerRank_;
             switch(score->iconType_) {
