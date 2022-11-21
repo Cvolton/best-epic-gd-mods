@@ -294,6 +294,12 @@ FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
     versions.push_back(
         "<cg>BetterInfo has updated!</c>\n"
         "\n"
+        "<cy>Changelog:</c> <cg>(v2.4.3 - 2022-11-21)</c>\n"
+        "- Increased delay between requests to reduce/prevent rate-limit IP bans\n"
+        "- Bugfixes & improvements"
+    );
+
+    versions.push_back(
         "<cy>Changelog:</c> <cg>(v2.4.2 - 2022-10-26)</c>\n"
         "- <co>RobTop Bug Fix:</c> Made <cr>unloadable</c> profiles <cg>loadable</c>\n(but still not searchable)\n"
         "- <cy>Delayed</c> <cj>auto submit to leaderboards</c> to <co>level exit</c> (+1s)\n"
