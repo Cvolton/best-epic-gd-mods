@@ -43,6 +43,7 @@ namespace BetterInfo {
     std::string decodeBase64Gzip(const std::string& input);
     std::string fileSize(size_t bytes);
     std::string fixColorCrashes(std::string input);
+    std::string fixNullByteCrash(std::string input);
     std::string timeToString(time_t input);
     bool isSavedFiltered();
     void debugObjectIndexes(cocos2d::CCNode* node);

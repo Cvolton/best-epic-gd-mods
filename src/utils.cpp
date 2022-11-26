@@ -222,6 +222,13 @@ std::string BetterInfo::fixColorCrashes(std::string input) {
         return input;
 }
 
+std::string BetterInfo::fixNullByteCrash(std::string input) {
+        for(auto& character : input) {
+                if(character == '\0') character = ' ';
+        }
+        return input;
+}
+
 std::string BetterInfo::timeToString(time_t input) {
         struct tm time3;
         localtime_s(&time3, &input);
