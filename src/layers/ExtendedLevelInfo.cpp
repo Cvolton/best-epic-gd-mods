@@ -79,7 +79,7 @@ std::string ExtendedLevelInfo::getGameVersionName(int version){
         case 10:
             return std::string("1.7");
         case 11:
-            return std::string("1.7 or 1.8");
+            return std::string("Early 1.8");
     }
 
     std::stringstream contentStream;
