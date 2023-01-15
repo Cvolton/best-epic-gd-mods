@@ -643,7 +643,16 @@ void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJCommen
     CCMenu* menu = nullptr;
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
-    bool smallCommentsMode = gd::GameManager::sharedState()->getGameVariable("0088");
+    //bool smallCommentsMode = gd::GameManager::sharedState()->getGameVariable("0088");
+    bool smallCommentsMode = self->m_fHeight == 36; //this is how robtop does the check
+
+    auto idText = CCLabelBMFont::create(std::format("#{}", b->m_nCommentID).c_str(), "chatFont.fnt");
+    idText->setPosition(smallCommentsMode ? CCPoint(332, 12.5) : CCPoint(329, 21.5));
+    idText->setAnchorPoint({1, .5f});
+    idText->setScale(smallCommentsMode ? .325f : .425f);
+    idText->setOpacity(110);
+    idText->setColor({0,0,0});
+    layer->addChild(idText);
 
     for(unsigned int i = 0; i < layer->getChildrenCount(); i++){
         menu = dynamic_cast<CCMenu*>(layer->getChildren()->objectAtIndex(i));
