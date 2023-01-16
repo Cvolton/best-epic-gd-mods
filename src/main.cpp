@@ -34,6 +34,8 @@
 #include "managers/BetterInfoOnline.h"
 #include "managers/BetterInfoScheduler.h"
 
+#include "objects/FLAlertResultHandler.h"
+
 using namespace cocos2d;
 using namespace gd;
 
@@ -640,6 +642,10 @@ void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJCommen
 
     auto layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(1));
 
+    auto CM = CvoltonManager::sharedState();
+
+    if(!CM->getOption("comment_id_alert_shown")) FLAlertLayer::create(FLAlertResultHandler::create(), CvoltonManager::modName, "No", "Yes", "Would you like to show comment IDs next to comments?")->show();
+
     CCMenu* menu = nullptr;
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
@@ -652,7 +658,7 @@ void __fastcall CommentCell_loadFromComment(CommentCell* self, void* a, GJCommen
     idText->setScale(smallCommentsMode ? .325f : .425f);
     idText->setOpacity(110);
     idText->setColor({0,0,0});
-    layer->addChild(idText);
+    if(CM->getOption("show_comment_ids")) layer->addChild(idText);
 
     for(unsigned int i = 0; i < layer->getChildrenCount(); i++){
         menu = dynamic_cast<CCMenu*>(layer->getChildren()->objectAtIndex(i));
