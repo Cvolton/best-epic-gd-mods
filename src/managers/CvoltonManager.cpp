@@ -294,6 +294,13 @@ FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
     versions.push_back(
         "<cg>BetterInfo has updated!</c>\n"
         "\n"
+        "<cy>Changelog:</c> <cg>(v2.4.4 - 2023-01-16)</c>\n"
+        "- Added visible comment IDs (optional)\n"
+        "- Fixed a crash when viewing some level descriptions\n"
+        "- Bugfixes & improvements"
+    );
+
+    versions.push_back(
         "<cy>Changelog:</c> <cg>(v2.4.3 - 2022-11-21)</c>\n"
         "- Increased delay between requests to reduce/prevent rate-limit IP bans\n"
         "- Bugfixes & improvements"
