@@ -19,6 +19,7 @@ LeaderboardListView* LeaderboardListView::create(cocos2d::CCArray* scores, float
 void LeaderboardListView::setupList() {
     this->m_fItemSeparation = 60.0f;
 
+    this->m_pTableView->retain();
     this->m_pTableView->reloadData();
 
     auto coverage = DailyListView::calculateNodeCoverage(m_pTableView->m_pContentLayer->getChildren());

@@ -1,8 +1,9 @@
 #pragma once
 
+#include "CvoltonListView.h"
 #include <gd.h>
 
-class RewardListView : public gd::CustomListView {
+class RewardListView : public CvoltonListView {
 protected:
     void setupList() override;
     gd::TableViewCell* getListCell(const char* key) override;

@@ -87,6 +87,7 @@ void LeaderboardViewLayer::loadPage(){
 
     if(m_listLayer != nullptr) m_listLayer->removeFromParentAndCleanup(true);
 
+    if(m_leaderboardView) m_leaderboardView->release();
     m_leaderboardView = LeaderboardListView::create(m_scores, 356.f, 220.f);
     m_listLayer = GJListLayer::create(m_leaderboardView, "Scores", {191, 114, 62, 255}, 356.f, 220.f);
     m_listLayer->setPosition(winSize / 2 - m_listLayer->getScaledContentSize() / 2 - CCPoint(0,5));
