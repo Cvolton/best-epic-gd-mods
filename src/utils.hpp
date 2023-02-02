@@ -59,4 +59,7 @@ namespace BetterInfo {
 
     std::deque<gd::GJGameLevel*> completedDeque();
     void strToLower(std::string& str);
+
+    std::string getSongUrl(int audioID);
+    bool isNewGrounds(int audioID);
 }

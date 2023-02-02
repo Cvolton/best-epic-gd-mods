@@ -426,3 +426,13 @@ std::deque<gd::GJGameLevel*> BetterInfo::completedDeque() {
 void BetterInfo::strToLower(std::string& str) {
         for(auto& c : str) c = tolower(c);
 }
+
+std::string BetterInfo::getSongUrl(int audioID) {
+        auto songInfo = static_cast<SongInfoObject*>(MusicDownloadManager::sharedState()->m_songsDict->objectForKey(std::to_string(audioID)));
+        if(!songInfo) return "";
+        return songInfo->m_songURL;
+}
+
+bool BetterInfo::isNewGrounds(int audioID) {
+        return BetterInfo::getSongUrl(audioID).find("://audio.ngfiles.com/") != std::string::npos;
+}

@@ -444,9 +444,17 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
     MHook::getOriginal(LevelCell_loadCustomLevelCell)(self);
     
     auto layer = cast<CCLayer*>(self->getChildren()->objectAtIndex(1));
+
+    bool menuDone = false;
     for(unsigned int i = 0; i < layer->getChildrenCount(); i++){
+        if(self->level->songID){
+            auto bmFont = dynamic_cast<CCLabelBMFont*>(layer->getChildren()->objectAtIndex(i));
+            if(bmFont && bmFont->getPositionX() == 52 && bmFont->getPositionY() == 33 && !BetterInfo::isNewGrounds(self->level->songID)) bmFont->setColor({249,170,190});
+        }
+
+
         auto menu = dynamic_cast<CCMenu*>(layer->getChildren()->objectAtIndex(i));
-        if(menu != nullptr){
+        if(!menuDone && menu != nullptr){
             auto playerName = cast<gd::CCMenuItemSpriteExtra*>(menu->getChildren()->objectAtIndex(1));
             playerName->setEnabled(true);
 
@@ -480,7 +488,7 @@ void __fastcall LevelCell_loadCustomLevelCell(LevelCell* self) {
 
             }
 
-            break;
+            menuDone = true;
         }
     }
 }
