@@ -290,6 +290,8 @@ CCScene* LevelSearchViewLayer::scene(GJSearchObject* gjSearchObj, BISearchObject
 }
 
 void LevelSearchViewLayer::loadListFinished(cocos2d::CCArray* levels, const char*) {
+    if(!m_loadedLevels) return;
+
     for(size_t i = 0; i < levels->count(); i++) {
         auto level = static_cast<GJGameLevel*>(levels->objectAtIndex(i));
         if(level == nullptr) continue;
