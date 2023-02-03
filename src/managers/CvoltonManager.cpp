@@ -294,6 +294,13 @@ FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
     versions.push_back(
         "<cg>BetterInfo has updated!</c>\n"
         "\n"
+        "<cy>Changelog:</c> <cg>(v2.4.5 - 2023-02-03)</c>\n"
+        "- Songs not served from NG highlighted in orange/red/brown/pink/whatever that color is now (idk its a weird shade, i copied it from gdbrowser)\n"
+        "- Fixed a crash when exiting user leaderboards\n"
+        "- Fixed a crash when exiting filtered level search"
+    );
+
+    versions.push_back(
         "<cy>Changelog:</c> <cg>(v2.4.4 - 2023-01-16)</c>\n"
         "- Added visible comment IDs (optional)\n"
         "- Fixed a crash when viewing some level descriptions\n"
