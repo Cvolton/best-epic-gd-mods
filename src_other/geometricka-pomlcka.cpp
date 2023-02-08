@@ -5,7 +5,7 @@
 
 DWORD WINAPI func(void* me) {
     auto hwnd = FindWindowW(NULL, L"Geometry Dash");
-    SetWindowTextW(hwnd, L"GeometrickÃ¡ pomlÄka 2.2 pÅ™Ã­mo od Roberta Topaly CZ/SK v hlavnÃ­ roli v ÄeskÃ©m znÄ›nÃ­ Petr RychlÃ½");
+    SetWindowTextW(hwnd, L"Geometrická pomlèka 2.2 pøímo od Roberta Topaly CZ/SK v hlavní roli v èeském znìní Petr Rychlı");
     return 0;
 }
 
