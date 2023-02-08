@@ -29,6 +29,7 @@ struct BISearchObject {
         bool original = false;
         bool twoPlayer = false;
         bool coins = false;
+        bool noCoins = false;
         bool epic = false;
         int folder = 0;
         bool song = false;

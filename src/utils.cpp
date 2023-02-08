@@ -269,7 +269,7 @@ bool BetterInfo::isSavedFiltered() {
                 "user_search_star", "user_search_uncompleted", "user_search_completed",
                 "user_search_featured", "user_search_nofeatured", "user_search_original",
                 "user_search_epic", "user_search_noepic", "user_search_song",
-                "user_search_nostar", "user_search_coins", "user_search_twoplayer",
+                "user_search_nostar", "user_search_coins", "user_search_nocoins", "user_search_twoplayer",
                 "user_search_copied", "user_search_downloaded", "user_search_ldm",
                 "user_search_copy", "user_search_copy_free", "user_search_idrange",
                 "user_search_completedorbs", "user_search_completedleaderboard", "user_search_uncompletedorbs",
@@ -331,6 +331,7 @@ bool BetterInfo::levelMatchesObject(GJGameLevel* level, const BISearchObject& se
         if(searchObj.original && level->originalLevel > 0) return false;
         if(searchObj.twoPlayer && !level->twoPlayerMode) return false;
         if(searchObj.coins && (level->coins == 0 || level->coinsVerified == 0)) return false;
+        if(searchObj.noCoins && (level->coins != 0 && level->coinsVerified != 0)) return false;
         if(searchObj.epic && !level->isEpic) return false;
         //TODO: searchObj.folder
         if(searchObj.song) {
