@@ -258,7 +258,8 @@ void ProfileSearchOptions::drawTogglesPrimary(){
     if(!prefix.empty()) createToggle("song", "Song", 90, 35, menu_selector(ProfileSearchOptions::onSong));
     createToggle("nostar", "No Star", -170, -10);
     createToggle("coins", "Coins", -40, -10);
-    createToggle("twoplayer", "2-Player", 90, -10);
+    createToggle("nocoins", "No Coins", 90, -10);
+    createToggle("twoplayer", "2-Player", 90, 35);
 }
 
 void ProfileSearchOptions::drawTogglesSecondary(){
@@ -421,6 +422,7 @@ BISearchObject ProfileSearchOptions::getSearchObject() {
     searchObj.original = getOption("original");
     searchObj.twoPlayer = getOption("twoplayer");
     searchObj.coins = getOption("coins");
+    searchObj.noCoins = getOption("nocoins");
     searchObj.epic = getOption("epic");
     searchObj.folder = 0;
     searchObj.song = getOption("song");
@@ -434,6 +436,7 @@ BISearchObject ProfileSearchOptions::getSearchObject() {
     searchObj.freeCopy = getOption("copy_free");
     searchObj.unfeatured = getOption("nofeatured");
     searchObj.unepic = getOption("noepic");
+
     setToRangeItem(searchObj.starRange, "starrange");
     /*searchObj.gameVersionMin = 0;
     searchObj.gameVersionMax = 0;*/
@@ -482,6 +485,7 @@ void ProfileSearchOptions::setSearchObject(const BISearchObject& searchObj) {
     setOption("original", searchObj.original);
     setOption("twoplayer", searchObj.twoPlayer);
     setOption("coins", searchObj.coins);
+    setOption("nocoins", searchObj.noCoins);
     setOption("epic", searchObj.epic);
     //searchObj.folder = 0;
     setOption("song", searchObj.song);
