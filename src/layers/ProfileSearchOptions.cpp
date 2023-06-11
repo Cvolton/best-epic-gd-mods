@@ -259,7 +259,6 @@ void ProfileSearchOptions::drawTogglesPrimary(){
     createToggle("nostar", "No Star", -170, -10);
     createToggle("coins", "Coins", -40, -10);
     createToggle("nocoins", "No Coins", 90, -10);
-    createToggle("twoplayer", "2-Player", 90, 35);
 }
 
 void ProfileSearchOptions::drawTogglesSecondary(){
@@ -294,6 +293,7 @@ void ProfileSearchOptions::drawTogglesSecondary(){
     if(!prefix.empty()) createToggle("copy", "Copyable", -40, 35);
     if(!prefix.empty()) createToggle("copy_free", "Free Copy", 90, 35);
     if(!prefix.empty()) createToggle("ldm", "LDM", -170, -10);
+    createToggle("twoplayer", "2-Player", -40, -10);
     
 }
 
