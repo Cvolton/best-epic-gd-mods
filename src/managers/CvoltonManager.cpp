@@ -46,7 +46,7 @@ bool CvoltonManager::init(){
 
 void CvoltonManager::doUpdateHttpRequest(){
 	CCHttpRequest* request = new CCHttpRequest;
-    request->setUrl("https://cvolton.eu/gdmods/api/betterinfo/version/");
+    request->setUrl("https://geometrydash.eu/mods/betterinfo/v2/stable/version.txt");
     request->setRequestType(CCHttpRequest::HttpRequestType::kHttpPost);
     request->setResponseCallback(this, httpresponse_selector(CvoltonManager::onUpdateHttpResponse));
     CCHttpClient::getInstance()->send(request);
@@ -54,13 +54,18 @@ void CvoltonManager::doUpdateHttpRequest(){
 }
 
 void CvoltonManager::onUpdateHttpResponse(CCHttpClient* client, CCHttpResponse* response){
-    if(!(response->isSucceed())) return;
+    if(!(response->isSucceed())) {
+        if(updateLayer) updateLayer->onLoadFailed();
+        return;
+    }
 
     std::vector<char>* responseData = response->getResponseData();
     std::string responseString(responseData->begin(), responseData->end());
     latestVer = responseString;
 
-    if(isUpToDate()) return;
+    if(updateLayer) updateLayer->onLoadFinished();
+
+    //if(isUpToDate()) return;
 
     /*std::ostringstream stream;
     stream << modNameColored << " " << responseString;*/
@@ -72,7 +77,7 @@ void CvoltonManager::onUpdateHttpResponse(CCHttpClient* client, CCHttpResponse* 
 
 }
 
-void CvoltonManager::onChangelogHttpResponse(CCHttpClient* client, CCHttpResponse* response){
+/*void CvoltonManager::onChangelogHttpResponse(CCHttpClient* client, CCHttpResponse* response){
     CvoltonUpdateLayer* updateLayer = static_cast<CvoltonUpdateLayer*>(response->getHttpRequest()->getUserData());
 
     if(!(response->isSucceed())){
@@ -87,7 +92,7 @@ void CvoltonManager::onChangelogHttpResponse(CCHttpClient* client, CCHttpRespons
     updateLayer->onLoadFinished();
     updateLayer->release();
     //FLAlertLayer::create(nullptr, "User Info", "OK", nullptr, 300, stream.str().c_str())->show();
-}
+}*/
 
 //CvoltonManager* CvoltonManager::sharedState()
 
@@ -112,16 +117,16 @@ const char* CvoltonManager::getUserName(int id){
     return obj->getCString();
 }
 
-void CvoltonManager::downloadChangelog(CvoltonUpdateLayer* updateLayer){
-    updateLayer->retain();
+void CvoltonManager::downloadChangelog(){
+    changelog = "Click the button in the lower left corner to see changelogs";
     forceUpdateCheck();
 
-    CCHttpRequest* request = new CCHttpRequest;
+    /*CCHttpRequest* request = new CCHttpRequest;
     request->setUrl("https://cvolton.eu/gdmods/api/betterinfo/changelog/latest/");
     request->setRequestType(CCHttpRequest::HttpRequestType::kHttpPost);
     request->setUserData(updateLayer);
     request->setResponseCallback(this, httpresponse_selector(CvoltonManager::onChangelogHttpResponse));
-    CCHttpClient::getInstance()->send(request);
+    CCHttpClient::getInstance()->send(request);*/
     //request->release();
 
 }
@@ -294,6 +299,12 @@ FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
     versions.push_back(
         "<cg>BetterInfo has updated!</c>\n"
         "\n"
+        "<cy>Changelog:</c> <cg>(v2.4.6 - 2023-06-11)</c>\n"
+        "- Added \"no coins\" filter\n"
+        "- Bugfixes & improvements\n"
+    );
+
+    versions.push_back(
         "<cy>Changelog:</c> <cg>(v2.4.5 - 2023-02-03)</c>\n"
         "- Songs not served from NG highlighted in orange/red/brown/pink/whatever that color is now (idk its a weird shade, i copied it from gdbrowser)\n"
         "- Fixed a crash when exiting user leaderboards\n"

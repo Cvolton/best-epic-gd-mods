@@ -24,6 +24,8 @@ CvoltonUpdateLayer* CvoltonUpdateLayer::create(){
 
 void CvoltonUpdateLayer::onClose(cocos2d::CCObject* sender)
 {
+    auto CM = CvoltonManager::sharedState();
+    CM->updateLayer = nullptr;
     setKeypadEnabled(false);
     removeFromParentAndCleanup(true);
 }
@@ -115,6 +117,9 @@ bool CvoltonUpdateLayer::init(){
     historyBtn->setPosition({-210,-135});
     m_pButtonMenu->addChild(historyBtn);
 
+    auto CM = CvoltonManager::sharedState();
+    CM->updateLayer = this;
+
     downloadChangelog();
     showVersion();
 
@@ -124,7 +129,7 @@ bool CvoltonUpdateLayer::init(){
 void CvoltonUpdateLayer::downloadChangelog(){
     auto CM = CvoltonManager::sharedState();
 
-    if(CM->changelog == "" || CM->latestVer == "") CM->downloadChangelog(this);
+    if(CM->changelog == "" || CM->latestVer == "") CM->downloadChangelog();
     else onLoadFinished();
 }
 

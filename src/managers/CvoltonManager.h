@@ -18,7 +18,7 @@ class CvoltonManager : public gd::GManager {
 
 
 public:
-	inline static const char* version = "v2.4.5\n";
+	inline static const char* version = "v2.4.6\n";
 	inline static const char* modName = "BetterInfo";
 	inline static const char* modNameColored = "Better<cg>Info</c>";
 	std::string latestVer;
@@ -26,6 +26,7 @@ public:
 	std::string saveVer;
 	cocos2d::CCDictionary* nameDict;
 	cocos2d::CCDictionary* settingsDict;
+	CvoltonUpdateLayer* updateLayer = nullptr;
 	const char* cellTitle = nullptr;
 	bool hasDoneUpdateCheck = false;
 	bool plistLoaded = false;
@@ -50,7 +51,7 @@ public:
 	void doUpdateHttpRequest();
 	void doUpdateCheck();
 	void forceUpdateCheck();
-	void downloadChangelog(CvoltonUpdateLayer* updateLayer);
+	void downloadChangelog();
 	bool isUpToDate();
 	bool getOption(std::string option);
 	bool toggleOption(std::string option);
