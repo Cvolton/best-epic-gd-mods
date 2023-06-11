@@ -300,7 +300,7 @@ FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
         "<cg>BetterInfo has updated!</c>\n"
         "\n"
         "<cy>Changelog:</c> <cg>(v2.4.6 - 2023-06-11)</c>\n"
-        "- Added \"no coins\" filter\n"
+        "- Added \"no coins\" filter (thanks _tz and RandomB)\n"
         "- Bugfixes & improvements\n"
     );
 
