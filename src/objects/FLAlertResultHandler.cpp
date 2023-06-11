@@ -32,6 +32,7 @@ void FLAlertResultHandler::FLAlert_Clicked(gd::FLAlertLayer*, bool success) {
 
 bool FLAlertResultHandler::init(){
     CvoltonManager::sharedState()->setOption("comment_id_alert_shown", true);
+    CvoltonManager::sharedState()->save();
 
     return CCNode::init();
 }
