@@ -64,4 +64,5 @@ public:
 	cocos2d::CCDictionary* responseToDict(std::string response);
 	gd::FLAlertLayer* missingResourcesError();
 	gd::FLAlertLayer* updateCompleteDialog(bool forced = false);
+	gd::FLAlertLayer* incompatibleModDialog();
 };

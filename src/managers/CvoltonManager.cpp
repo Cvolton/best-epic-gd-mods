@@ -376,3 +376,13 @@ FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
 
     return layer;
 }
+
+FLAlertLayer* CvoltonManager::incompatibleModDialog() {
+    std::string mods;
+    if(GetModuleHandle("more-button.dll") != nullptr) mods.append("- more-button.dll\n");
+
+    if(mods.empty()) return nullptr;
+
+    auto layer = FLAlertLayer::create(nullptr, modName, "OK", nullptr, 400, false, 300, std::format("<cr>Error: Incompatible mods detected!</c>\n{}\n\nBetterInfo will try to function as normal but keeping these enabled may result in degraded experience and crashes", mods));
+    return layer;
+}

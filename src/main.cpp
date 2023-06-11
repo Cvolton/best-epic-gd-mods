@@ -1058,6 +1058,12 @@ bool __fastcall CreatorLayer_init(CCLayer* self) {
         alert->show();
     }
 
+    auto alert2 = CM->incompatibleModDialog();
+    if(alert2) {
+        alert2->m_pParent = self;
+        alert2->show();
+    }
+
     return true;
 }
 
