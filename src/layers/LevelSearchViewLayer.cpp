@@ -189,7 +189,7 @@ void LevelSearchViewLayer::startLoading(){
 
     if(!m_unloadedLevels.empty()) {
         bool starFilter = m_searchObj.star || m_searchObj.starRange.min > 0;
-        size_t levelsPerRequest = (starFilter) ? 300 : 10;
+        size_t levelsPerRequest = (starFilter) ? 300 : 100;
 
         std::stringstream toDownload;
         bool first = true;
@@ -200,7 +200,7 @@ void LevelSearchViewLayer::startLoading(){
             first = false;
         }
 
-        searchObj = GJSearchObject::create(starFilter ? kSearchTypeMapPackList : kSearchType19, toDownload.str());
+        searchObj = GJSearchObject::create(starFilter ? kSearchTypeMapPackList : kSearchType26, toDownload.str());
 
     } else if(m_gjSearchObjOptimized) {
         searchObj = m_gjSearchObjOptimized;
