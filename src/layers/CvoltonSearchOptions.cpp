@@ -99,10 +99,10 @@ void CvoltonSearchOptions::drawToggles(){
     auto CM = CvoltonManager::sharedState();
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
-    createToggle("search_contains", "Name Contains", -170, 75); //40 -60, 170 -60, 300 -60, 40 -110
-    createToggle("search_no_id", "No ID Search", -40, 75);
-    createToggle("search_surround_percent", "No Forced Star", 90, 75);
-    createToggle("search_trim", "Trim Spaces", -170, 25);
+    //createToggle("search_contains", "Name Contains", -170, 75); //40 -60, 170 -60, 300 -60, 40 -110
+    //createToggle("search_no_id", "No ID Search", -40, 75);
+    //createToggle("search_surround_percent", "No Forced Star", 90, 75);
+    createToggle("search_trim", "Trim Spaces", -170, 75); //25
 
     createTextLabel("Completed Mode:", {0, -95}, 0.5f, m_pButtonMenu, "goldFont.fnt");
     createButton("edit_leftBtn_001.png", {-120, -120}, menu_selector(CvoltonSearchOptions::onCompletedPrev), 1.2f);

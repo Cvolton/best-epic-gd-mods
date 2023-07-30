@@ -1177,12 +1177,12 @@ GJSearchObject* __fastcall LevelSearchLayer_getSearchObject(LevelSearchLayer* se
         str.erase(str.find_last_not_of(' ') + 1);
     }
 
-    if(CM->getOption("search_no_id") && isID && type == SearchType::kSearchTypeSearch) str = str + "%25";
-    if(CM->getOption("search_no_id") && isID && type == SearchType::kSearchTypeFindUsers) str = str + "%20";
+    //if(CM->getOption("search_no_id") && isID && type == SearchType::kSearchTypeSearch) str = str + "%25";
+    //if(CM->getOption("search_no_id") && isID && type == SearchType::kSearchTypeFindUsers) str = str + "%20";
 
-    if(CM->getOption("search_surround_percent") && (!isID || CM->getOption("search_no_id")) && type == SearchType::kSearchTypeSearch) str = str + "%25%25";
+    //if(CM->getOption("search_surround_percent") && (!isID || CM->getOption("search_no_id")) && type == SearchType::kSearchTypeSearch) str = str + "%25%25";
     
-    if(CM->getOption("search_contains") && type == SearchType::kSearchTypeSearch && (!isID || CM->getOption("search_no_id"))) str = "%25" + str;
+    //if(CM->getOption("search_contains") && type == SearchType::kSearchTypeSearch && (!isID || CM->getOption("search_no_id"))) str = "%25" + str;
 
     return MHook::getOriginal(LevelSearchLayer_getSearchObject)(self, a, type, str);
 }
