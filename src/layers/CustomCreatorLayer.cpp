@@ -84,19 +84,19 @@ bool CustomCreatorLayer::init() {
         menu_selector(CustomCreatorLayer::onFeatured)
     );
     menu->addChild(featuredBtn);
-    featuredBtn->setPosition({-120,55});
+    featuredBtn->setPosition({-60,55});
     featuredBtn->setSizeMult(1.2f);
 
     //CCTextureCache::sharedTextureCache()->addImage("mostliked.png", 0);
 
-    auto mostLikedBtn = gd::CCMenuItemSpriteExtra::create(
+    /*auto mostLikedBtn = gd::CCMenuItemSpriteExtra::create(
         BetterInfo::createWithBISpriteFrameName("BI_mostLikedBtn_001.png"),
         this,
         menu_selector(CustomCreatorLayer::onMostLiked)
     );
     menu->addChild(mostLikedBtn);
     mostLikedBtn->setPosition({0,55});
-    mostLikedBtn->setSizeMult(1.2f);
+    mostLikedBtn->setSizeMult(1.2f);*/
 
     auto searchBtn = gd::CCMenuItemSpriteExtra::create(
         BetterInfo::createBISprite("BI_searchLevel_001.png"),
@@ -104,7 +104,7 @@ bool CustomCreatorLayer::init() {
         menu_selector(CustomCreatorLayer::onSearch)
     );
     menu->addChild(searchBtn);
-    searchBtn->setPosition({120,55});
+    searchBtn->setPosition({60,55});
     searchBtn->setSizeMult(1.2f);
 
     auto searchIDBtn = gd::CCMenuItemSpriteExtra::create(
@@ -212,7 +212,8 @@ void CustomCreatorLayer::onInfo(CCObject* object) {
         "OK", 
         nullptr,
         450,
-        "This is the main menu for all features related to the mod.\n\n<cy>Featured:</c> Levels featured in Geometry Dash World\n<cg>Most liked:</c> \"Most Liked\" in Geometry Dash World,\nreal purpose unknown.\n<cj>Search (ID):</c> View comments of any level ID.\n\n<cl>Settings:</c> Opens the mod settings\n<cr>Update:</c> Opens the mod update menu"
+        "This is the main menu for all features related to the mod.\n\n<cy>Featured:</c> Levels featured in Geometry Dash World\n"
+        "<cj>Search (ID):</c> View comments of any level ID.\n\n<cl>Settings:</c> Opens the mod settings\n<cr>Update:</c> Opens the mod update menu"
     )->show();
 }
 
