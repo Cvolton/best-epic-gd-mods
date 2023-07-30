@@ -299,6 +299,13 @@ FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
     versions.push_back(
         "<cg>BetterInfo has updated!</c>\n"
         "\n"
+        "<cy>Changelog:</c> <cg>(v2.4.7 - 2023-07-30)</c>\n"
+        "- Removed \"Name Contains\", \"No ID Search\" and \"No Forced Star\" due to server-side changes\n"
+        "- Removed \"GDW Most Liked\" due to server-side changes\n"
+        "- Using a faster search method for some filtered searches"
+    );
+
+    versions.push_back(
         "<cy>Changelog:</c> <cg>(v2.4.6 - 2023-06-11)</c>\n"
         "- Added \"no coins\" filter (thanks _tz and RandomB)\n"
         "- Bugfixes & improvements\n"
