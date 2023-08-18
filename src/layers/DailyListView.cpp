@@ -39,7 +39,7 @@ void DailyListView::loadCell(TableViewCell* cell, unsigned int index) {
 }
 
 TableViewCell* DailyListView::getListCell(const char* key) {
-    return DailyCell::create(key, { this->m_fWidth, 55.0f });
+    return new DailyCell(key, { this->m_fWidth, 55.0f });
 }
 
 /*

@@ -39,5 +39,5 @@ void LevelSearchListView::loadCell(TableViewCell* cell, unsigned int index) {
 }
 
 TableViewCell* LevelSearchListView::getListCell(const char* key) {
-    return LevelCell::create(key, this->m_fWidth, this->m_fItemSeparation);
+    return new LevelCell(key, this->m_fWidth, this->m_fItemSeparation);
 }
