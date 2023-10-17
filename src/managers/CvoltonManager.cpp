@@ -299,6 +299,15 @@ FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
     versions.push_back(
         "<cg>BetterInfo has updated!</c>\n"
         "\n"
+        "<cy>Changelog:</c> <cg>(v2.4.9 - 2023-10-17)</c>\n"
+        "- <cg>Fixed</c> <co>chest history</c> <cj>icons</c>\n"
+        "- <cg>Fixed</c> <cj>submitting coins</c> to old <co>daily levels leaderboards</c>\n"
+        "\n"
+        "This is likely the last update to this version of BetterInfo - new features will only be getting added to the Geode version from now on. Thank you all for using the mod and see you in 2.2 :)\n"
+        "--Cvolton"
+    );
+
+    versions.push_back(
         "<cy>Changelog:</c> <cg>(v2.4.8 - 2023-08-19)</c>\n"
         "- Fixed a potential crash caused by filtered level search"
     );
