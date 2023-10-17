@@ -11,9 +11,18 @@ void RewardCell::loadFromReward(GJRewardItem* reward) {
     const float rowX = 48.f;
     const float rowY = 10.5f;
 
-    CCSprite* chest = CCSprite::createWithSpriteFrameName(reward->m_bUnk ? "chest_02_02_001.png" : "chest_01_02_001.png");
+    const char* chestTexture = "chest_01_02_001.png";
+    float chestSize = 0.35f;
+    switch(reward->m_eRewardType) {
+        default: case kGJRewardTypeSmall: chestTexture = "chest_01_02_001.png"; break;
+        case kGJRewardTypeLarge: chestTexture = "chest_02_02_001.png"; chestSize = 0.275f; break;
+        case kGJRewardTypeSmallTreasure: chestTexture = "chest_03_02_001.png"; chestSize = 0.275f; break;
+        case kGJRewardTypeLargeTreasure: chestTexture = "chest_04_02_001.png"; chestSize = 0.275f; break;
+    }
+
+    CCSprite* chest = CCSprite::createWithSpriteFrameName(chestTexture);
     chest->setPosition({25, 21});
-    chest->setScale(0.35f);
+    chest->setScale(chestSize);
     this->m_pLayer->addChild(chest);
 
     auto title = CCLabelBMFont::create(CCString::createWithFormat(reward->m_nChestID != 0 ? "%s Chest %i" : "%s Chest", CvoltonManager::sharedState()->cellTitle, reward->m_nChestID)->getCString(), "bigFont.fnt");
