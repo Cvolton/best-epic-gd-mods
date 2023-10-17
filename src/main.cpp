@@ -1474,6 +1474,23 @@ DWORD WINAPI my_thread(void* hModule) {
     std::uniform_int_distribution<int> distribute(250, 1000);
     int sleepMs = distribute(generator);
     Sleep(sleepMs);
+
+    /*
+        GD Version verification
+    */
+    /*auto proc = GetCurrentProcess();
+    unsigned char* buffer = new unsigned char[5];
+    SIZE_T bytesRead;
+    ReadProcessMemory(proc, (void*)(0x1754C3), &buffer, 5, &bytesRead);
+    MessageBox(nullptr, std::format("{} {} {} {} {}", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4]).c_str(), "", 0);*/
+    unsigned char test = *(unsigned char*)(base + 0x1760C3);
+    unsigned char test1 = *(unsigned char*)(base + 0x1760C4);
+    unsigned char test2 = *(unsigned char*)(base + 0x1760C5);
+    unsigned char test3 = *(unsigned char*)(base + 0x24BFF5);
+    if(test != 0xff || test1 != 0x96 || test2 != 0x88 || test3 != 0x8B) {
+        MessageBox(nullptr, "Unknown version of Geometry Dash detected.\nThis version of BetterInfo only supports Geometry Dash 2.113.\n\nBetterInfo will try to load but it will likely not work.\n\nIf you are using Geometry Dash 2.2, please install Geode and download BetterInfo from the built-in mod list there.", "BetterInfo - Geometry Dash", MB_OK | MB_ICONWARNING);
+    }
+
     
     /*
         Hook initialization
