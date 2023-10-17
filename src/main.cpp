@@ -1,4 +1,5 @@
 #define WIN32_LEAN_AND_MEAN
+#include <format>
 #include "mapped-hooks.hpp"
 #include "Windows.h"
 #include <fstream>
@@ -10,7 +11,6 @@
 #include <cstring>
 #include <deque>
 #include <random>
-#include <format>
 #include <exception>
 #include <ctime>
 #include "utils.hpp"
