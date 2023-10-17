@@ -95,8 +95,6 @@ void BetterInfoStats::dataLoaded(DS_Dictionary* data) {
 }
 
 void BetterInfoStats::firstLoad() {
-    std::cout << "firstLoad";
-
     this->save();
 }
 

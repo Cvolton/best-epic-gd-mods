@@ -37,8 +37,6 @@ bool CvoltonManager::init(){
 
     this->setup();
 
-    std::cout << "initing" << std::endl;
-
     BetterInfoCache::sharedState();
 
     return true;
@@ -139,8 +137,6 @@ bool CvoltonManager::isUpToDate(){
 void CvoltonManager::encodeDataTo(DS_Dictionary* data) {
     data->setDictForKey("settings", settingsDict);
     data->setStringForKey("versionString", version);
-
-    std::cout << "encodeDataTo";
 }
 void CvoltonManager::dataLoaded(DS_Dictionary* data) {
     auto settingsDictLoaded = static_cast<CCDictionary*>(data->getObjectForKey("settings"));
@@ -155,8 +151,6 @@ void CvoltonManager::dataLoaded(DS_Dictionary* data) {
     this->save();
 }
 void CvoltonManager::firstLoad() {
-    std::cout << "firstLoad";
-
     this->save();
 }
 bool CvoltonManager::getOption(std::string option){

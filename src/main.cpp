@@ -871,14 +871,9 @@ void __fastcall InfoLayer_loadPage(InfoLayer* self, void* a, int page, bool relo
 
     CCMenu* menu = cast<CCMenu*>(self->m_pCommentsBtn->getParent());
 
-    std::cout << menu->getChildrenCount() << std::endl;
-
     for(unsigned int i = 0; i < menu->getChildrenCount(); i++){
         auto commentBtn = cast<CCMenuItemSpriteExtra*>(menu->getChildren()->objectAtIndex(i));
-        std::cout << i << std::endl;
         if(commentBtn == nullptr) continue;
-
-        std::cout << commentBtn->getTag() << std::endl;
 
 
         if(commentBtn->getTag() == commentPageBtnTag){

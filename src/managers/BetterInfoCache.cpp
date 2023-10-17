@@ -24,8 +24,6 @@ bool BetterInfoCache::init(){
 
     this->setup();
 
-    std::cout << "initing cache" << std::endl;
-
     checkDailies();
 
     return true;
@@ -56,8 +54,6 @@ void BetterInfoCache::dataLoaded(DS_Dictionary* data) {
     this->save();
 }
 void BetterInfoCache::firstLoad() {
-    std::cout << "firstLoad";
-
     this->save();
 }
 
