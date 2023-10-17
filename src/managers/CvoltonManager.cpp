@@ -293,13 +293,29 @@ FLAlertLayer* CvoltonManager::updateCompleteDialog(bool forced) {
     versions.push_back(
         "<cg>BetterInfo has updated!</c>\n"
         "\n"
-        "<cy>Changelog:</c> <cg>(v2.4.9 - 2023-10-17)</c>\n"
+        "<cy>Changelog:</c> <cg>(v2.4.9 - 2023-10-18)</c>\n"
         "- <cg>Fixed</c> <co>chest history</c> <cj>icons</c>\n"
         "- <cg>Fixed</c> <cj>submitting coins</c> to old <co>daily levels leaderboards</c>\n"
         "\n"
-        "This is likely the last update to this version of BetterInfo - new features will only be getting added to the Geode version from now on. Thank you all for using the mod and see you in 2.2 :)\n"
-        "--Cvolton"
+        "BetterInfo is now also available on Geode with a few more minor features added in.\n\n"
+        "Thank you all for using BI, see you in 2.2 :) --Cvolton"
     );
+
+    /*versions.push_back(
+        "<cr>A few more words from me if you wanna read that:TM:</c>\n"
+        "Really this was supposed to be there on the previous page but FLAlerts are terribly small, so I had to split it up. Welp, at least I can make it \"a bit\" longer lol\n\nReleasing this update is kind of a weird moment to me because I know this is the last update the standalone version of BI will ever get. This, of course, doesn't mean the end of the mod as a whole - none of the features here are getting taken away and I will keep updating the Geode version with new stuff. <co>(1/3)</c>"
+    );
+
+    versions.push_back(
+        "<cr>A few more words from me if you wanna read that:TM:</c>\n"
+        "The Geode version will also become the only version once 2.2 rolls around - there won't be a standalone dll for that version. The version you're using now is effectively abandoned though, unless I get a report of some important game crashing bug or something.\n\nThank you all for using this little mod that I effectively made for myself because I wanted to see these features in the game. I've counted over 25,000 users recently, isn't that crazy? (no, I do not know who exactly) <co>(2/3)</c>"
+    );
+
+    versions.push_back(
+        "<cr>A few more words from me if you wanna read that:TM:</c>\n"
+        "Big stuff is coming for BI (hopefully if I stay motivated), even despite 2.2 hopefully coming out soon :) See you in the update --Cvolton <co>(3/3)</c>\n\n"
+        "The next pages are changelogs again."
+    );*/
 
     versions.push_back(
         "<cy>Changelog:</c> <cg>(v2.4.8 - 2023-08-19)</c>\n"
