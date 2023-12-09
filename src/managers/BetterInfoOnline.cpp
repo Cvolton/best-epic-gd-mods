@@ -45,7 +45,7 @@ void BetterInfoOnline::loadScores(int accountID, bool force){
     request->setRequestType(CCHttpRequest::HttpRequestType::kHttpPost);
     request->setResponseCallback(this, httpresponse_selector(BetterInfoOnline::onScoresFinished));
     //TODO: make this slightly more dynamic
-    auto postData = CCString::createWithFormat("gameVersion=21&binaryVersion=35&gdw=0&accountID=%i&type=relative&secret=Wmfd2893gb7", accountID);
+    auto postData = CCString::createWithFormat("gameVersion=21&binaryVersion=35&gdw=0&accountID=%i&udid=asdadsas&type=relative&secret=Wmfd2893gb7", accountID);
     request->setRequestData(
         postData->getCString(), strlen(postData->getCString())
     );
