@@ -74,6 +74,25 @@ bool LeaderboardViewLayer::init(int accountID) {
     cornerBR->setRotation(270);
     addChild(cornerBR, -1);
 
+    m_circle = LoadingCircle::create();
+    m_circle->retain();
+    m_circle->setParentLayer(this);
+    m_circle->show();
+
+    //refresh btn
+    auto refreshBtn = CCMenuItemSpriteExtra::create(
+        CCSprite::createWithSpriteFrameName("GJ_updateBtn_001.png"),
+        this,
+        menu_selector(LeaderboardViewLayer::onRefresh)
+    );
+
+    auto menuRefresh = CCMenu::create();
+    menuRefresh->addChild(refreshBtn);
+    menuRefresh->setPosition({winSize.width - 26.75f, 26.75f});
+    menuRefresh->setZOrder(2);
+
+    this->addChild(menuRefresh);
+
     loadPage();
     BetterInfoOnline::sharedState()->loadScores(m_accountID, false, this);
 
@@ -99,14 +118,32 @@ void LeaderboardViewLayer::keyBackClicked() {
     
     setTouchEnabled(false);
     setKeypadEnabled(false);
+
     if(m_scores) m_scores->release();
+    if(m_circle) m_circle->release();
     m_scores = nullptr;
+    m_circle = nullptr;
+
     CCDirector::sharedDirector()->popSceneWithTransition(0.5f, PopTransition::kPopTransitionFade);
 }
 
 
 void LeaderboardViewLayer::onBack(CCObject* object) {
     keyBackClicked();
+}
+
+void LeaderboardViewLayer::onRefresh(CCObject* object) {
+    BetterInfoOnline::sharedState()->loadScores(m_accountID, true, this);
+
+    if(m_circle) {
+        m_circle->fadeAndRemove();
+        m_circle->release();
+    }
+
+    m_circle = LoadingCircle::create();
+    m_circle->retain();
+    m_circle->setParentLayer(this);
+    m_circle->show();
 }
 
 CCScene* LeaderboardViewLayer::scene(int accountID) {
@@ -120,4 +157,9 @@ void LeaderboardViewLayer::onLeaderboardFinished(cocos2d::CCArray* scores) {
     m_scores = scores;
     m_scores->retain();
     loadPage();
+    if(m_circle) {
+        m_circle->fadeAndRemove();
+        m_circle->release();
+        m_circle = nullptr;
+    }
 }
