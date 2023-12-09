@@ -22,6 +22,9 @@ bool BetterInfoCache::init(){
     m_coinCountDict = CCDictionary::create();
     m_coinCountDict->retain();
 
+    m_demonDifficultyDict = CCDictionary::create();
+    m_demonDifficultyDict->retain();
+
     this->setup();
 
     checkDailies();
@@ -34,6 +37,7 @@ BetterInfoCache::BetterInfoCache(){}
 void BetterInfoCache::encodeDataTo(DS_Dictionary* data) {
     data->setDictForKey("levelNames", m_levelNameDict);
     data->setDictForKey("coinCounts", m_coinCountDict);
+    data->setDictForKey("demonDifficulties", m_demonDifficultyDict);
 }
 void BetterInfoCache::dataLoaded(DS_Dictionary* data) {
     auto levelNameDict = static_cast<CCDictionary*>(data->getObjectForKey("levelNames"));
@@ -43,12 +47,18 @@ void BetterInfoCache::dataLoaded(DS_Dictionary* data) {
         m_levelNameDict->retain();
     }
 
-
     auto coinCounts = static_cast<CCDictionary*>(data->getObjectForKey("coinCounts"));
     if(coinCounts) {
         m_coinCountDict->release();
         m_coinCountDict = coinCounts;
         m_coinCountDict->retain();
+    }
+
+    auto demonDifficulties = static_cast<CCDictionary*>(data->getObjectForKey("demonDifficulties"));
+    if(demonDifficulties) {
+        m_demonDifficultyDict->release();
+        m_demonDifficultyDict = demonDifficulties;
+        m_demonDifficultyDict->retain();
     }
 
     this->save();
@@ -85,6 +95,7 @@ void BetterInfoCache::cacheLevel(GJGameLevel* level) {
     auto idString = std::to_string(level->levelID);
     m_levelNameDict->setObject(CCString::create(level->levelName.c_str()), idString);
     m_coinCountDict->setObject(CCString::createWithFormat("%i", level->coins), idString);
+    m_demonDifficultyDict->setObject(CCString::createWithFormat("%i", level->demonDifficulty), idString);
 }
 
 void BetterInfoCache::cacheLevels(std::set<int> toDownload) {
@@ -125,6 +136,12 @@ const char* BetterInfoCache::getLevelName(int levelID) {
 
 int BetterInfoCache::getCoinCount(int levelID) {
     auto ret = m_coinCountDict->valueForKey(std::to_string(levelID));
+    if(std::string_view(ret->getCString()).empty()) return 3;
+    return ret->intValue();
+}
+
+int BetterInfoCache::getDemonDifficulty(int levelID) {
+    auto ret = m_demonDifficultyDict->valueForKey(std::to_string(levelID));
     if(std::string_view(ret->getCString()).empty()) return 3;
     return ret->intValue();
 }

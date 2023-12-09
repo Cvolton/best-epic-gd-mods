@@ -10,6 +10,7 @@ class BetterInfoCache : public gd::GManager, public gd::OnlineListDelegate {
 public:
 	cocos2d::CCDictionary* m_levelNameDict;
 	cocos2d::CCDictionary* m_coinCountDict;
+	cocos2d::CCDictionary* m_demonDifficultyDict;
 
 	bool init();
 	void encodeDataTo(DS_Dictionary* data) override;
@@ -30,6 +31,7 @@ public:
 
 	const char* getLevelName(int levelID);
 	int getCoinCount(int levelID);
+	int getDemonDifficulty(int levelID);
 
 	void loadListFinished(cocos2d::CCArray*, const char*);
     void loadListFailed(const char*);
