@@ -96,7 +96,7 @@ std::string ExtendedLevelInfo::getGameVersionName(int version){
 std::string ExtendedLevelInfo::stringDate(std::string date){
     if(date == "") return "NA";
     std::ostringstream stream;
-    stream << date << " ago";
+    stream << date << ((date.find('-') == std::string::npos && date.find('/') == std::string::npos && date.find(':') == std::string::npos) ? " ago" : "");
     return stream.str();
 }
 
