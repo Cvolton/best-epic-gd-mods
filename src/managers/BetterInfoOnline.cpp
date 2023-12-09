@@ -83,6 +83,7 @@ void BetterInfoOnline::generateScores(const std::string& response, int accountID
         auto score = GJUserScore::create(
             CM->responseToDict(current)
         );
+        if(score->userUDID_ != "") score->userUDID_ = GameManager::sharedState()->m_sPlayerUDID;
 
         scores->addObject(score);
     }
