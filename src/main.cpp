@@ -508,7 +508,6 @@ void fixProfilePagePositions(ProfilePage* self){
 }
 
 void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd::GJUserScore* a2){
-    //TODO: fix mod badge positioning for empty profiles
     GameLevelManager::sharedState()->storeUserName(a2->getUserID(), a2->getAccountID(), a2->getPlayerName());
 
     MHook::getOriginal(ProfilePage_loadPageFromUserInfo)(self, a, a2);
@@ -535,10 +534,23 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
     self->objectsInMenu->addObject(infoButton);
 
     if(a2->getUserID() != GameManager::sharedState()->m_nPlayerUserID){
+        CCNode* usernameLabel = nullptr;
+        CCNode* modBadge = nullptr;
+
+        std::vector<CCNode*> possiblyModBadge;
+
         for(unsigned int i = 0; i < layer->getChildrenCount(); i++){
             CCNode* node = dynamic_cast<CCNode*>(layer->getChildren()->objectAtIndex(i));
-            if(node != nullptr && node->getPositionX() == (winSize.width / 2) - 164 && node->getPositionY() == (winSize.height / 2) + 123) node->setVisible(false);
-            if(node != nullptr && node->getPositionX() == (winSize.width / 2) && node->getPositionY() == (winSize.height / 2) + 125) node->setVisible(false);
+            if(node != nullptr && node->getPositionX() == (winSize.width / 2) - 164 && node->getPositionY() == (winSize.height / 2) + 123) node->setVisible(false); //rank icon
+            if(node != nullptr && node->getPositionX() == (winSize.width / 2) && node->getPositionY() == (winSize.height / 2) + 125) { //username label
+                usernameLabel = node;
+                node->setVisible(false); 
+            }
+            if(node != nullptr && node->getPositionY() == (winSize.height / 2) + 124) possiblyModBadge.push_back(node); //possibly mod badge
+        }
+
+        if(usernameLabel) for(auto& badge : possiblyModBadge) {
+            if( (usernameLabel->getPositionX() - (usernameLabel->getScaledContentSize().width / 2) - 16) == badge->getPositionX() ) modBadge = badge;
         }
 
         auto leaderboardButtonSprite = BetterInfo::createBISprite("BI_blankBtn_001.png");
@@ -614,6 +626,8 @@ void __fastcall ProfilePage_loadPageFromUserInfo(ProfilePage* self, void* a, gd:
         usernameBtn->setPosition({210,-10});
         menu->addChild(usernameBtn);
         self->objectsInMenu->addObject(usernameBtn);
+
+        if(modBadge) modBadge->setPositionX((winSize.width / 2) - (usernameNode->getScaledContentSize().width / 2) - 16);
     }
 
 }
