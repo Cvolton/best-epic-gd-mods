@@ -2,6 +2,7 @@
 #include <gd.h>
 #include "../utils.hpp"
 #include "CvoltonManager.h"
+#include "support/base64.h"
 
 #include <fstream>
 
@@ -35,7 +36,12 @@ void BetterInfoOnline::loadScores(int accountID, bool force){
 
     //only on forced reload or if we dont have cached
     CCHttpRequest* request = new CCHttpRequest;
-    request->setUrl("http://www.boomlings.com/database/getGJScores20.php");
+
+    unsigned char* originalUrl = (unsigned char*)(base + 0x29BF30);
+    unsigned char* getGJScores;
+    int getGJScoresSize = base64Decode(originalUrl, strlen((const char*) originalUrl), &getGJScores);
+
+    request->setUrl((const char*) getGJScores);
     request->setRequestType(CCHttpRequest::HttpRequestType::kHttpPost);
     request->setResponseCallback(this, httpresponse_selector(BetterInfoOnline::onScoresFinished));
     //TODO: make this slightly more dynamic
@@ -45,6 +51,8 @@ void BetterInfoOnline::loadScores(int accountID, bool force){
     );
     request->setUserData((void*) accountID);
     CCHttpClient::getInstance()->send(request);
+
+    delete getGJScores;
     //request->release();
 }
 
