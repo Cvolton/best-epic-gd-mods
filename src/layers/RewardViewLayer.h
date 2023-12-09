@@ -2,8 +2,9 @@
 
 #include <gd.h>
 #include "RewardListView.h"
+#include "../delegates/PageNumberDelegate.h"
 
-class RewardViewLayer : public cocos2d::CCLayer {
+class RewardViewLayer : public cocos2d::CCLayer, public PageNumberDelegate {
     RewardListView* rewardView = nullptr;
     gd::GJListLayer* listLayer = nullptr;
     cocos2d::CCArray* sortedRewards = nullptr;

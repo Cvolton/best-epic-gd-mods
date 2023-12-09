@@ -21,10 +21,9 @@ JumpToPageLayer* JumpToPageLayer::create(gd::InfoLayer* infoLayer){
     return ret;
 }
 
-JumpToPageLayer* JumpToPageLayer::create(DailyViewLayer* dailyViewLayer){
+JumpToPageLayer* JumpToPageLayer::create(PageNumberDelegate* pageNumberDelegate){
     auto ret = new JumpToPageLayer();
-    dailyViewLayer->retain();
-    ret->dailyViewLayer = dailyViewLayer;
+    ret->pageNumberDelegate = pageNumberDelegate;
     if (ret && ret->init()) {
         //robert 1 :D
         ret->autorelease();
@@ -39,7 +38,6 @@ JumpToPageLayer* JumpToPageLayer::create(DailyViewLayer* dailyViewLayer){
 void JumpToPageLayer::onClose(cocos2d::CCObject* sender)
 {
     if(infoLayer != nullptr) infoLayer->release();
-    if(dailyViewLayer != nullptr) dailyViewLayer->release();
     setKeypadEnabled(false);
     removeFromParentAndCleanup(true);
 }
@@ -71,7 +69,7 @@ int JumpToPageLayer::pageNumber(){
 
 void JumpToPageLayer::onOK(cocos2d::CCObject* sender){
     if(infoLayer != nullptr) infoLayer->loadPage(pageNumber()-1, false);
-    if(dailyViewLayer != nullptr) dailyViewLayer->loadPage(pageNumber()-1);
+    if(pageNumberDelegate != nullptr) pageNumberDelegate->loadPage(pageNumber()-1);
     onClose(sender);
 }
 
@@ -85,7 +83,7 @@ bool JumpToPageLayer::init(){
             "bigFont.fnt", 50, 30);
     textNode->setLabelPlaceholderColor({0x75, 0xAA, 0xF0});
     if(infoLayer != nullptr) textNode->setString(std::to_string(infoLayer->m_nPageNumber+1).c_str());
-    if(dailyViewLayer != nullptr) textNode->setString(std::to_string(dailyViewLayer->getPage()+1).c_str());
+    if(pageNumberDelegate != nullptr) textNode->setString(std::to_string(pageNumberDelegate->getPage()+1).c_str());
     textNode->setAllowedChars("0123456789");
     textNode->setMaxLabelScale(0.7f);
     textNode->setPosition({0,6});
