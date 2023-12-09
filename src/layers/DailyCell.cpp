@@ -44,7 +44,13 @@ void DailyCell::loadFromLevel(GJGameLevel* level) {
     title->limitLabelWidth(170, .7f, .4f);
     this->m_pLayer->addChild(title);
 
-    level->levelName = biCache->getLevelName(level->levelID);
+    if(level->levelName == "" && level->coins == 0 && level->coinsVerified == false) {
+        level->levelName = biCache->getLevelName(level->levelID);
+        level->coins = biCache->getCoinCount(level->levelID);
+        level->coinsVerified_rand = 0;
+        level->coinsVerified_seed = 1;
+        level->coinsVerified = 1;
+    }
 
     /*CCNode* percentage = CCLabelBMFont::create(CCString::createWithFormat("%i%%", level->normalPercent)->getCString(), "goldFont.fnt");
     if(level->normalPercent == 100) percentage = CCSprite::createWithSpriteFrameName("GJ_completesIcon_001.png");
@@ -151,8 +157,6 @@ void DailyCell::loadFromLevel(GJGameLevel* level) {
         //coinSprite->setScale(0.35f);
         this->m_pLayer->addChild(coinSprite);
     }
-
-    level->coins = biCache->getCoinCount(level->levelID);
 
     //buttons
     auto menu = CCMenu::create();
